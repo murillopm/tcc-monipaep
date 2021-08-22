@@ -33,7 +33,7 @@ const Home: NextPage = () => {
   }
   
   return (
-    <Flex height="100vh" alignItems="center" justifyContent="center" background="custom.blue-350">
+    <Flex height="100vh" alignItems="center" justifyContent="center" background="custom.blue-300">
       <Flex direction="column" background="custom.blue-50" p={12} rounded={6} maxWidth={400} mx="auto">
         <Heading mb={6} color="custom.gray-800" textAlign="center">Faça seu login no MoniPaEp</Heading>
         <Flex as="form" direction="column" onSubmit={handleSubmit(handleSignIn)}>
@@ -112,7 +112,7 @@ const Home: NextPage = () => {
 
           <Box display="flex" width="100%" justifyContent="center" mt={3}>
             <Text>Não tem uma conta?&nbsp;</Text>
-            <Link href="#">
+            <Link href="/signup">
               <ChakraLink>Cadastre-se</ChakraLink>
             </Link>
           </Box>
