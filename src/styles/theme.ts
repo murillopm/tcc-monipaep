@@ -21,4 +21,11 @@ export const theme = extendTheme({
     heading: 'Roboto',
     body: 'Roboto',
   },
+  styles: {
+    global: {
+      body: {
+        bg: 'blue-300',
+      }
+    }
+  }
 })

@@ -112,11 +112,11 @@ const Home: NextPage = () => {
 
           <Box display="flex" width="100%" justifyContent="center" mt={3}>
             <Text>Não tem uma conta?&nbsp;</Text>
-            <Link href="/signup">
+            <Link href="/signup" passHref>
               <ChakraLink>Cadastre-se</ChakraLink>
             </Link>
           </Box>
-          <Link href="#">
+          <Link href="#" passHref>
             <ChakraLink textAlign="center">Esqueceu a senha?</ChakraLink>
           </Link>
         </Flex>

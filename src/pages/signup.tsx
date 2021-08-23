@@ -1,13 +1,31 @@
+import { useState } from 'react'
+import InputMask from 'react-input-mask'
+import Link from 'next/link'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { MdEmail, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md'
 import { HiLockClosed, HiIdentification } from 'react-icons/hi'
-import InputMask from 'react-input-mask'
+import { 
+  Box,
+  Button, 
+  Flex, 
+  FormControl, 
+  FormErrorMessage, 
+  FormLabel, 
+  Heading, 
+  Icon, 
+  Input, 
+  InputGroup, 
+  InputLeftElement, 
+  InputRightElement,
+  Link as ChakraLink, 
+  Select, 
+  Stack, 
+  Text
+} from '@chakra-ui/react';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import Link from 'next/link'
-
-import { useState } from 'react'
-import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Icon, Input, InputGroup, InputLeftElement, InputRightElement, Select, Stack } from '@chakra-ui/react';
+import "../validators/cpfValidator"
 
 type SignUpData = {
   name: string;
@@ -20,7 +38,7 @@ type SignUpData = {
 
 const schema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
-  cpf: yup.string().required('CPF obrigatório'),
+  cpf: yup.string().cpf().required('CPF obrigatório'),
   email: yup.string().email('E-mail inválido').required('E-mail obrigatório'),
   sector: yup.string().required('Setor obrigatório'),
   password: yup.string().required('Senha obrigatória').matches(
@@ -29,11 +47,11 @@ const schema = yup.object().shape({
   ),
   password_confirmation: yup.string().oneOf([
     null, yup.ref('password')
-  ], 'As senhas precisam ser iguais')
+  ], 'As senhas precisam ser iguais').required('Confirmação de senha obrigatória')
 })
 
 export default function SignUp() {
-  const { register, handleSubmit, formState, control } = useForm({
+  const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema)
   })
 
@@ -42,13 +60,12 @@ export default function SignUp() {
   const { errors } = formState
 
   const handleSignIn: SubmitHandler<SignUpData> = (values) => {
-    
     console.log(values)
   }
   
   return (
-    <Flex height="100vh" alignItems="center" justifyContent="center" background="custom.blue-300">
-      <Flex direction="column" background="custom.blue-50" p={12} rounded={6} maxWidth={400} mx="auto">
+    <Flex height="100vh" alignItems="center" justifyContent="center" background="custom.blue-300" overflow="auto">
+      <Flex direction="column" background="custom.blue-50" p={12} rounded={6} maxWidth={400} mx="auto" >
         <Heading mb={6} color="custom.gray-800" textAlign="center">Cadastre-se no MoniPaEp</Heading>
         <Flex as="form" direction="column" onSubmit={handleSubmit(handleSignIn)}>
           <Stack spacing={4} mb={4}>     
@@ -215,7 +232,7 @@ export default function SignUp() {
                 />
                 <InputRightElement>
                   <Icon 
-                    as={showPassword ? MdVisibility : MdVisibilityOff} 
+                    as={showConfirmationPassword ? MdVisibility : MdVisibilityOff} 
                     color="custom.blue-600" 
                     _hover={{'cursor': 'pointer'}}
                     onClick={() => setShowConfirmationPassword(prevState => !prevState)}
@@ -238,7 +255,13 @@ export default function SignUp() {
           >
             CADASTRAR
           </Button>
-
+          
+          <Box display="flex" width="100%" justifyContent="center" mt={3}>
+            <Text>Já tem uma conta?&nbsp;</Text>
+            <Link href="/" passHref>
+              <ChakraLink>Entrar</ChakraLink>
+            </Link>
+          </Box>
         </Flex>
         
       </Flex>
