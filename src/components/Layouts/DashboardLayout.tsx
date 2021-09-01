@@ -4,7 +4,7 @@ interface DashboardLayoutProps {
   children: ReactNode
 }
 
-export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <>
       <h1>External layout</h1>
@@ -14,3 +14,5 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     </>
   )
 }
+
+export default DashboardLayout

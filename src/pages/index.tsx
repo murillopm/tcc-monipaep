@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { MdEmail, MdVisibility, MdVisibilityOff } from 'react-icons/md'
 import { HiLockClosed } from 'react-icons/hi'
@@ -6,9 +6,13 @@ import InputMask from 'react-input-mask'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import Link from 'next/link'
+import { parseCookies } from 'nookies'
 
 import { Box, Button, Link as ChakraLink, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Icon, Input as ChakraInput, InputGroup, InputLeftElement, InputRightElement, Stack, Text } from '@chakra-ui/react'
-import { useState } from 'react'
+import { ReactElement, useState } from 'react'
+import { useContext } from 'react'
+import { AuthContext } from '../contexts/AuthContext'
+import { withSSRGuest } from '../utils/withSSRGuest'
 
 type LoginData = {
   email: string;
@@ -20,16 +24,16 @@ const schema = yup.object().shape({
   password: yup.string().required('Senha obrigatória'),
 })
 
-const Home: NextPage = () => {
+const Home = () => {
+  const [showPassword, setShowPassword] = useState(false)
+  const { signIn } = useContext(AuthContext)
   const { register, handleSubmit, formState, control } = useForm({
     resolver: yupResolver(schema)
   })
-  const [showPassword, setShowPassword] = useState(false)
   const { errors } = formState
 
-  const handleSignIn: SubmitHandler<LoginData> = (values) => {
-    
-    console.log(values)
+  const handleSignIn: SubmitHandler<LoginData> = async (values) => {
+    await signIn(values)
   }
   
   return (
@@ -125,5 +129,11 @@ const Home: NextPage = () => {
     </Flex>
   )
 }
+
+export const getServerSideProps = withSSRGuest(async (ctx) => {
+  return {
+    props: {}
+  }
+})
 
 export default Home
