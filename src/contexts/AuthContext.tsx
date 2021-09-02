@@ -3,11 +3,16 @@ import Router from "next/router";
 import { setCookie, parseCookies, destroyCookie } from "nookies"
 
 import { api } from "../services/apiClient";
-import { useRadioGroupContext } from "@chakra-ui/react";
 
 type User = {
-  email: string,
-  id: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    department: string;
+  };
+  permissions: string[];
+  roles: string[];
 }
 
 type SignInCredentials = {
@@ -18,7 +23,8 @@ type SignInCredentials = {
 type AuthContextData = {
   user: User | null;
   isAuthenticated: boolean;
-  signIn: (credentials: SignInCredentials) => Promise<void>
+  signIn: (credentials: SignInCredentials) => Promise<void>;
+  signOut: () => void;
 }
 
 interface AuthProviderProps {
@@ -27,9 +33,14 @@ interface AuthProviderProps {
 
 export const AuthContext = createContext({} as AuthContextData)
 
+let authChannel: BroadcastChannel
+
 export function signOut() {
   destroyCookie(undefined, 'monipaep.token')
   destroyCookie(undefined, 'monipaep.refreshToken')
+
+  authChannel.postMessage('signOut')
+
   Router.push('/')
 }
 
@@ -38,12 +49,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated = !!user
 
   useEffect(() => {
+    authChannel = new BroadcastChannel('auth')
+
+    authChannel.onmessage = (message) => {
+      switch(message.data) {
+        case 'signOut':
+          signOut()
+          authChannel.close()
+          break
+        default:
+          break
+      }
+    }
+  }, [])
+
+  useEffect(() => {
     const { 'monipaep.token': token } = parseCookies()
 
     if(token) {
       api.get('/systemuser/me').then(response => {
-        const { email, id } = response.data
-        setUser({ email, id })
+        const { user, permissions, roles } = response.data
+        setUser({ user, permissions, roles})
       })
       .catch(() => {
         signOut()
@@ -53,28 +79,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn({ email, password }: SignInCredentials) {
     try {
-      const response = await api.get('systemuser/login', {
+      const response = await api.get('/systemuser/login', {
         auth: {
           username: email,
           password,
         }
       })
-      const { token, refreshToken } = response.data
+
+      const { 
+        user, 
+        permissions, 
+        roles, 
+        token, 
+        refreshToken 
+      } = response.data
 
       setCookie(undefined, 'monipaep.token', token, {
         maxAge: 60 * 60 * 24 * 30,
         path: '/'
       })
 
-      setCookie(undefined, 'monipaep.refreshToken', refreshToken.id, {
+      setCookie(undefined, 'monipaep.refreshToken', refreshToken, {
         maxAge: 60 * 60 * 24 * 30,
         path: '/'
       })
       
-      setUser({
-        email,
-        id: refreshToken.systemUserId
-      })
+      setUser({ user, permissions, roles})
 
       api.defaults.headers['Authorization'] = `Bearer ${token}`
 
@@ -85,7 +115,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
   
   return (
-    <AuthContext.Provider value={{ isAuthenticated, signIn, user }}>
+    <AuthContext.Provider value={{ isAuthenticated, signIn, user, signOut }}>
       {children}
     </AuthContext.Provider>
   )

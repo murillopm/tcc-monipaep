@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios'
 import { GetServerSidePropsContext } from 'next'
 import { parseCookies, setCookie } from 'nookies'
 import { signOut } from '../contexts/AuthContext'
+import { AuthTokenError } from '../errors/AuthTokenError'
 
 
 let isRefreshing = false
@@ -36,14 +37,14 @@ export function setupAPIClient(ctx?: any) {
           api.post('/refreshtoken', {
             refreshToken
           }).then(response => {
-            const { token } = response.data
+            const { token, 'refreshToken': newRefreshToken } = response.data
     
             setCookie(ctx, 'monipaep.token', token, {
               maxAge: 60 * 60 * 24 * 30,
               path: '/'
             })
       
-            setCookie(ctx, 'monipaep.refreshToken', response.data.refreshToken.id, {
+            setCookie(ctx, 'monipaep.refreshToken', newRefreshToken, {
               maxAge: 60 * 60 * 24 * 30,
               path: '/'
             })
@@ -75,11 +76,21 @@ export function setupAPIClient(ctx?: any) {
             }
           })
         })
-      } else {
+      } else if (
+        error.response.data?.code === "refresh.token.invalid"   ||
+        error.response.data?.code === "refresh.token.deletion"  ||
+        error.response.data?.code === "refresh.token.expired"   ||
+        error.response.data?.code === "refresh.token.creation"  ||
+        error.response.data?.code === "refresh.token.generation"||
+        error.response.data?.code === "token.not.found"         ||
+        error.response.data?.code === "token.invalid"           
+        ) {
         if(process.browser) {
           signOut()
+        } else {
+          return Promise.reject(new AuthTokenError())
         }
-      }
+      } 
     }
   
     return Promise.reject(error)
