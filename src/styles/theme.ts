@@ -14,12 +14,17 @@ export const theme = extendTheme({
       "blue-700": "#184DDC",
       "blue-800": "#1440B8",
       "blue-900": "#0E2D81",
-      "gray-800": "#202124"
+      "blue-light": "#103E93",
+      "blue-dark": "#0B2559",
+      "blue-logo": "#0597FF",
+      "gray-light": "#647AA6",
+      "gray-800": "#202124",
+      "gray-700": "#232E3D",
     }
   },
   fonts: {
-    heading: 'Roboto',
-    body: 'Roboto',
+    heading: "'Roboto', 'Comfortaa'",
+    body: "'Inter', 'Roboto'",
   },
   styles: {
     global: {

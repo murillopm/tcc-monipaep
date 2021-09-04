@@ -1,15 +1,12 @@
-import type { GetServerSideProps, NextPage } from 'next'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { MdEmail, MdVisibility, MdVisibilityOff } from 'react-icons/md'
 import { HiLockClosed } from 'react-icons/hi'
-import InputMask from 'react-input-mask'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import Link from 'next/link'
-import { parseCookies } from 'nookies'
 
-import { Box, Button, Link as ChakraLink, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Icon, Input as ChakraInput, InputGroup, InputLeftElement, InputRightElement, Stack, Text } from '@chakra-ui/react'
-import { ReactElement, useState } from 'react'
+import { Box, Button, Link as ChakraLink, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Icon, Input as ChakraInput, InputGroup, InputLeftElement, InputRightElement, Stack, Text, useToast } from '@chakra-ui/react'
+import { useState } from 'react'
 import { useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import { withSSRGuest } from '../utils/withSSRGuest'
@@ -31,9 +28,19 @@ const Home = () => {
     resolver: yupResolver(schema)
   })
   const { errors } = formState
+  const toast = useToast()
 
   const handleSignIn: SubmitHandler<LoginData> = async (values) => {
-    await signIn(values)
+    try {
+      await signIn(values)
+    } catch (error) {
+      toast({
+        title: "Erro no login",
+        description: error.message,
+        status: "error",
+        isClosable: true
+      })
+    }
   }
   
   return (

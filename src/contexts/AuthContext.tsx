@@ -3,6 +3,7 @@ import Router from "next/router";
 import { setCookie, parseCookies, destroyCookie } from "nookies"
 
 import { api } from "../services/apiClient";
+import { SignInError } from "../errors/SignInError";
 
 type User = {
   user: {
@@ -55,7 +56,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       switch(message.data) {
         case 'signOut':
           signOut()
-          authChannel.close()
+          authChannel?.close()
           break
         default:
           break
@@ -110,7 +111,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       Router.push('/dashboard')
     } catch (error) {
-      console.log(error)
+      //console.log(error.response)
+      throw new SignInError(error.response.data.error)
     }
   }
   

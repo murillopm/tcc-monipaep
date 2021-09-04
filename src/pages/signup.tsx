@@ -20,12 +20,14 @@ import {
   Link as ChakraLink, 
   Select, 
   Stack, 
-  Text
+  Text,
+  useToast
 } from '@chakra-ui/react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import "../validators/cpfValidator"
+import { api } from '../services/apiClient'
 
 type SignUpData = {
   name: string;
@@ -51,25 +53,53 @@ const schema = yup.object().shape({
 })
 
 export default function SignUp() {
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmationPassword, setShowConfirmationPassword] = useState(false)
+  const toast = useToast()
+
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema)
   })
-
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmationPassword, setShowConfirmationPassword] = useState(false)
   const { errors } = formState
 
-  const handleSignIn: SubmitHandler<SignUpData> = (values) => {
-    console.log(values)
+
+  const handleSignIn: SubmitHandler<SignUpData> = async (values) => {
+    const cpfCleaned = values.cpf.replaceAll( /[.-]/g, '')
+    console.log(cpfCleaned)
+    
+    try {
+      console.log(values)
+      const response = await api.post('/systemuser/signup', {
+        name: values.name,
+        CPF: values.cpf,
+        email: values.email,
+        password: values.password,
+        department: values.sector,
+      })
+      toast({
+        title: "Cadastro realizado com sucesso",
+        description: response.data?.success,
+        status: "success",
+        isClosable: true
+      })
+      console.log(response)
+    } catch (error) {
+      toast({
+        title: "Erro no cadastro",
+        description: error.response?.data.error,
+        status: "error",
+        isClosable: true
+      })
+    }
+    
   }
   
   return (
     <Flex height="100vh" alignItems="center" justifyContent="center" background="custom.blue-300" overflow="auto">
-      <Flex direction="column" background="custom.blue-50" p={12} rounded={6} maxWidth={400} mx="auto" >
-        <Heading mb={6} color="custom.gray-800" textAlign="center">Cadastre-se no MoniPaEp</Heading>
+      <Flex direction="column" background="custom.blue-50" p={12} rounded={6} maxWidth={400} m="auto">
+        <Heading mb={6} color="custom.gray-800" textAlign="center" >Cadastre-se no MoniPaEp</Heading >
         <Flex as="form" direction="column" onSubmit={handleSubmit(handleSignIn)}>
           <Stack spacing={4} mb={4}>     
-            
             <FormControl id="form-name" isInvalid={!!errors.name}>
               <FormLabel htmlFor="name" id="label-for-name" color="custom.gray-800">Nome</FormLabel>
               <InputGroup>
