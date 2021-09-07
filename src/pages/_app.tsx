@@ -26,25 +26,29 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 }*/
 
 import App from 'next/app'
+
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { AuthProvider } from '../contexts/AuthContext'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from '../styles/theme'
 
 const NoOption =  ({ children }: any) => children
-
+const queryClient = new QueryClient()
 class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props
     const Layout = (Component as any).layout || NoOption
 
     return (
-      <AuthProvider>
-        <ChakraProvider theme={theme}>
-          <Layout>
-            <Component {...pageProps}/>
-          </Layout>
-        </ChakraProvider>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ChakraProvider theme={theme}>
+            <Layout>
+              <Component {...pageProps}/>
+            </Layout>
+          </ChakraProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     )
   }
 }

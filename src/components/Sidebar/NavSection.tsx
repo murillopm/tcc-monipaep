@@ -11,7 +11,7 @@ export function NavSection({ title, children }: NavSectionProps) {
     <Box w="100%" mt="10" >
       <Text 
         fontSize="0.8rem" 
-        color="custom.gray-light" 
+        color="#0597FF" 
         fontWeight="medium"
         pl="4"
         mb="2"

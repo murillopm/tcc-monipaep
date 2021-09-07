@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, Icon, Image, Link, Text } from "@chakra-ui/react";
 import { BiBookHeart } from "react-icons/bi"
 import { ActiveLink } from "../ActiveLink";
+import { Can } from "../Can";
 import { NavLink } from "./NavLink";
 import { NavSection } from "./NavSection";
 
@@ -30,7 +31,7 @@ export function Sidebar() {
       </Flex>
 
       <NavSection title="GERENCIAMENTO">
-        <NavLink href="/dashboard" icon={BiBookHeart} >
+        <NavLink href="/patients" icon={BiBookHeart} >
           Pacientes
         </NavLink>
         <NavLink href="/adminpanel" icon={BiBookHeart} >
@@ -46,6 +47,13 @@ export function Sidebar() {
           Sintomas
         </NavLink>
       </NavSection>
+      <Can roles={["local.admin", "general.admin"]}>
+        <NavSection title="PAINEL DE ADMINISTRADOR">
+          <NavLink href="#" icon={BiBookHeart}>
+            Usuários do sistema
+          </NavLink>
+        </NavSection>
+      </Can>
     </Box>
   )
 }
