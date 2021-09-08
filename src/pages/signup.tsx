@@ -83,10 +83,10 @@ export default function SignUp() {
         isClosable: true
       })
       console.log(response)
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Erro no cadastro",
-        description: error.response?.data.error,
+        description: error?.response?.data.error,
         status: "error",
         isClosable: true
       })

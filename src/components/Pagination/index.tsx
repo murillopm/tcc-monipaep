@@ -1,31 +1,46 @@
 import { Flex, Text, HStack } from "@chakra-ui/react";
+import { GeneratePagesList } from "../../utils/generatePagesList";
 import { PaginationItem } from "./PaginationItem";
 
 interface PaginationProps {
   totalRegisters: number | undefined;
   registersPerPage: number | undefined;
-  page: number;
+  currentPage: number;
   onPageChange: (page: number) => void;
 }
 
-export function Pagination({ totalRegisters, registersPerPage, page = 1, onPageChange }: PaginationProps) {
-  let initialRange = 1 + (registersPerPage ?? 1) * (page - 1)
-  let finalRange = (registersPerPage ?? 1) * page 
-  const total = totalRegisters ?? 1
-  if(finalRange > total) {
-    finalRange = total
+export function Pagination({ totalRegisters = 0, registersPerPage = 10, currentPage = 1, onPageChange }: PaginationProps) {
+  let initialRange = 1 + registersPerPage * (currentPage - 1)
+  let finalRange = registersPerPage * currentPage 
+  if(finalRange > totalRegisters) {
+    finalRange = totalRegisters
   }
   if(initialRange > finalRange) {
     initialRange = finalRange
   }
+
+  const pages = GeneratePagesList({ currentPage, registersPerPage, totalRegisters })
   
   return (
-    <Flex w="100%" justifyContent="space-between" alignItems="center" px="4">
-      <Text><strong>{initialRange}</strong> - <strong> {finalRange}</strong> de <strong>{total}</strong></Text>
-      <HStack spacing="2">
-        <PaginationItem page={page-1} changePage={onPageChange}/>
-        <PaginationItem page={page} isCurrent changePage={onPageChange}/>
-        <PaginationItem page={page+1} changePage={onPageChange}/>
+    <Flex w="100%" justifyContent="space-between" alignItems="center" px="5" overflow="auto">
+      <Text borderRadius="4" px="2"><strong>{initialRange}</strong> - <strong> {finalRange}</strong> de <strong>{totalRegisters}</strong></Text>
+      <HStack spacing="2" height="10">
+        { pages.map(page => {
+          if(page === -1) {
+            return (
+              <Text textAlign="center" width="4">...</Text>
+            )
+          }
+          return (
+            <PaginationItem
+              key={page}
+              page={page} 
+              isCurrent={currentPage === page ?? false} 
+              onPageChange={onPageChange}
+            />
+          )
+        })}
+        
       </HStack>
     </Flex>
   )

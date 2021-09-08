@@ -69,7 +69,7 @@ export default function Patients() {
         <Text>Error</Text>
       ) : (
         <Flex direction="column" w="100%" overflow="auto">
-          <Table size="lg" w="100%">
+          <Table size="lg" w="100%" overflow="scroll">
             <Thead>
               <Tr>
                 <Th>Nome</Th>
@@ -110,8 +110,8 @@ export default function Patients() {
           </Table>
           <Box w="100%" mt="4">
             <Pagination 
-              page={page} 
-              totalRegisters={data?.totalPatients} 
+              currentPage={page} 
+              totalRegisters={200} 
               registersPerPage={10}
               onPageChange={setPage}
             />

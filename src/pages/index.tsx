@@ -33,10 +33,10 @@ const Home = () => {
   const handleSignIn: SubmitHandler<LoginData> = async (values) => {
     try {
       await signIn(values)
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Erro no login",
-        description: error.message,
+        description: error?.message,
         status: "error",
         isClosable: true
       })

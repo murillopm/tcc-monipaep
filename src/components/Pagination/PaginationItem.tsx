@@ -3,10 +3,10 @@ import { Button } from "@chakra-ui/button";
 interface PaginationItemProps {
   page: number;
   isCurrent?: boolean;
-  changePage: (page: number) => void;
+  onPageChange: (page: number) => void;
 }
 
-export function PaginationItem({ page, changePage, isCurrent = false }: PaginationItemProps) {
+export function PaginationItem({ page, onPageChange, isCurrent = false }: PaginationItemProps) {
   return (
     <Button
       size="sm"
@@ -17,7 +17,7 @@ export function PaginationItem({ page, changePage, isCurrent = false }: Paginati
         cursor: 'default'
       }}
       colorScheme={isCurrent ? 'blue' : 'gray'}
-      onClick={() => changePage(page)}
+      onClick={() => onPageChange(page)}
     >
       {page}
     </Button>
