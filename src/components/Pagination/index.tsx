@@ -4,12 +4,12 @@ import { PaginationItem } from "./PaginationItem";
 
 interface PaginationProps {
   totalRegisters: number | undefined;
-  registersPerPage: number | undefined;
+  registersPerPage?: number | undefined;
   currentPage: number;
   onPageChange: (page: number) => void;
 }
 
-export function Pagination({ totalRegisters = 0, registersPerPage = 10, currentPage = 1, onPageChange }: PaginationProps) {
+export function Pagination({ totalRegisters = 0, registersPerPage = 1, currentPage = 1, onPageChange }: PaginationProps) {
   let initialRange = 1 + registersPerPage * (currentPage - 1)
   let finalRange = registersPerPage * currentPage 
   if(finalRange > totalRegisters) {
@@ -25,7 +25,7 @@ export function Pagination({ totalRegisters = 0, registersPerPage = 10, currentP
     <Flex w="100%" justifyContent="space-between" alignItems="center" px="5" overflow="auto">
       <Text borderRadius="4" px="2"><strong>{initialRange}</strong> - <strong> {finalRange}</strong> de <strong>{totalRegisters}</strong></Text>
       <HStack spacing="2" height="10">
-        { pages.map(page => {
+        { pages.map((page, index) => {
           if(page === -1) {
             return (
               <Text textAlign="center" width="4">...</Text>

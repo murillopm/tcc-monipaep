@@ -21,6 +21,10 @@ export function setupAPIClient(ctx?: any) {
       Authorization: `Bearer ${cookies['monipaep.token']}`
     }
   })
+
+  api.interceptors.request.use(response => {
+    return new Promise(resolve => setTimeout(() => resolve(response), 1000))
+  })
   
   api.interceptors.response.use(response => {
     return response

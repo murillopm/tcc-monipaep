@@ -11,12 +11,6 @@ import { Can } from "../components/Can"
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext)
-
-  useEffect(() => {
-    api.get('/systemuser/me')
-      .then(response => console.log('useeffect'))
-      .catch(err => console.log(err))
-  }, [])
   
   return (
     <>

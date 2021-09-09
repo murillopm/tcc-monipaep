@@ -1,30 +1,36 @@
-import { Flex, Table, Text, Thead, Th, Tr, Tbody, Td, Badge, Box } from "@chakra-ui/react";
-import { Spinner } from "@chakra-ui/spinner";
-import { format, parseISO } from "date-fns";
-import ptBR from "date-fns/locale/pt-BR";
-import { useState } from "react";
-import { useQuery } from "react-query";
-import DashboardLayout from "../../components/Layouts/DashboardLayout";
-import { Pagination } from "../../components/Pagination";
-import { api } from "../../services/apiClient";
+import { useState, ChangeEvent, useCallback } from "react";
+import { debounce } from "ts-debounce"
+
 import { withSSRAuth } from "../../utils/withSSRAuth";
 
-type Patient = {
-  id: string;
-  name: string;
-  CPF: string;
-  email: string;
-  phone: string;
-  neighborhood: string;
-  status: string;
-  activeAccount: boolean;
-  createdAt: string;
-}
+import DashboardLayout from "../../components/Layouts/DashboardLayout";
+import { Pagination } from "../../components/Pagination";
+import { 
+  Badge, 
+  Box, 
+  Flex, 
+  Heading, 
+  Input,
+  InputGroup,
+  Table, 
+  Tbody, 
+  Td, 
+  Text, 
+  Th, 
+  Thead, 
+  Tr, 
+  Select, 
+  Spinner,
+  InputRightElement,
+  IconButton,
+} from "@chakra-ui/react";
+import { MdSearch } from 'react-icons/md'
+import { usePatients } from "../../hooks/usePatients";
 
-type GetPatientsResponse = {
-  patients: Patient[],
-  totalPatients: number,
-}
+type FilterPatient = [
+  filter: string,
+  value: string
+]
 
 function getBadgeColor(status: string) {
   if(status === "Saudável") {
@@ -40,85 +46,102 @@ function getBadgeColor(status: string) {
 
 export default function Patients() {
   const [page, setPage] = useState(1)
-  const { data , isLoading, error } = useQuery('patients', async () => {
-    const { data } = await api.get<GetPatientsResponse>('/patients')
-    const formattedData = data.patients.map(pacient => {
-      const dateFormatted = format(parseISO(pacient.createdAt), 'P', { locale: ptBR })
-      const formattedCPF = 
-        pacient.CPF.slice(0, 3) + "." + pacient.CPF.slice(3, 6) + "."
-        + pacient.CPF.slice(6, 9) + "-" + pacient.CPF.slice(9, 12)
-      return {
-        ...pacient,
-        CPF: formattedCPF,
-        createdAt: dateFormatted
-      }
-    })
-    const patients: GetPatientsResponse = {
-      patients: formattedData,
-      totalPatients: data.totalPatients
-    }
+  const [filter, setFilter] = useState('name')
+  const [search, setSearch] = useState('')
+  const { data , isLoading, isFetching, error } = usePatients({ page, filter: [filter, search]})
 
-    return patients
-  })
+  function handleChangeInput(event: ChangeEvent<HTMLInputElement>) {
+    setPage(1)
+    setSearch(event.target.value)
+  }
+
+  const debouncedChangeInputHandler = useCallback(
+    debounce(handleChangeInput, 600)
+  , []) 
   
   return (
-    <Flex h="100%" w="auto" mx="7" mt="10" bgColor="white" borderRadius="4">
+    <Flex h="100%" w="auto" mx="7" mt="10" bgColor="white" borderRadius="4" direction="column">
+      <Heading ml="8" my="6">
+        Pacientes
+        {!isLoading && isFetching && <Spinner ml="4"/>}
+      </Heading>
       { isLoading ? (
-        <Spinner />
+        <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
+          <Spinner size="lg"/>
+        </Box>
       ) : error ? (
-        <Text>Error</Text>
+        <Box w="100%" display="flex" justifyContent="center" alignItems="center">
+          <Text>Erro ao carregar os dados</Text>
+        </Box>
       ) : (
-        <Flex direction="column" w="100%" overflow="auto">
-          <Table size="lg" w="100%" overflow="scroll">
-            <Thead>
-              <Tr>
-                <Th>Nome</Th>
-                <Th>CPF</Th>
-                <Th>Email</Th>
-                <Th>Bairro</Th>
-                <Th>Status</Th>
-                <Th>Criado em</Th>
-              </Tr>
-            </Thead>
-
-            <Tbody>
-              { data?.patients.map(pacient => (
-                <Tr key={pacient.id}>
-                  <Td>
-                    <Text>{pacient.name}</Text>
-                  </Td>
-                  <Td>
-                    <Text>{pacient.CPF}</Text>
-                  </Td>
-                  <Td>
-                    <Text>{pacient.email}</Text>
-                  </Td>
-                  <Td>
-                    <Text>{pacient.neighborhood}</Text>
-                  </Td>
-                  <Td>
-                    <Badge colorScheme={getBadgeColor(pacient.status)}>
-                      {pacient.status}
-                    </Badge>
-                  </Td>
-                  <Td>
-                    <Text>{pacient.createdAt}</Text>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <Box w="100%" mt="4">
-            <Pagination 
-              currentPage={page} 
-              totalRegisters={200} 
-              registersPerPage={10}
-              onPageChange={setPage}
+        <>
+          <Flex mx="8" mb="4">
+            <Select w="32" borderRightRadius="0" onChange={e => {setFilter(e.target.value)}}>
+              <option value="name">Nome</option>
+              <option value="CPF">CPF</option>
+              <option value="neighborhood">Bairro</option>
+              <option value="status">Status</option>
+            </Select>
+            <Input placeholder="Buscar..." w="42" borderRadius="0" onChange={debouncedChangeInputHandler}/>
+            <IconButton 
+              aria-label="Buscar no banco de dados" 
+              icon={<MdSearch fontSize="20" color="white" />} 
+              borderLeftRadius="0"
+              bgColor="custom.blue-600"
+              _hover={{
+                'bgColor': 'custom.blue-500'
+              }}
             />
-          </Box>
-          
+          </Flex>
+          <Flex direction="column" w="100%" overflow="auto">
+            <Table size="lg" w="100%" overflow="scroll">
+              <Thead>
+                <Tr>
+                  <Th>Nome</Th>
+                  <Th>CPF</Th>
+                  <Th>Email</Th>
+                  <Th>Bairro</Th>
+                  <Th>Status</Th>
+                  <Th>Criado em</Th>
+                </Tr>
+              </Thead>
 
-        </Flex>
+              <Tbody>
+                { data?.patients.map(pacient => (
+                  <Tr key={pacient.id}>
+                    <Td>
+                      <Text>{pacient.name}</Text>
+                    </Td>
+                    <Td>
+                      <Text>{pacient.CPF}</Text>
+                    </Td>
+                    <Td>
+                      <Text>{pacient.email}</Text>
+                    </Td>
+                    <Td>
+                      <Text>{pacient.neighborhood}</Text>
+                    </Td>
+                    <Td>
+                      <Badge colorScheme={getBadgeColor(pacient.status)}>
+                        {pacient.status}
+                      </Badge>
+                    </Td>
+                    <Td>
+                      <Text>{pacient.createdAt}</Text>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+            <Box w="100%" mt="4">
+              <Pagination 
+                currentPage={page} 
+                totalRegisters={data?.totalPatients} 
+                onPageChange={setPage}
+              />
+            </Box>
+          </Flex>
+        </>
       )}
     </Flex>
   )

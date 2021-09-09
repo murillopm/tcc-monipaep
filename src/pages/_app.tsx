@@ -28,6 +28,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 import App from 'next/app'
 
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 import { AuthProvider } from '../contexts/AuthContext'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from '../styles/theme'
@@ -48,6 +49,7 @@ class MyApp extends App {
             </Layout>
           </ChakraProvider>
         </AuthProvider>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     )
   }
