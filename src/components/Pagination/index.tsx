@@ -9,7 +9,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export function Pagination({ totalRegisters = 0, registersPerPage = 1, currentPage = 1, onPageChange }: PaginationProps) {
+export function Pagination({ totalRegisters = 0, registersPerPage = 10, currentPage = 1, onPageChange }: PaginationProps) {
   let initialRange = 1 + registersPerPage * (currentPage - 1)
   let finalRange = registersPerPage * currentPage 
   if(finalRange > totalRegisters) {
@@ -31,7 +31,7 @@ export function Pagination({ totalRegisters = 0, registersPerPage = 1, currentPa
               <Text textAlign="center" width="4">...</Text>
             )
           }
-          return (
+          return ( page > 0 &&
             <PaginationItem
               key={page}
               page={page} 

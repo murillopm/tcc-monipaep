@@ -11,8 +11,10 @@ type Patient = {
   email: string;
   phone: string;
   neighborhood: string;
+  birthdate: string;
   status: string;
   activeAccount: boolean;
+  hasHealthPlan: boolean;
   createdAt: string;
 }
 
@@ -33,14 +35,16 @@ export async function getPatients(page: number, filter?: FilterPatient) {
   }
   const { data } = await api.get<GetPatientsResponse>('/patients', { params })
   const formattedData = data.patients.map(pacient => {
-    const dateFormatted = format(parseISO(pacient.createdAt), 'P', { locale: ptBR })
+    const createdAtFormatted = format(parseISO(pacient.createdAt), 'P', { locale: ptBR })
+    const birthdateFormatted = format(parseISO(pacient.birthdate), 'P', { locale: ptBR })
     const formattedCPF = 
       pacient.CPF.slice(0, 3) + "." + pacient.CPF.slice(3, 6) + "."
       + pacient.CPF.slice(6, 9) + "-" + pacient.CPF.slice(9, 12)
     return {
       ...pacient,
       CPF: formattedCPF,
-      createdAt: dateFormatted
+      createdAt: createdAtFormatted,
+      birthdate: birthdateFormatted
     }
   })
   const patients: GetPatientsResponse = {
@@ -64,5 +68,6 @@ export function usePatients({ page, filter = ['name', ''] }: UsePatientsProps) {
     return getPatients(page, filter)
   }, {
     keepPreviousData: true,
+    staleTime: 1000 * 5
   })
 }

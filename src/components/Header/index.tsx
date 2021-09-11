@@ -13,6 +13,7 @@ export function Header() {
       justifyContent="space-between" 
       alignItems="center"
       px="6"
+      boxShadow="base"
     >
       <Text fontSize="2xl" fontWeight="bold" ml="4">Dashboard</Text>
       <Flex justifyContent="flex-end">

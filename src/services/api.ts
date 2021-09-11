@@ -4,7 +4,6 @@ import { parseCookies, setCookie } from 'nookies'
 import { signOut } from '../contexts/AuthContext'
 import { AuthTokenError } from '../errors/AuthTokenError'
 
-
 let isRefreshing = false
 let failedRequestsQueue: any = []
 
@@ -60,7 +59,7 @@ export function setupAPIClient(ctx?: any) {
           }).catch(error => {
             failedRequestsQueue.forEach((request: any) => request.onFailure(error))
             failedRequestsQueue = []
-  
+            
             if(process.browser) {
               signOut()
             }

@@ -1,4 +1,5 @@
 import { useState, ChangeEvent, useCallback } from "react";
+import NextLink from 'next/link'
 import { debounce } from "ts-debounce"
 
 import { withSSRAuth } from "../../utils/withSSRAuth";
@@ -8,8 +9,10 @@ import { Pagination } from "../../components/Pagination";
 import { 
   Badge, 
   Box, 
+  Button,
   Flex, 
   Heading, 
+  Icon,
   Input,
   InputGroup,
   Table, 
@@ -25,12 +28,8 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { MdSearch } from 'react-icons/md'
+import { FaSearchPlus } from 'react-icons/fa'
 import { usePatients } from "../../hooks/usePatients";
-
-type FilterPatient = [
-  filter: string,
-  value: string
-]
 
 function getBadgeColor(status: string) {
   if(status === "Saudável") {
@@ -60,7 +59,7 @@ export default function Patients() {
   , []) 
   
   return (
-    <Flex h="100%" w="auto" mx="7" mt="10" bgColor="white" borderRadius="4" direction="column">
+    <Flex h="100%" w="auto" mx="6" mt="6" bgColor="white" borderRadius="4" direction="column" boxShadow="xl">
       <Heading ml="8" my="6">
         Pacientes
         {!isLoading && isFetching && <Spinner ml="4"/>}
@@ -78,7 +77,7 @@ export default function Patients() {
           <Flex mx="8" mb="4">
             <Select w="32" borderRightRadius="0" onChange={e => {setFilter(e.target.value)}}>
               <option value="name">Nome</option>
-              <option value="CPF">CPF</option>
+              <option value="cpf">CPF</option>
               <option value="neighborhood">Bairro</option>
               <option value="status">Status</option>
             </Select>
@@ -91,43 +90,67 @@ export default function Patients() {
               _hover={{
                 'bgColor': 'custom.blue-500'
               }}
+              disabled
+              _disabled={{
+                cursor: 'default',
+                bgColor: 'custom.blue-600'
+              }}
             />
           </Flex>
-          <Flex direction="column" w="100%" overflow="auto">
-            <Table size="lg" w="100%" overflow="scroll">
-              <Thead>
+          <Flex direction="column" w="100%" overflow="auto" px="8">
+            <Table size="lg" w="100%" overflow="scroll" border="1px" borderColor="gray.200" boxShadow="md">
+              <Thead bgColor="gray.200">
                 <Tr>
                   <Th>Nome</Th>
                   <Th>CPF</Th>
-                  <Th>Email</Th>
+                  <Th>Data de nascimento</Th>
                   <Th>Bairro</Th>
+                  <Th>Plano de saúde</Th>
                   <Th>Status</Th>
-                  <Th>Criado em</Th>
+                  <Th></Th>
                 </Tr>
               </Thead>
 
               <Tbody>
-                { data?.patients.map(pacient => (
-                  <Tr key={pacient.id}>
+                { data?.patients.map(patient => (
+                  <Tr key={patient.id} _hover={{ bgColor: 'gray.50' }}>
                     <Td>
-                      <Text>{pacient.name}</Text>
+                      <Box textAlign="left">
+                        <Text>{patient.name}</Text>
+                        <Text fontSize="sm" color="gray.500">{patient.email}</Text>
+                      </Box>
+                    </Td>
+                    <Td w="100">
+                      <Text>{patient.CPF}</Text>
                     </Td>
                     <Td>
-                      <Text>{pacient.CPF}</Text>
+                      <Text>{patient.birthdate}</Text>
                     </Td>
                     <Td>
-                      <Text>{pacient.email}</Text>
+                      <Text>{patient.neighborhood}</Text>
                     </Td>
                     <Td>
-                      <Text>{pacient.neighborhood}</Text>
-                    </Td>
-                    <Td>
-                      <Badge colorScheme={getBadgeColor(pacient.status)}>
-                        {pacient.status}
+                      <Badge colorScheme={patient.hasHealthPlan ? 'green' : 'red'}>
+                        {patient.hasHealthPlan ? 'Possui' : 'Não possui'}
                       </Badge>
                     </Td>
                     <Td>
-                      <Text>{pacient.createdAt}</Text>
+                      <Badge colorScheme={getBadgeColor(patient.status)}>
+                        {patient.status}
+                      </Badge>
+                    </Td>
+                    <Td>
+                      <NextLink href="#" passHref>
+                        <Button 
+                          as="a" 
+                          colorScheme="pink"
+                          size="sm" 
+                          fontSize="sm" 
+                          leftIcon={<Icon as={FaSearchPlus} fontSize="16"/>}
+                        >
+                          Mais detalhes
+                        </Button>
+                      </NextLink>
                     </Td>
                   </Tr>
                 ))}
