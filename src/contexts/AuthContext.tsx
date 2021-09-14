@@ -39,9 +39,11 @@ let authChannel: BroadcastChannel
 export function signOut() {
   destroyCookie(undefined, 'monipaep.token')
   destroyCookie(undefined, 'monipaep.refreshToken')
-
-  authChannel.postMessage('signOut')
-
+  try {
+    authChannel.postMessage('signOut')
+  } catch (error) {
+    console.log(error)
+  }
   Router.push('/')
 }
 

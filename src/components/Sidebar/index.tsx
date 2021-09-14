@@ -1,14 +1,18 @@
-import { Box, Flex, Heading, Icon } from "@chakra-ui/react";
+import { useContext } from "react";
+import { Box, Button, Flex, Heading, Icon } from "@chakra-ui/react";
 import { AiOutlineDatabase } from "react-icons/ai"
-import { BiBookHeart } from "react-icons/bi"
+import { BiArchive, BiBookHeart, BiClinic, BiHealth } from "react-icons/bi"
 import { FiUsers } from "react-icons/fi"
+import { RiQuestionAnswerLine, RiHealthBookLine } from "react-icons/ri"
 import { HiOutlineClipboardList } from "react-icons/hi"
 
 import { Can } from "../Can";
 import { NavLink } from "./NavLink";
 import { NavSection } from "./NavSection";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export function Sidebar() {
+  const { signOut } = useContext(AuthContext)
   return (
     <Box 
       as="aside" 
@@ -20,8 +24,9 @@ export function Sidebar() {
       justifyContent="flex-start"
       alignItems="center"
       boxShadow="base"
+      position="fixed"
     >
-      <Flex align="center" mt="5">
+      <Flex align="center" my="5">
         <Icon as={BiBookHeart} color="custom.blue-logo" height="30px" width="30px" mr="2"/>
         <Heading 
           color="custom.blue-logo"
@@ -34,21 +39,33 @@ export function Sidebar() {
         </Heading>
       </Flex>
 
-      <NavSection title="GERENCIAMENTO">
-        <NavLink href="/patients" icon={FiUsers} >
+      <NavSection title="ACOMPANHAMENTO">
+        <NavLink href="/dashboard/patients" icon={FiUsers}>
           Pacientes
         </NavLink>
-        <NavLink href="/adminpanel" icon={AiOutlineDatabase} >
+        <NavLink href="/adminpanel" icon={BiArchive}>
           Ocorrências de doenças
         </NavLink>
-        <NavLink href="#" icon={HiOutlineClipboardList} >
+        <NavLink href="#" icon={HiOutlineClipboardList}>
           Ocorrências de sintomas
         </NavLink>
-        <NavLink href="#" icon={AiOutlineDatabase} >
-          Doenças
+        
+      </NavSection>
+      <NavSection title="GERENCIAMENTO">
+        <NavLink href="/dashboard/faqs" icon={RiQuestionAnswerLine}>
+          Área de FAQ
         </NavLink>
-        <NavLink href="#" icon={HiOutlineClipboardList} >
-          Sintomas
+        <NavLink href="#" icon={BiClinic}>
+          Unidades de saúde
+        </NavLink>
+        <NavLink href="#" icon={RiHealthBookLine}>
+          Tipos de doenças
+        </NavLink>
+        <NavLink href="#" icon={AiOutlineDatabase}>
+          Tipos de sintomas
+        </NavLink>
+        <NavLink href="#" icon={BiHealth}>
+          Protocolos de saúde
         </NavLink>
       </NavSection>
       <Can roles={["local.admin", "general.admin"]}>
@@ -58,6 +75,9 @@ export function Sidebar() {
           </NavLink>
         </NavSection>
       </Can>
+      <Button onClick={signOut} mt="4">
+        Sair
+      </Button>
     </Box>
   )
 }

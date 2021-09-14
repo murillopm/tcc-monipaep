@@ -22,7 +22,7 @@ export function Pagination({ totalRegisters = 0, registersPerPage = 10, currentP
   const pages = GeneratePagesList({ currentPage, registersPerPage, totalRegisters })
   
   return (
-    <Flex w="100%" justifyContent="space-between" alignItems="center" px="5" overflow="auto">
+    <Flex w="100%" justifyContent="space-between" alignItems="center" overflow="auto">
       <Text borderRadius="4" px="2"><strong>{initialRange}</strong> - <strong> {finalRange}</strong> de <strong>{totalRegisters}</strong></Text>
       <HStack spacing="2" height="10">
         { pages.map((page, index) => {

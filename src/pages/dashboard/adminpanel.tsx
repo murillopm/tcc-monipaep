@@ -1,7 +1,7 @@
-import DashboardLayout from "../components/Layouts/DashboardLayout"
+import DashboardLayout from "../../components/Layouts/DashboardLayout"
 
-import { withSSRAuth } from "../utils/withSSRAuth"
-import { setupAPIClient } from "../services/api"
+import { withSSRAuth } from "../../utils/withSSRAuth"
+import { setupAPIClient } from "../../services/api"
 
 export default function AdminPanel() {
     

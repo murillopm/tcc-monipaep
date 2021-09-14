@@ -22,7 +22,7 @@ export function setupAPIClient(ctx?: any) {
   })
 
   api.interceptors.request.use(response => {
-    return new Promise(resolve => setTimeout(() => resolve(response), 1000))
+    return new Promise(resolve => setTimeout(() => resolve(response), 750))
   })
   
   api.interceptors.response.use(response => {
