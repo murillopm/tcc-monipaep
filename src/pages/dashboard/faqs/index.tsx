@@ -22,10 +22,13 @@ import {
 } from "@chakra-ui/react";
 import { BiPencil, BiTrash } from 'react-icons/bi'
 import { MdSearch } from 'react-icons/md'
-import { useFaqs } from "../../../hooks/useFaqs";
+import { RiAddLine } from 'react-icons/ri'
+
 import { withSSRAuth } from "../../../utils/withSSRAuth";
-import { FaqModal } from "../../../components/Modal/FaqModal";
-import { ExcludeAlert } from "../../../components/AlertDialog/ExcludeAlert";
+import { useFaqs } from "../../../hooks/useFaqs";
+import { FaqEditModal } from "../../../components/Modal/FaqEditModal";
+import { FaqExcludeAlert } from "../../../components/AlertDialog/FaqExcludeAlert";
+import { FaqAddModal } from "../../../components/Modal/FaqAddModal";
 
 type Faq = {
   id: string;
@@ -45,9 +48,15 @@ export default function Faqs() {
   } = useDisclosure()
 
   const { 
-    isOpen: isOpenExcludePopover, 
-    onOpen: onOpenExcludePopover, 
-    onClose: onCloseExcludePopover 
+    isOpen: isOpenExcludeAlert, 
+    onOpen: onOpenExcludeAlert, 
+    onClose: onCloseExcludeAlert 
+  } = useDisclosure()
+
+  const { 
+    isOpen: isOpenAddModal, 
+    onOpen: onOpenAddModal, 
+    onClose: onCloseAddModal 
   } = useDisclosure()
 
   const debouncedChangeInputHandler = useCallback(
@@ -65,7 +74,7 @@ export default function Faqs() {
 
   function handleDeleteQuestion(id: string) {
     setQuestionDeletionId(id)
-    onOpenExcludePopover()
+    onOpenExcludeAlert()
   }
   
   return (
@@ -90,73 +99,106 @@ export default function Faqs() {
           </Box>
         ) : (
           <>
+            <FaqAddModal
+              isOpen={isOpenAddModal} 
+              onClose={onCloseAddModal} 
+              refetchList={refetch}
+            />
+
             { questionModal && (
-              <FaqModal 
+              <FaqEditModal 
                 isOpen={isOpenEditModal} 
                 onClose={onCloseEditModal} 
                 faq={questionModal} 
                 refetchList={refetch}
               />
             )}
-            {questionDeletionId && (
-              <ExcludeAlert isOpen={isOpenExcludePopover} onClose={onCloseExcludePopover} faqId={questionDeletionId}>
 
-              </ExcludeAlert>
+            {questionDeletionId && (
+              <FaqExcludeAlert 
+                isOpen={isOpenExcludeAlert} 
+                onClose={onCloseExcludeAlert} 
+                faqId={questionDeletionId}
+                refetchList={refetch}
+              />
             )}
-            <Flex mx="8" mb="8">
+            <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
                 <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
-              </InputGroup>          
+              </InputGroup>  
+              <Button  
+                size="sm" 
+                fontSize="sm" 
+                colorScheme="blue"
+                leftIcon={<Icon as={RiAddLine} fontSize="20"/>}
+                onClick={onOpenAddModal}
+              >
+                Criar novo
+              </Button>
+                     
             </Flex>
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
-              <Accordion 
-                allowMultiple 
-                bgColor="gray.100" 
-                boxShadow="md" 
-                border="1px" 
-                borderColor="gray.200"
-              >
-                {data?.faqs.map(faq => (
-                  <AccordionItem key={faq.id}>
-                    <h2>
-                      <AccordionButton>
-                        <Text flex="1" textAlign="left" fontWeight="semibold">
-                          {faq.question}
-                        </Text>
-                      <AccordionIcon />
-                      </AccordionButton>
-                    </h2>
-                    <AccordionPanel bgColor="gray.50" pb={3} pr="3">
-                      <Flex w="100%" justifyContent="space-between">
-                        <Text>{faq.answer}</Text>
-                        <Flex direction="column" w="9">
-                          <Button 
-                            fontSize="lg" 
-                            height="36px" 
-                            width="36px" 
-                            colorScheme="red" 
-                            mb="1"
-                            onClick={() => handleDeleteQuestion(faq.id)}
-                          >
-                            <Icon as={BiTrash}/>
-                          </Button>
-                          <Button 
-                            fontSize="lg" 
-                            height="36px" 
-                            width="36px" 
-                            colorScheme="blue" 
-                            onClick={() => handleEditQuestion(faq)}
-                          >
-                            <Icon as={BiPencil}/>
-                          </Button>
-                        </Flex>
-                      </Flex>
-                    </AccordionPanel>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+              { data?.totalFaqs === 0 ? (
+                <Text mt="2">Não existem questões registradas até o momento.</Text>
+              ) : (
+                <>
+                  <Accordion 
+                    allowMultiple 
+                    bgColor="gray.100" 
+                    boxShadow="md" 
+                    border="1px" 
+                    borderColor="gray.200"
+                  >
+                    {data?.faqs.map(faq => (
+                      <AccordionItem key={faq.id} _hover={{bgColor: 'custom.blue-100'}}>
+                        <h2>
+                          <AccordionButton>
+                            <Text flex="1" textAlign="left" fontWeight="semibold">
+                              {faq.question}
+                            </Text>
+                          <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel bgColor="gray.50" pb={3} pr="3">
+                          <Flex w="100%" justifyContent="space-between">
+                            <Text>{faq.answer}</Text>
+                            <Flex direction="column" w="9">
+                              <Button 
+                                fontSize="lg" 
+                                height="36px" 
+                                width="36px" 
+                                colorScheme="red" 
+                                mb="1"
+                                onClick={() => handleDeleteQuestion(faq.id)}
+                              >
+                                <Icon as={BiTrash}/>
+                              </Button>
+                              <Button 
+                                fontSize="lg" 
+                                height="36px" 
+                                width="36px" 
+                                colorScheme="blue" 
+                                onClick={() => handleEditQuestion(faq)}
+                              >
+                                <Icon as={BiPencil}/>
+                              </Button>
+                            </Flex>
+                          </Flex>
+                        </AccordionPanel>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                  <Text 
+                    borderRadius="4" 
+                    px="1"
+                    mt="4"
+                  >
+                    <strong>1</strong> - <strong> {data?.totalFaqs}</strong> de <strong>{data?.totalFaqs}</strong>
+                  </Text>
+                </>
+              )}
             </Flex>
           </>
         )}

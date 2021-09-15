@@ -28,6 +28,11 @@ type FilterPatient = [
   value: string
 ]
 
+interface UsePatientsProps {
+  page: number;
+  filter?: FilterPatient
+}
+
 export async function getPatients(page: number, filter?: FilterPatient) {
   let params = { page }
   if(filter) {
@@ -52,11 +57,6 @@ export async function getPatients(page: number, filter?: FilterPatient) {
     totalPatients: data.totalPatients
   }
   return patients
-}
-
-interface UsePatientsProps {
-  page: number;
-  filter?: FilterPatient
 }
 
 export function usePatients({ page, filter = ['name', ''] }: UsePatientsProps) {

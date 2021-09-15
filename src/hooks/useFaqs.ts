@@ -13,6 +13,10 @@ type GetFaqsResponse = {
   totalFaqs: number,
 }
 
+interface UseFaqsProps {
+  filter?: string;
+}
+
 export async function getFaqs(filter?: string) {
   let params = {}
   if(filter !== '') {
@@ -20,10 +24,6 @@ export async function getFaqs(filter?: string) {
   }
   const { data } = await api.get<GetFaqsResponse>('/faq', { params })
   return data
-}
-
-interface UseFaqsProps {
-  filter?: string;
 }
 
 export function useFaqs({ filter = '' }: UseFaqsProps) { 

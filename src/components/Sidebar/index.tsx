@@ -43,7 +43,7 @@ export function Sidebar() {
         <NavLink href="/dashboard/patients" icon={FiUsers}>
           Pacientes
         </NavLink>
-        <NavLink href="/adminpanel" icon={BiArchive}>
+        <NavLink href="#" icon={BiArchive}>
           Ocorrências de doenças
         </NavLink>
         <NavLink href="#" icon={HiOutlineClipboardList}>
@@ -61,7 +61,7 @@ export function Sidebar() {
         <NavLink href="#" icon={RiHealthBookLine}>
           Tipos de doenças
         </NavLink>
-        <NavLink href="#" icon={AiOutlineDatabase}>
+        <NavLink href="/dashboard/symptoms" icon={AiOutlineDatabase}>
           Tipos de sintomas
         </NavLink>
         <NavLink href="#" icon={BiHealth}>

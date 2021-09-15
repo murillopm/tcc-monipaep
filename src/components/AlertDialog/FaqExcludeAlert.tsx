@@ -1,43 +1,50 @@
-import { ReactNode, useRef } from "react";
-
+import { useRef, useState } from "react";
 import { 
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel, 
-  Box, 
-  Button,
-  ButtonGroup,
-  Flex, 
-  Heading, 
-  Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Text, 
-  Spinner,
-  useDisclosure,
   AlertDialog,
   AlertDialogBody,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
+  Button,
+  useToast,
 } from "@chakra-ui/react";
+import { api } from "../../services/apiClient";
 
 interface ExcludeAlertProps {
   isOpen: boolean;
   faqId: string | undefined;
   onClose: () => void;
-  children: ReactNode;
+  refetchList: () => void;
 }
 
-export function ExcludeAlert({ isOpen, onClose, faqId, children }: ExcludeAlertProps) {
+export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: ExcludeAlertProps) {
+  const [isDeletting, setIsDeletting] = useState(false)
   const cancelRef = useRef(null)
+  const toast = useToast()
 
   async function handleFaqExclusion() {
-    console.log('excluir', faqId)
+    setIsDeletting(true)
+    try {
+      const response = await api.delete(`/faq/${faqId}`)
+      toast({
+        title: "Sucesso",
+        description: response.data?.success,
+        status: "success",
+        isClosable: true
+      })
+      refetchList()
+      onClose()
+      setIsDeletting(false)
+    } catch (error: any) {
+      toast({
+        title: "Erro na remoção",
+        description: error.response?.data.error,
+        status: "error",
+        isClosable: true
+      })
+    }
+    setIsDeletting(false)
   }
   
   return (
@@ -45,23 +52,23 @@ export function ExcludeAlert({ isOpen, onClose, faqId, children }: ExcludeAlertP
       isOpen={isOpen}
       leastDestructiveRef={cancelRef}
       onClose={onClose}
+      motionPreset="slideInBottom"
+      isCentered
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Customer
+            Deletar FAQ
           </AlertDialogHeader>
-
           <AlertDialogBody>
-            Are you sure? You can't undo this action afterwards.
+            Tem certeza que deseja excluir essa questão?
           </AlertDialogBody>
-
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose} variant="outline">
-              Cancel
+              Cancelar
             </Button>
-            <Button colorScheme="red" onClick={handleFaqExclusion} ml={3}>
-              Delete
+            <Button colorScheme="red" onClick={handleFaqExclusion} ml={3} isLoading={isDeletting}>
+              Deletar
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -10,6 +10,7 @@ import {
   Text,
   Textarea,
   Input,
+  useToast,
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { api } from '../../services/apiClient';
@@ -27,10 +28,12 @@ interface FaqModalProps {
   refetchList: () => void;
 }
 
-export function FaqModal({ isOpen, onClose, faq, refetchList }: FaqModalProps) {
+export function FaqEditModal({ isOpen, onClose, faq, refetchList }: FaqModalProps) {
   const [question, setQuestion] = useState(faq?.question)
   const [answer, setAnswer] = useState(faq?.answer)
   const [touched, setTouched] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
+  const toast = useToast()
 
   useEffect(() => {
     setQuestion(faq?.question)
@@ -59,17 +62,48 @@ export function FaqModal({ isOpen, onClose, faq, refetchList }: FaqModalProps) {
   }
 
   async function handleUpdate() {
-    try {
-      await api.put(`/faq/${faq?.id}`, { question, answer })
-    } catch (error) {
-      console.log(error)
+    if(question !== '' && answer !== '') {
+      setIsUpdating(true)
+      try {
+        const response = await api.put(`/faq/${faq?.id}`, { question, answer })
+        toast({
+          title: "Sucesso",
+          description: response.data?.success,
+          status: "success",
+          isClosable: true
+        })
+      setTouched(false)
+      onClose()
+      refetchList()
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.response?.data.error,
+        status: "error",
+        isClosable: true
+      })
     }
-    onClose()
-    refetchList()
+    setIsUpdating(false)
+    
+    } else {
+      toast({
+        title: "Erro",
+        description: 'Preencha os campos corretamente.',
+        status: "error",
+        isClosable: true
+      })
+    }
   }
   
   return (
-    <Modal motionPreset="slideInBottom" size="xl" isOpen={isOpen} onClose={handleClose} isCentered >
+    <Modal 
+      motionPreset="slideInBottom" 
+      size="xl" 
+      isOpen={isOpen} 
+      onClose={handleClose} 
+      isCentered 
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay>
         <ModalContent height="auto" width="550px">
           <ModalHeader textAlign="center">Editar FAQ</ModalHeader>
@@ -81,8 +115,15 @@ export function FaqModal({ isOpen, onClose, faq, refetchList }: FaqModalProps) {
             <Textarea value={answer} onChange={handleAnswerInputChanged} height="300px" textAlign="justify"/>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleUpdate} colorScheme="blue" disabled={!touched}>Atualizar</Button>
-            <Button onClick={handleClose} ml="3">Cancelar</Button>
+            <Button onClick={handleClose} mr="3">Cancelar</Button>
+            <Button 
+              onClick={handleUpdate} 
+              colorScheme="blue" 
+              disabled={!touched} 
+              isLoading={isUpdating}
+            >
+              Atualizar
+            </Button>
           </ModalFooter>
         </ModalContent>
       </ModalOverlay>
