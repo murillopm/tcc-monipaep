@@ -19,7 +19,7 @@ interface UseSymptomsProps {
 export async function getSymptoms(page: number, filter?: string) {
   let params: any = { page }
   if(filter) {
-    params = { symptom: filter }
+    params = { ...params, symptom: filter }
   }
   const { data } = await api.get<GetSymptomsResponse>('/symptom', { params })
   return data

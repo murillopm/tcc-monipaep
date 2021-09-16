@@ -58,11 +58,11 @@ export function Sidebar() {
         <NavLink href="#" icon={BiClinic}>
           Unidades de saúde
         </NavLink>
-        <NavLink href="#" icon={RiHealthBookLine}>
-          Tipos de doenças
+        <NavLink href="/dashboard/diseases" icon={RiHealthBookLine}>
+          Doenças
         </NavLink>
         <NavLink href="/dashboard/symptoms" icon={AiOutlineDatabase}>
-          Tipos de sintomas
+          Sintomas
         </NavLink>
         <NavLink href="#" icon={BiHealth}>
           Protocolos de saúde

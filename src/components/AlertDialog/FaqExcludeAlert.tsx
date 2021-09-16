@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState, useRef } from "react";
 import { 
   AlertDialog,
   AlertDialogBody,
@@ -19,12 +19,12 @@ interface ExcludeAlertProps {
 }
 
 export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: ExcludeAlertProps) {
-  const [isDeletting, setIsDeletting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const cancelRef = useRef(null)
   const toast = useToast()
 
   async function handleFaqExclusion() {
-    setIsDeletting(true)
+    setIsDeleting(true)
     try {
       const response = await api.delete(`/faq/${faqId}`)
       toast({
@@ -35,7 +35,6 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
       })
       refetchList()
       onClose()
-      setIsDeletting(false)
     } catch (error: any) {
       toast({
         title: "Erro na remoção",
@@ -44,7 +43,7 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
         isClosable: true
       })
     }
-    setIsDeletting(false)
+    setIsDeleting(false)
   }
   
   return (
@@ -67,35 +66,12 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
             <Button ref={cancelRef} onClick={onClose} variant="outline">
               Cancelar
             </Button>
-            <Button colorScheme="red" onClick={handleFaqExclusion} ml={3} isLoading={isDeletting}>
+            <Button colorScheme="red" onClick={handleFaqExclusion} ml={3} isLoading={isDeleting}>
               Deletar
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialogOverlay>
     </AlertDialog>
-
-    
-    // <Popover
-    //   isOpen={isOpen}
-    //   onClose={onClose}
-    //   placement="right"
-    // >
-      
-    //   <PopoverContent>
-    //     <PopoverHeader fontWeight="semibold">Confirmation</PopoverHeader>
-    //     <PopoverArrow />
-    //     <PopoverCloseButton />
-    //     <PopoverBody>
-    //       {children}
-    //     </PopoverBody>
-    //     <PopoverFooter d="flex" justifyContent="flex-end">
-    //       <ButtonGroup size="sm">
-    //         <Button variant="outline">Cancelar</Button>
-    //         <Button colorScheme="red" onClick={handleFaqExclusion}>Excluir</Button>
-    //       </ButtonGroup>
-    //     </PopoverFooter>
-    //   </PopoverContent>
-    // </Popover>
   )
 }

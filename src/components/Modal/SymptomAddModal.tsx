@@ -8,11 +8,10 @@ import {
   ModalBody,
   ModalHeader,
   Text,
-  Textarea,
   Input,
   useToast,
 } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 import { api } from '../../services/apiClient';
 
 interface SymptomAddModalProps {
@@ -24,7 +23,7 @@ interface SymptomAddModalProps {
 export function SymptomAddModal({ isOpen, onClose, refetchList }: SymptomAddModalProps) {
   const [newSymptom, setNewSymptom] = useState('')
   const [touched, setTouched] = useState(false)
-  const [isUpdating, setIsUpdating] = useState(false)
+  const [isPosting, setIsPosting] = useState(false)
   const toast = useToast()
 
   function handleSymptomInputChanged(event: ChangeEvent<HTMLInputElement>) {
@@ -40,9 +39,9 @@ export function SymptomAddModal({ isOpen, onClose, refetchList }: SymptomAddModa
     onClose()
   }
 
-  async function handleUpdate() {
+  async function handleSymptomCreation() {
     if(newSymptom !== '') {
-      setIsUpdating(true)
+      setIsPosting(true)
       try {
         const response = await api.post('/symptom/', { symptom: newSymptom })
         toast({
@@ -61,7 +60,7 @@ export function SymptomAddModal({ isOpen, onClose, refetchList }: SymptomAddModa
         isClosable: true
       })
     }
-    setIsUpdating(false)
+    setIsPosting(false)
     
     } else {
       toast({
@@ -93,12 +92,12 @@ export function SymptomAddModal({ isOpen, onClose, refetchList }: SymptomAddModa
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>
             <Button 
-              onClick={handleUpdate} 
+              onClick={handleSymptomCreation} 
               colorScheme="blue" 
               disabled={!touched} 
-              isLoading={isUpdating}
+              isLoading={isPosting}
             >
-              Adicionar
+              Registrar
             </Button>
           </ModalFooter>
         </ModalContent>

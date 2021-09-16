@@ -8,7 +8,6 @@ import {
   ModalBody,
   ModalHeader,
   Text,
-  Textarea,
   Input,
   useToast,
 } from '@chakra-ui/react';

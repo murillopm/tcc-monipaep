@@ -2,7 +2,7 @@ import { useState, useCallback, ChangeEvent } from "react";
 import Head from "next/head"
 import { debounce } from "ts-debounce"
 import DashboardLayout from "../../../components/Layouts/DashboardLayout";
-import { 
+import {  
   Box, 
   Button,
   Flex, 
@@ -26,23 +26,25 @@ import { MdSearch } from 'react-icons/md'
 import { RiAddLine } from 'react-icons/ri'
 
 import { withSSRAuth } from "../../../utils/withSSRAuth";
-import { useSymptoms } from "../../../hooks/useSymptoms";
 import { Pagination } from "../../../components/Pagination";
 import { Can } from "../../../components/Can";
-import { SymptomExcludeAlert } from "../../../components/AlertDialog/SymptomExcludeAlert";
-import { SymptomEditModal } from "../../../components/Modal/SymptomEditModal";
-import { SymptomAddModal } from "../../../components/Modal/SymptomAddModal";
+import { useDiseases } from "../../../hooks/useDiseases";
+import { DiseaseEditModal } from "../../../components/Modal/DiseaseEditModal";
+import { DiseaseAddModal } from "../../../components/Modal/DiseaseAddModal";
+import { DiseaseExcludeAlert } from "../../../components/AlertDialog/DiseaseExcludeAlert";
 
-type Symptom = {
-  symptom: string;
+type Disease = {
+  name: string;
+  infected_Monitoring_Days: number;
+  suspect_Monitoring_Days: number;
 }
 
-export default function Symptoms() {
+export default function Diseases() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  const [symptomToBeEdited, setSymptomToBeEdited] = useState<Symptom | undefined>(undefined)
-  const [symptomToBeDeleted, setSymptomToBeDeleted] = useState<Symptom | undefined>(undefined)
-  const { data, isLoading, isFetching, error, refetch } = useSymptoms({ page, filter: search })
+  const [diseaseToBeEdited, setDiseaseToBeEdited] = useState<Disease | undefined>(undefined)
+  const [diseaseToBeDeleted, setDiseaseToBeDeleted] = useState<Disease | undefined>(undefined)
+  const { data, isLoading, isFetching, error, refetch } = useDiseases({ page, filter: search })
   const { 
     isOpen: isOpenEditModal, 
     onOpen: onOpenEditModal, 
@@ -70,25 +72,25 @@ export default function Symptoms() {
     setSearch(event.target.value)
   }
 
-  function handleEditSymptom(symptom: Symptom) {
-    setSymptomToBeEdited(symptom)
+  function handleEditDisease(disease: Disease) {
+    setDiseaseToBeEdited(disease)
     onOpenEditModal()
   }
 
-  function handleDeleteSymptom(symptom: Symptom) {
-    setSymptomToBeDeleted(symptom)
+  function handleDeleteDisease(disease: Disease) {
+    setDiseaseToBeDeleted(disease)
     onOpenExcludeAlert()
   }
   
   return (
     <>
       <Head>
-        <title>MoniPaEp | Sintomas</title>
+        <title>MoniPaEp | Doenças</title>
       </Head>
 
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
         <Heading ml="8" my="6">
-          Sintomas
+          Doenças
           {!isLoading && isFetching && <Spinner ml="4"/>}
         </Heading>
         { isLoading ? (
@@ -101,26 +103,26 @@ export default function Symptoms() {
           </Box>
         ) : (
           <>
-            <SymptomAddModal
+            <DiseaseAddModal
               isOpen={isOpenAddModal} 
               onClose={onCloseAddModal} 
               refetchList={refetch}
             />
 
-            { symptomToBeEdited && (
-              <SymptomEditModal 
+            { diseaseToBeEdited && (
+              <DiseaseEditModal 
                 isOpen={isOpenEditModal} 
                 onClose={onCloseEditModal} 
-                symptom={symptomToBeEdited.symptom}
+                disease={diseaseToBeEdited}
                 refetchList={refetch}
               />
             )}
             
-            { symptomToBeDeleted && (
-              <SymptomExcludeAlert 
+            { diseaseToBeDeleted && (
+              <DiseaseExcludeAlert 
                 isOpen={isOpenExcludeAlert} 
                 onClose={onCloseExcludeAlert} 
-                symptom={symptomToBeDeleted.symptom}
+                disease={diseaseToBeDeleted.name}
                 refetchList={refetch}
               />
             )}
@@ -138,29 +140,43 @@ export default function Symptoms() {
                   leftIcon={<Icon as={RiAddLine} fontSize="20"/>}
                   onClick={onOpenAddModal}
                 >
-                  Adicionar novo sintoma
+                  Adicionar nova doença
                 </Button>
               </Can>     
             </Flex>
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
-              { data?.totalSymptoms === 0 ? (
-                <Text mt="2">Não existem sintomas registrados até o momento.</Text>
+              { data?.totalDiseases === 0 ? (
+                <Text mt="2">Não existem doenças registradas até o momento.</Text>
               ) : (
                 <>
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th>Sintoma</Th>
+                        <Th rowSpan={2} w="30%">Doença</Th>
+                        <Th colSpan={2} isNumeric w="20%">
+                          Período de monitoramento (dias)
+                        </Th>
+                        <Th w="20%"></Th>
+                      </Tr>
+                      <Tr>
+                        <Th isNumeric>Suspeito</Th>
+                        <Th isNumeric>Infectado</Th>
                         <Th></Th>
                       </Tr>
                     </Thead>
 
                     <Tbody>
-                      { data?.symptoms.map(symptom => (
-                        <Tr key={symptom.symptom} _hover={{ bgColor: 'gray.50' }}>
-                          <Td w="80%">
-                            <Text>{symptom.symptom}</Text>
+                      { data?.diseases.map(disease => (
+                        <Tr key={disease.name} _hover={{ bgColor: 'gray.50' }}>
+                          <Td>
+                            <Text>{disease.name}</Text>
+                          </Td>
+                          <Td isNumeric>
+                            <Text>{disease.suspect_Monitoring_Days}</Text>
+                          </Td>
+                          <Td isNumeric>
+                            <Text>{disease.infected_Monitoring_Days}</Text>
                           </Td>
                           <Td pr="4">
                             <Flex justifyContent="flex-end" alignItems="center">
@@ -170,7 +186,7 @@ export default function Symptoms() {
                                   height="36px" 
                                   width="36px" 
                                   colorScheme="blue" 
-                                  onClick={() => handleEditSymptom(symptom)}
+                                  onClick={() => handleEditDisease(disease)}
                                 >
                                   <Icon as={BiPencil}/>
                                 </Button>
@@ -180,7 +196,7 @@ export default function Symptoms() {
                                   ml="2"
                                   width="36px" 
                                   colorScheme="red" 
-                                  onClick={() => handleDeleteSymptom(symptom)}
+                                  onClick={() => handleDeleteDisease(disease)}
                                 >
                                   <Icon as={BiTrash}/>
                                 </Button>
@@ -195,7 +211,7 @@ export default function Symptoms() {
                   <Box w="100%" mt="3" mb="5">
                     <Pagination 
                       currentPage={page} 
-                      totalRegisters={data?.totalSymptoms} 
+                      totalRegisters={data?.totalDiseases} 
                       onPageChange={setPage}
                     />
                   </Box>
@@ -209,7 +225,7 @@ export default function Symptoms() {
   )
 }
 
-Symptoms.layout = DashboardLayout
+Diseases.layout = DashboardLayout
 
 export const getServerSideProps = withSSRAuth(async (ctx) => { 
   return { props: {} }

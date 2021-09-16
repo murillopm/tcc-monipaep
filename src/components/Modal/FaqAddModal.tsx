@@ -12,7 +12,7 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
-import { ChangeEvent, useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 import { api } from '../../services/apiClient';
 
 interface FaqAddModalProps {
@@ -25,7 +25,7 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [touched, setTouched] = useState(false)
-  const [isUpdating, setIsUpdating] = useState(false)
+  const [isPosting, setIsPosting] = useState(false)
   const toast = useToast()
 
   function handleQuestionInputChanged(event: ChangeEvent<HTMLInputElement>) {
@@ -49,9 +49,9 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
     onClose()
   }
 
-  async function handleUpdate() {
+  async function handleFaqCreation() {
     if(question !== '' && answer !== '') {
-      setIsUpdating(true)
+      setIsPosting(true)
       try {
         const response = await api.post('/faq/', { question, answer })
         toast({
@@ -70,11 +70,11 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
           isClosable: true
         })
       }
-      setIsUpdating(false)
+      setIsPosting(false)
     } else {
       toast({
         title: "Erro",
-        description: 'Preencha os campos corretamente.',
+        description: 'Preencha os campos corretamente',
         status: "error",
         isClosable: true
       })
@@ -103,10 +103,10 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>
             <Button 
-              onClick={handleUpdate} 
+              onClick={handleFaqCreation} 
               colorScheme="blue" 
               disabled={!touched} 
-              isLoading={isUpdating}
+              isLoading={isPosting}
             >
               Registrar
             </Button>

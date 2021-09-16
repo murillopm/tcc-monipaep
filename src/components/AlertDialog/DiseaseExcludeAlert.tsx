@@ -11,22 +11,22 @@ import {
 } from "@chakra-ui/react";
 import { api } from "../../services/apiClient";
 
-interface SymptomExcludeAlertProps {
+interface DiseaseExcludeAlertProps {
   isOpen: boolean;
-  symptom: string;
+  disease: string;
   onClose: () => void;
   refetchList: () => void;
 }
 
-export function SymptomExcludeAlert({ isOpen, onClose, symptom, refetchList }: SymptomExcludeAlertProps) {
-  const [isDeletting, setIsDeletting] = useState(false)
+export function DiseaseExcludeAlert({ isOpen, onClose, disease, refetchList }: DiseaseExcludeAlertProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
   const cancelRef = useRef(null)
   const toast = useToast()
 
-  async function handleSymptomExclusion() {
-    setIsDeletting(true)
+  async function handleDiseaseExclusion() {
+    setIsDeleting(true)
     try {
-      const response = await api.delete(`/symptom/${symptom}`)
+      const response = await api.delete(`/disease/${disease}`)
       toast({
         title: "Sucesso",
         description: response.data?.success,
@@ -35,7 +35,6 @@ export function SymptomExcludeAlert({ isOpen, onClose, symptom, refetchList }: S
       })
       refetchList()
       onClose()
-      setIsDeletting(false)
     } catch (error: any) {
       toast({
         title: "Erro na remoção",
@@ -44,7 +43,7 @@ export function SymptomExcludeAlert({ isOpen, onClose, symptom, refetchList }: S
         isClosable: true
       })
     }
-    setIsDeletting(false)
+    setIsDeleting(false)
   }
   
   return (
@@ -61,13 +60,13 @@ export function SymptomExcludeAlert({ isOpen, onClose, symptom, refetchList }: S
             Confirmação necessária
           </AlertDialogHeader>
           <AlertDialogBody>
-            Tem certeza que deseja excluir este sintoma?
+            Tem certeza que deseja excluir esta doença?
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose} variant="outline">
               Cancelar
             </Button>
-            <Button colorScheme="red" onClick={handleSymptomExclusion} ml={3} isLoading={isDeletting}>
+            <Button colorScheme="red" onClick={handleDiseaseExclusion} ml={3} isLoading={isDeleting}>
               Excluir
             </Button>
           </AlertDialogFooter>
