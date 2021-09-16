@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useCallback } from "react";
+import { useState, useCallback, ChangeEvent } from "react";
 import Head from "next/head"
 import { debounce } from "ts-debounce"
 import DashboardLayout from "../../../components/Layouts/DashboardLayout";
@@ -38,8 +38,8 @@ type Faq = {
 
 export default function Faqs() {
   const [search, setSearch] = useState('')
-  const [questionModal, setQuestionModal] = useState<Faq | undefined>(undefined)
-  const [questionDeletionId, setQuestionDeletionId] = useState<string | undefined>(undefined)
+  const [questionToBeEdited, setQuestionToBeEdited] = useState<Faq | undefined>(undefined)
+  const [questionToBeDeleted, setQuestionToBeDeleted] = useState<Faq | undefined>(undefined)
   const { data , isLoading, isFetching, error, refetch } = useFaqs({ filter: search })
   const { 
     isOpen: isOpenEditModal, 
@@ -68,12 +68,12 @@ export default function Faqs() {
   }
 
   function handleEditQuestion(faq: Faq) {
-    setQuestionModal(faq)
+    setQuestionToBeEdited(faq)
     onOpenEditModal()
   }
 
-  function handleDeleteQuestion(id: string) {
-    setQuestionDeletionId(id)
+  function handleDeleteQuestion(faq: Faq) {
+    setQuestionToBeDeleted(faq)
     onOpenExcludeAlert()
   }
   
@@ -105,23 +105,24 @@ export default function Faqs() {
               refetchList={refetch}
             />
 
-            { questionModal && (
+            { questionToBeEdited && (
               <FaqEditModal 
                 isOpen={isOpenEditModal} 
                 onClose={onCloseEditModal} 
-                faq={questionModal} 
+                faq={questionToBeEdited} 
                 refetchList={refetch}
               />
             )}
 
-            {questionDeletionId && (
+            { questionToBeDeleted && (
               <FaqExcludeAlert 
                 isOpen={isOpenExcludeAlert} 
                 onClose={onCloseExcludeAlert} 
-                faqId={questionDeletionId}
+                faqId={questionToBeDeleted.id}
                 refetchList={refetch}
               />
             )}
+
             <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
@@ -134,7 +135,7 @@ export default function Faqs() {
                 leftIcon={<Icon as={RiAddLine} fontSize="20"/>}
                 onClick={onOpenAddModal}
               >
-                Criar novo
+                Adicionar nova FAQ
               </Button>
                      
             </Flex>
@@ -171,7 +172,7 @@ export default function Faqs() {
                                 width="36px" 
                                 colorScheme="red" 
                                 mb="1"
-                                onClick={() => handleDeleteQuestion(faq.id)}
+                                onClick={() => handleDeleteQuestion(faq)}
                               >
                                 <Icon as={BiTrash}/>
                               </Button>

@@ -1,9 +1,5 @@
 import * as yup from "yup";
 
-type CpfType = {
-  cpf: string;
-}
-
 yup.addMethod<yup.StringSchema>(
   yup.string,
   'cpf',

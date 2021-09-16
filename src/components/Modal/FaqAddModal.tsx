@@ -92,7 +92,7 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
     >
       <ModalOverlay>
         <ModalContent height="auto" width="550px">
-          <ModalHeader textAlign="center">Registrar FAQ</ModalHeader>
+          <ModalHeader textAlign="center">Adicionar FAQ</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text fontWeight="semibold" mb="2">Pergunta</Text>

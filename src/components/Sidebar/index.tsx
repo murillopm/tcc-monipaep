@@ -55,7 +55,7 @@ export function Sidebar() {
         <NavLink href="/dashboard/faqs" icon={RiQuestionAnswerLine}>
           Área de FAQ
         </NavLink>
-        <NavLink href="#" icon={BiClinic}>
+        <NavLink href="/dashboard/usms" icon={BiClinic}>
           Unidades de saúde
         </NavLink>
         <NavLink href="/dashboard/diseases" icon={RiHealthBookLine}>

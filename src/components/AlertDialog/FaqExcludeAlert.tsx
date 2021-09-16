@@ -57,7 +57,7 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Deletar FAQ
+            Confirmação necessária
           </AlertDialogHeader>
           <AlertDialogBody>
             Tem certeza que deseja excluir essa questão?
@@ -67,7 +67,7 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
               Cancelar
             </Button>
             <Button colorScheme="red" onClick={handleFaqExclusion} ml={3} isLoading={isDeleting}>
-              Deletar
+              Excluir
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
