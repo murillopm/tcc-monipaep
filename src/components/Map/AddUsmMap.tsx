@@ -26,7 +26,7 @@ function DraggableMarker({ initialPosition, updatePosition }: DraggableMarkerPro
   const [position, setPosition] = useState(initialPosition)
   const markerRef = useRef(null)
 
-  useEffect(() => { setPosition(initialPosition) }, [initialPosition, updatePosition])
+  useEffect(() => { setPosition(initialPosition) }, [initialPosition])
 
   const eventHandlers = useMemo(
     () => ({
@@ -60,7 +60,7 @@ function DraggableMarker({ initialPosition, updatePosition }: DraggableMarkerPro
 export default function Map({ center, updatePosition }: MapProps) {
   return (
     <>
-      <MapContainer center={center} zoom={15} scrollWheelZoom style={{height: 300, width: "100%"}}>
+      <MapContainer center={center} zoom={16} scrollWheelZoom style={{height: 300, width: "100%"}}>
         <ReactLeafletGoogleLayer googleMapsLoaderConf={{ apiKey }}/>
         <DraggableMarker initialPosition={center} updatePosition={updatePosition}/>
       </MapContainer>

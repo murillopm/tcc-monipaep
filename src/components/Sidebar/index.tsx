@@ -70,7 +70,7 @@ export function Sidebar() {
       </NavSection>
       <Can roles={["local.admin", "general.admin"]}>
         <NavSection title="PAINEL DE ADMINISTRADOR">
-          <NavLink href="#" icon={BiBookHeart}>
+          <NavLink href="/dashboard/systemusers" icon={BiBookHeart}>
             Usuários do sistema
           </NavLink>
         </NavSection>

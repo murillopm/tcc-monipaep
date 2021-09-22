@@ -27,8 +27,8 @@ import { RiAddLine } from 'react-icons/ri'
 
 import { withSSRAuth } from "../../../utils/withSSRAuth";
 import { Pagination } from "../../../components/Pagination";
-import { Can } from "../../../components/Can";
 import { useDiseases } from "../../../hooks/useDiseases";
+import { useCan } from "../../../hooks/useCan";
 import { DiseaseEditModal } from "../../../components/Modal/DiseaseEditModal";
 import { DiseaseAddModal } from "../../../components/Modal/DiseaseAddModal";
 import { DiseaseExcludeAlert } from "../../../components/AlertDialog/DiseaseExcludeAlert";
@@ -44,6 +44,7 @@ export default function Diseases() {
   const [search, setSearch] = useState('')
   const [diseaseToBeEdited, setDiseaseToBeEdited] = useState<Disease | undefined>(undefined)
   const [diseaseToBeDeleted, setDiseaseToBeDeleted] = useState<Disease | undefined>(undefined)
+  const isAdmin = useCan({ roles: ["general.admin", "local.admin"] })
   const { data, isLoading, isFetching, error, refetch } = useDiseases({ page, filter: search })
   const { 
     isOpen: isOpenEditModal, 
@@ -132,7 +133,7 @@ export default function Diseases() {
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
                 <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
-              <Can roles={['local.admin', 'general.admin']}>
+              { isAdmin && (
                 <Button  
                   size="sm" 
                   fontSize="sm" 
@@ -142,7 +143,7 @@ export default function Diseases() {
                 >
                   Adicionar nova doença
                 </Button>
-              </Can>     
+              )}
             </Flex>
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
@@ -157,12 +158,12 @@ export default function Diseases() {
                         <Th colSpan={2} isNumeric w="20%">
                           Período de monitoramento (dias)
                         </Th>
-                        <Th w="20%"></Th>
+                        { isAdmin && (<Th w="20%"></Th>) }
                       </Tr>
                       <Tr>
                         <Th isNumeric>Suspeito</Th>
                         <Th isNumeric>Infectado</Th>
-                        <Th></Th>
+                        { isAdmin && (<Th></Th>) }
                       </Tr>
                     </Thead>
 
@@ -178,9 +179,9 @@ export default function Diseases() {
                           <Td isNumeric>
                             <Text>{disease.infected_Monitoring_Days}</Text>
                           </Td>
-                          <Td pr="4">
-                            <Flex justifyContent="flex-end" alignItems="center">
-                              <Can roles={['local.admin', 'general.admin']}>
+                          { isAdmin && (
+                            <Td pr="4">
+                              <Flex justifyContent="flex-end" alignItems="center">
                                 <Button 
                                   fontSize="lg" 
                                   height="36px" 
@@ -200,9 +201,9 @@ export default function Diseases() {
                                 >
                                   <Icon as={BiTrash}/>
                                 </Button>
-                              </Can>
-                            </Flex>
-                          </Td>
+                              </Flex>
+                            </Td>
+                          )}
                         </Tr>
                       ))}
                     </Tbody>

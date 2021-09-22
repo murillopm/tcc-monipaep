@@ -27,16 +27,18 @@ import { RiAddLine } from 'react-icons/ri'
 
 import { withSSRAuth } from "../../../utils/withSSRAuth";
 import { Pagination } from "../../../components/Pagination";
-import { Can } from "../../../components/Can";
+import { useCan } from "../../../hooks/useCan";
 import { useUsms } from "../../../hooks/useUsms";
 import { UsmAddModal } from "../../../components/Modal/UsmAddModal";
+import { UsmExcludeAlert } from "../../../components/AlertDialog/UsmExcludeAlert";
+import { UsmEditModal } from "../../../components/Modal/UsmEditModal";
 
 type Usm = {
   name: string;
   address: string;
 	neighborhood: string;
-	latitude: Number;
-	longitude: Number;
+	latitude: number;
+	longitude: number;
 }
 
 export default function Usms() {
@@ -44,6 +46,7 @@ export default function Usms() {
   const [search, setSearch] = useState('')
   const [usmToBeEdited, setUsmToBeEdited] = useState<Usm | undefined>(undefined)
   const [usmToBeDeleted, setUsmToBeDeleted] = useState<Usm | undefined>(undefined)
+  const isAdmin = useCan({ roles: ['general.admin'] })
   const { data, isLoading, isFetching, error, refetch } = useUsms({ page, filter: search })
   const { 
     isOpen: isOpenEditModal, 
@@ -109,40 +112,40 @@ export default function Usms() {
               refetchList={refetch}
             />
 
-            {/* { diseaseToBeEdited && (
-              <DiseaseEditModal 
+            { usmToBeEdited && (
+              <UsmEditModal 
                 isOpen={isOpenEditModal} 
                 onClose={onCloseEditModal} 
-                disease={diseaseToBeEdited}
+                usm={usmToBeEdited}
                 refetchList={refetch}
               />
-            )} */}
+            )}
             
-            {/* { diseaseToBeDeleted && (
-              <DiseaseExcludeAlert 
+            { usmToBeDeleted && (
+              <UsmExcludeAlert 
                 isOpen={isOpenExcludeAlert} 
                 onClose={onCloseExcludeAlert} 
-                disease={diseaseToBeDeleted.name}
+                usm={usmToBeDeleted.name}
                 refetchList={refetch}
               />
-            )} */}
+            )}
 
             <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
                 <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
-              <Can roles={['general.admin']}>
-                <Button  
-                  size="sm" 
-                  fontSize="sm" 
-                  colorScheme="blue"
-                  leftIcon={<Icon as={RiAddLine} fontSize="20"/>}
-                  onClick={onOpenAddModal}
-                >
-                  Adicionar nova unidade
-                </Button>
-              </Can>     
+                { isAdmin && (
+                  <Button  
+                    size="sm" 
+                    fontSize="sm" 
+                    colorScheme="blue"
+                    leftIcon={<Icon as={RiAddLine} fontSize="20"/>}
+                    onClick={onOpenAddModal}
+                  >
+                    Adicionar nova unidade
+                  </Button> 
+                )}   
             </Flex>
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
@@ -156,7 +159,7 @@ export default function Usms() {
                         <Th>Nome</Th>
                         <Th>Endereço</Th>
                         <Th>Bairro</Th>
-                        <Th></Th>
+                        { isAdmin && (<Th></Th>)}
                       </Tr>
                     </Thead>
 
@@ -172,9 +175,9 @@ export default function Usms() {
                           <Td>
                             <Text>{usm.neighborhood}</Text>
                           </Td>
-                          <Td pr="4">
-                            <Flex justifyContent="flex-end" alignItems="center">
-                              <Can roles={['general.admin']}>
+                          { isAdmin && (
+                            <Td pr="4">
+                              <Flex justifyContent="flex-end" alignItems="center">
                                 <Button 
                                   fontSize="lg" 
                                   height="36px" 
@@ -194,9 +197,9 @@ export default function Usms() {
                                 >
                                   <Icon as={BiTrash}/>
                                 </Button>
-                              </Can>
-                            </Flex>
-                          </Td>
+                              </Flex>
+                            </Td>
+                          )}
                         </Tr>
                       ))}
                     </Tbody>

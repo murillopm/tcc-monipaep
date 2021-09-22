@@ -1,5 +1,4 @@
 import { useState, ChangeEvent, useCallback } from "react";
-import NextLink from 'next/link'
 import Head from "next/head"
 import { debounce } from "ts-debounce"
 
@@ -27,9 +26,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { MdSearch } from 'react-icons/md'
-import { FaSearchPlus } from 'react-icons/fa'
 import { usePatients } from "../../../hooks/usePatients";
-
 
 function getBadgeColor(status: string) {
   if(status === "Saudável") {

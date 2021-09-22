@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import dynamic from 'next/dynamic'
 
 import {
@@ -21,26 +21,43 @@ const Map = dynamic(() => import('../Map/AddUsmMap'), {
   ssr: false
 })
 
-interface UsmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  refetchList: () => void;
-}
-
 type Location = {
   lat: number;
   lng: number;
 }
 
-export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
-  const [usmName, setUsmName] = useState('')
-  const [usmAddress, setUsmAddress] = useState('')
-  const [usmNeighborhood, setUsmNeighborhood] = useState('')
-  const [coords, setCoords] = useState<Location | undefined>(undefined)
+type Usm = {
+  name: string;
+  address: string;
+	neighborhood: string;
+	latitude: number;
+	longitude: number;
+}
+
+interface UsmEditModalProps {
+  isOpen: boolean;
+  usm: Usm;
+  onClose: () => void;
+  refetchList: () => void;
+}
+
+
+export function UsmEditModal({ isOpen, onClose, usm, refetchList }: UsmEditModalProps) {
+  const [usmName, setUsmName] = useState(usm.name)
+  const [usmAddress, setUsmAddress] = useState(usm.address)
+  const [usmNeighborhood, setUsmNeighborhood] = useState(usm.neighborhood)
+  const [coords, setCoords] = useState<Location>({ lat: usm.latitude, lng: usm.longitude })
   const [touched, setTouched] = useState(false)
-  const [isPosting, setIsPosting] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
   const [isFetching, setIsFetching] = useState(false)
   const toast = useToast()
+
+  useEffect(() => {
+    setUsmName(usm.name)
+    setUsmAddress(usm.address)
+    setUsmNeighborhood(usm.neighborhood)
+    setCoords({ lat: usm.latitude, lng: usm.longitude })
+  }, [usm])
 
   function handleNameInputChanged(event: ChangeEvent<HTMLInputElement>) {
     setUsmName(event.target.value)
@@ -63,11 +80,16 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
     }
   }
 
+  function updatePosition(location: Location) {
+    setCoords(location)
+    setTouched(true)
+  }
+
   function handleClose() {
-    setUsmName('')
-    setUsmAddress('')
-    setUsmNeighborhood('')
-    setCoords(undefined)
+    setUsmName(usm.name)
+    setUsmAddress(usm.address)
+    setUsmNeighborhood(usm.neighborhood)
+    setCoords({ lat: usm.latitude, lng: usm.longitude })
     setTouched(false)
     onClose()
   }
@@ -99,15 +121,11 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
     }
   }
 
-  function updatePosition(location: Location) {
-    setCoords(location)
-  }
-
-  async function handleUsmCreation() {
+  async function handleUsmUpdate() {
     if(usmName !== '' && usmAddress !== '' && usmNeighborhood !== '' && coords) {
-      setIsPosting(true)
+      setIsUpdating(true)
       try {
-        const response = await api.post('/usm/', {
+        const response = await api.put(`/usm/${usm.name}`, {
           name: usmName,
           address: usmAddress,
           neighborhood: usmNeighborhood,
@@ -130,7 +148,7 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
         isClosable: true
       })
     }
-    setIsPosting(false)
+    setIsUpdating(false)
     
     } else {
       toast({
@@ -153,7 +171,7 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
     >
       <ModalOverlay>
         <ModalContent height="auto" width="600px">
-          <ModalHeader textAlign="center">Adicionar unidade de saúde</ModalHeader>
+          <ModalHeader textAlign="center">Editar unidade de saúde</ModalHeader>
           <ModalCloseButton />
           <ModalBody w="100%" height="100%">
             <Text fontWeight="semibold" mb="3">Nome da unidade</Text>
@@ -162,26 +180,22 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
             <Input value={usmAddress} mb="4" onChange={handleAddressInputChanged}/>
             <Text fontWeight="semibold" mb="3">Bairro</Text>
             <Input value={usmNeighborhood} mb="4" onChange={handleNeighborhoodInputChanged}/>
-            <Button onClick={handleCoordinatesFetch} mb="2" w="100%" colorScheme="pink" isLoading={isFetching}>
+            <Button onClick={handleCoordinatesFetch} mb="4" w="100%" colorScheme="pink" isLoading={isFetching}>
               Buscar coordenadas
             </Button>
             { coords && (
-              <>
-                <Text mb="1">Latitude: {coords.lat}</Text>
-                <Text mb="1">Longitude: {coords.lng}</Text>
-                <Map center={coords} updatePosition={updatePosition}/>
-              </>
+              <Map center={coords} updatePosition={updatePosition}/>
             )}
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>
             <Button 
-              onClick={handleUsmCreation} 
+              onClick={handleUsmUpdate} 
               colorScheme="blue" 
               disabled={!touched} 
-              isLoading={isPosting}
+              isLoading={isUpdating}
             >
-              Registrar
+              Atualizar
             </Button>
           </ModalFooter>
         </ModalContent>

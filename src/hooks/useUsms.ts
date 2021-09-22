@@ -6,8 +6,8 @@ type Usm = {
   name: string;
   address: string;
 	neighborhood: string;
-	latitude: Number;
-	longitude: Number;
+	latitude: number;
+	longitude: number;
 }
 
 type GetUsmsResponse = {
