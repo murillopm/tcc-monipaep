@@ -64,7 +64,7 @@ export function Sidebar() {
         <NavLink href="/dashboard/symptoms" icon={AiOutlineDatabase}>
           Sintomas
         </NavLink>
-        <NavLink href="#" icon={BiHealth}>
+        <NavLink href="/dashboard/healthprotocols" icon={BiHealth}>
           Protocolos de saúde
         </NavLink>
       </NavSection>
