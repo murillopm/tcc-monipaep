@@ -6,7 +6,6 @@ import {
   Box, 
   Button,
   Flex, 
-  Heading, 
   Icon,
   Input,
   InputGroup,
@@ -27,28 +26,25 @@ import { RiAddLine } from 'react-icons/ri'
 
 import { withSSRAuth } from "../../../utils/withSSRAuth";
 import { useCan } from "../../../hooks/useCan";
-import { useSymptoms } from "../../../hooks/useSymptoms";
+import { useAssignedHealthProtocols } from "../../../hooks/useAssignedHealthProtocols";
 import { Pagination } from "../../../components/Pagination";
-import { SymptomExcludeAlert } from "../../../components/AlertDialog/SymptomExcludeAlert";
-import { SymptomEditModal } from "../../../components/Modal/SymptomEditModal";
-import { SymptomAddModal } from "../../../components/Modal/SymptomAddModal";
+import { AssignedHealthProtocolAddModal } from "../../../components/Modal/AssignedHealthProtocolAddModal";
+import { AssignedHealthProtocolExcludeAlert } from "../../../components/AlertDialog/AssignedHealthProtocolExcludeAlert";
 
-type Symptom = {
-  symptom: string;
+type AssignedHealthProtocol = {
+  healthProtocol: {
+    id: string;
+    description: string;
+  }
+  diseaseName: string;
 }
 
-export default function Assignments() {
+export default function AssignedHealthProtocols() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  const [symptomToBeEdited, setSymptomToBeEdited] = useState<Symptom | undefined>(undefined)
-  const [symptomToBeDeleted, setSymptomToBeDeleted] = useState<Symptom | undefined>(undefined)
-  const isAdmin = useCan({ roles: ["general.admin", "local.admin"] })
-  const { data, isLoading, isFetching, error, refetch } = useSymptoms({ page, filter: search })
-  const { 
-    isOpen: isOpenEditModal, 
-    onOpen: onOpenEditModal, 
-    onClose: onCloseEditModal 
-  } = useDisclosure()
+  const [assignedHealthProtocolToBeDeleted, setAssignedHealthProtocolToBeDeleted] = useState<AssignedHealthProtocol | undefined>(undefined)
+  const isUserAllowed = useCan({ isUsm: true })
+  const { data, isLoading, isFetching, error, refetch } = useAssignedHealthProtocols({ page, filter: search })
 
   const { 
     isOpen: isOpenExcludeAlert, 
@@ -71,33 +67,21 @@ export default function Assignments() {
     setSearch(event.target.value)
   }
 
-  function handleEditSymptom(symptom: Symptom) {
-    setSymptomToBeEdited(symptom)
-    onOpenEditModal()
-  }
-
-  function handleDeleteSymptom(symptom: Symptom) {
-    setSymptomToBeDeleted(symptom)
+  function handleDeleteAssignedHealthProtocol(assignedHealthProtocol: AssignedHealthProtocol) {
+    setAssignedHealthProtocolToBeDeleted(assignedHealthProtocol)
     onOpenExcludeAlert()
   }
-  return (
-    <div>b</div>
-  )
   
-  /*return (
+  return (
     <>
       <Head>
-        <title>MoniPaEp | Sintomas</title>
+        <title>MoniPaEp | Protocolos de saúde</title>
       </Head>
 
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
-        <Heading ml="8" my="6">
-          Sintomas
-          {!isLoading && isFetching && <Spinner ml="4"/>}
-        </Heading>
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
-            <Spinner size="lg"/>
+            <Spinner size="lg" mt="6"/>
           </Box>
         ) : error ? (
           <Box w="100%" display="flex" justifyContent="center" alignItems="center">
@@ -105,86 +89,80 @@ export default function Assignments() {
           </Box>
         ) : (
           <>
-            <SymptomAddModal
+            <AssignedHealthProtocolAddModal
               isOpen={isOpenAddModal} 
               onClose={onCloseAddModal} 
               refetchList={refetch}
             />
-
-            { symptomToBeEdited && (
-              <SymptomEditModal 
-                isOpen={isOpenEditModal} 
-                onClose={onCloseEditModal} 
-                symptom={symptomToBeEdited.symptom}
-                refetchList={refetch}
-              />
-            )}
             
-            { symptomToBeDeleted && (
-              <SymptomExcludeAlert 
+            { assignedHealthProtocolToBeDeleted && (
+              <AssignedHealthProtocolExcludeAlert 
                 isOpen={isOpenExcludeAlert} 
                 onClose={onCloseExcludeAlert} 
-                symptom={symptomToBeDeleted.symptom}
+                association={{ 
+                  disease: assignedHealthProtocolToBeDeleted.diseaseName, 
+                  healthProtocol: assignedHealthProtocolToBeDeleted.healthProtocol.id
+                }}
                 refetchList={refetch}
               />
             )}
 
-            <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
+            <Flex mx="8" mb="8" mt="6" justifyContent="flex-start" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
                 <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
-              { isAdmin && (
-                <Button  
+              {!isLoading && isFetching && <Spinner ml="4"/>}
+              { isUserAllowed && (
+                <Button 
+                  ml="auto" 
                   size="sm" 
                   fontSize="sm" 
                   colorScheme="blue"
                   leftIcon={<Icon as={RiAddLine} fontSize="20"/>}
                   onClick={onOpenAddModal}
                 >
-                  Adicionar novo sintoma
+                  Adicionar nova associação
                 </Button>
               )}
             </Flex>
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
-              { data?.totalSymptoms === 0 ? (
-                <Text mt="2">Não existem sintomas registrados até o momento.</Text>
+              { data?.totalAssignedHealthProtocols === 0 ? (
+                <Text mt="2">Não existem protocolos de saúde registrados até o momento.</Text>
               ) : (
                 <>
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th>Sintoma</Th>
-                        { isAdmin && (<Th></Th>)}
+                        <Th>Protocolo de saúde</Th>
+                        <Th>Doença</Th>
+                        { isUserAllowed && (<Th></Th>)}
                       </Tr>
                     </Thead>
 
                     <Tbody>
-                      { data?.symptoms.map(symptom => (
-                        <Tr key={symptom.symptom} _hover={{ bgColor: 'gray.50' }}>
-                          <Td w="80%">
-                            <Text>{symptom.symptom}</Text>
+                      { data?.assignedHealthProtocols.map(assignedHealthProtocol => (
+                        <Tr 
+                          key={`${assignedHealthProtocol.healthProtocol.id}-${assignedHealthProtocol.diseaseName}`} 
+                          _hover={{ bgColor: 'gray.50' }}
+                        >
+                          <Td>
+                            <Text textOverflow="ellipsis">{assignedHealthProtocol.healthProtocol.description}</Text>
                           </Td>
-                          { isAdmin && (
+                          <Td>
+                            <Text>{assignedHealthProtocol.diseaseName}</Text>
+                          </Td>
+                          { isUserAllowed && (
                             <Td pr="4">
                               <Flex justifyContent="flex-end" alignItems="center">
-                                <Button 
-                                  fontSize="lg" 
-                                  height="36px" 
-                                  width="36px" 
-                                  colorScheme="blue" 
-                                  onClick={() => handleEditSymptom(symptom)}
-                                >
-                                  <Icon as={BiPencil}/>
-                                </Button>
                                 <Button 
                                   fontSize="lg" 
                                   height="36px" 
                                   ml="2"
                                   width="36px" 
                                   colorScheme="red" 
-                                  onClick={() => handleDeleteSymptom(symptom)}
+                                  onClick={() => handleDeleteAssignedHealthProtocol(assignedHealthProtocol)}
                                 >
                                   <Icon as={BiTrash}/>
                                 </Button>
@@ -199,7 +177,7 @@ export default function Assignments() {
                   <Box w="100%" mt="3" mb="5">
                     <Pagination 
                       currentPage={page} 
-                      totalRegisters={data?.totalSymptoms} 
+                      totalRegisters={data?.totalAssignedHealthProtocols} 
                       onPageChange={setPage}
                     />
                   </Box>
@@ -210,10 +188,10 @@ export default function Assignments() {
         )}
       </Flex>
     </>
-  )*/
+  )
 }
 
-Assignments.layout = HealthProtocolsLayout
+AssignedHealthProtocols.layout = HealthProtocolsLayout
 
 export const getServerSideProps = withSSRAuth(async (ctx) => { 
   return { props: {} }

@@ -47,7 +47,7 @@ export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthP
         const response = await api.post('/healthprotocol/', { description: healthProtocol })
         toast({
           title: "Sucesso",
-          description: response.data?.success,
+          description: response.data?.message,
           status: "success",
           isClosable: true
         })

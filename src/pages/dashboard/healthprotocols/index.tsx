@@ -6,7 +6,6 @@ import {
   Box, 
   Button,
   Flex, 
-  Heading, 
   Icon,
   Input,
   InputGroup,
