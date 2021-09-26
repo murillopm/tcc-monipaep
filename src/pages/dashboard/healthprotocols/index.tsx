@@ -144,13 +144,18 @@ export default function HealthProtocols() {
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalHealthProtocols === 0 ? (
-                <Text mt="2">Não existem protocolos de saúde registrados até o momento.</Text>
+                <Text mt="2">
+                  { search === '' ? 
+                    'Não existem protocolos de saúde registradas até o momento.' :
+                    'A busca não encontrou nenhum protocolo de saúde com essa descrição.'
+                  }
+                </Text>
               ) : (
                 <>
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th>Protocolo</Th>
+                        <Th>Descrição</Th>
                         { isUserAllowed && (<Th></Th>)}
                       </Tr>
                     </Thead>

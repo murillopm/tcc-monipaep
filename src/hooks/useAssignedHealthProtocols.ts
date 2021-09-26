@@ -15,16 +15,21 @@ type GetAssignedHealthProtocolsResponse = {
   totalAssignedHealthProtocols: number,
 }
 
+type FilterAssignedHealthProtocol = [
+  filter: string,
+  value: string
+]
 interface UseAssignedHealthProtocolProps {
   page: number;
-  filter?: string;
+  filter?: FilterAssignedHealthProtocol;
 }
 
-export async function getAssignedHealthProtocols(page: number, filter?: string) {
+export async function getAssignedHealthProtocols(page: number, filter?: FilterAssignedHealthProtocol) {
   let params: any = { page }
-  // if(filter) {
-  //   params = { ...params, description: filter }
-  // }
+  if(filter) {
+    params = { ...params, [filter[0]]: filter[1] }
+  }
+  console.log(filter)
   const { data } = await api.get<GetAssignedHealthProtocolsResponse>('/assignedhealthprotocol', { params })
   const formattedData = data.assignedHealthProtocols.map(assignedHealthProtocol => {
     return {
@@ -38,12 +43,13 @@ export async function getAssignedHealthProtocols(page: number, filter?: string) 
   }
 }
 
-export function useAssignedHealthProtocols({ page, filter = '' }: UseAssignedHealthProtocolProps) { 
-  return useQuery(['assignedHealthProtocols', page, filter], () => {
-    if(filter !== '') {
-      return getAssignedHealthProtocols(page, filter)
+export function useAssignedHealthProtocols({ page, filter = ['disease_name', ''] }: UseAssignedHealthProtocolProps) { 
+  const key = filter[1] === '' ? page : `${filter[0]}-${filter[1]}-${page}`
+  return useQuery(['assignedHealthProtocols', key], () => {
+    if(!filter || filter[1] === '') {
+      return getAssignedHealthProtocols(page)
     }
-    return getAssignedHealthProtocols(page)
+    return getAssignedHealthProtocols(page, filter)
   }, {
     keepPreviousData: true,
     staleTime: 1000 * 5

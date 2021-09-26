@@ -133,7 +133,7 @@ export default function Usms() {
             <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
-                <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar por nome..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
                 { isAdmin && (
                   <Button  
@@ -150,7 +150,9 @@ export default function Usms() {
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalUsms === 0 ? (
-                <Text mt="2">Não existem unidades de saúde registradas até o momento.</Text>
+                <Text mt="2">
+                  { search === '' ? 'Não existem unidades de saúde registradas até o momento.': 'A busca não encontrou nenhuma unidade de saúde com esse nome.'}
+                </Text>
               ) : (
                 <>
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">

@@ -146,7 +146,9 @@ export default function Symptoms() {
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalSymptoms === 0 ? (
-                <Text mt="2">Não existem sintomas registrados até o momento.</Text>
+                <Text mt="2">
+                  { search === '' ? 'Não existem sintomas registrados até o momento.': 'A busca não encontrou nenhum sintoma com esse nome.'}
+                </Text>
               ) : (
                 <>
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">

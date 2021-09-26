@@ -10,6 +10,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Select,
   Table, 
   Tbody, 
   Td, 
@@ -42,9 +43,10 @@ type AssignedHealthProtocol = {
 export default function AssignedHealthProtocols() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('disease_name')
   const [assignedHealthProtocolToBeDeleted, setAssignedHealthProtocolToBeDeleted] = useState<AssignedHealthProtocol | undefined>(undefined)
   const isUserAllowed = useCan({ isUsm: true })
-  const { data, isLoading, isFetching, error, refetch } = useAssignedHealthProtocols({ page, filter: search })
+  const { data, isLoading, isFetching, error, refetch } = useAssignedHealthProtocols({ page, filter: [filter, search] })
 
   const { 
     isOpen: isOpenExcludeAlert, 
@@ -111,7 +113,11 @@ export default function AssignedHealthProtocols() {
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
                 <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
-              </InputGroup>  
+              </InputGroup> 
+              <Select w="34" onChange={e => {setFilter(e.target.value)}} ml="2">
+                <option value="disease_name">Doença</option>
+                <option value="healthprotocol_description">Protocolo de saúde</option>
+              </Select>  
               {!isLoading && isFetching && <Spinner ml="4"/>}
               { isUserAllowed && (
                 <Button 
@@ -129,7 +135,12 @@ export default function AssignedHealthProtocols() {
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalAssignedHealthProtocols === 0 ? (
-                <Text mt="2">Não existem protocolos de saúde registrados até o momento.</Text>
+                <Text mt="2">
+                  { search === '' ? 
+                    'Não existem associações registradas até o momento.' :
+                    'A busca não encontrou nenhuma associação com esse filtro.'
+                  }
+                </Text>
               ) : (
                 <>
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">

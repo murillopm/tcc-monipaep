@@ -89,72 +89,69 @@ export default function Patients() {
             </Flex>
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
-              <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
-                <Thead bgColor="gray.200">
-                  <Tr>
-                    <Th>Nome</Th>
-                    <Th>CPF</Th>
-                    <Th>Data de nascimento</Th>
-                    <Th>Bairro</Th>
-                    <Th>Plano de saúde</Th>
-                    <Th>Status</Th>
-                    {/* <Th></Th> */}
-                  </Tr>
-                </Thead>
+              { data?.totalPatients === 0 ? (
+                <Text mt="2">
+                  { search === '' ? 
+                    'Não existem pacientes registrados até o momento.' :
+                    'A busca não encontrou nenhum paciente com esse filtro.'
+                  }
+                </Text>
+              ) : (
+                <>
+                  <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
+                    <Thead bgColor="gray.200">
+                      <Tr>
+                        <Th>Nome</Th>
+                        <Th>CPF</Th>
+                        <Th>Data de nascimento</Th>
+                        <Th>Bairro</Th>
+                        <Th>Plano de saúde</Th>
+                        <Th>Status</Th>
+                      </Tr>
+                    </Thead>
 
-                <Tbody>
-                  { data?.patients.map(patient => (
-                    <Tr key={patient.id} _hover={{ bgColor: 'gray.50' }}>
-                      <Td>
-                        <Box textAlign="left">
-                          <Text>{patient.name}</Text>
-                          <Text fontSize="sm" color="gray.500">{patient.email}</Text>
-                        </Box>
-                      </Td>
-                      <Td w="100">
-                        <Text>{patient.CPF}</Text>
-                      </Td>
-                      <Td>
-                        <Text>{patient.birthdate}</Text>
-                      </Td>
-                      <Td>
-                        <Text>{patient.neighborhood}</Text>
-                      </Td>
-                      <Td>
-                        <Badge colorScheme={patient.hasHealthPlan ? 'green' : 'red'}>
-                          {patient.hasHealthPlan ? 'Possui' : 'Não possui'}
-                        </Badge>
-                      </Td>
-                      <Td>
-                        <Badge colorScheme={getBadgeColor(patient.status)}>
-                          {patient.status}
-                        </Badge>
-                      </Td>
-                      {/* <Td>
-                        <NextLink href="#" passHref>
-                          <Button 
-                            as="a" 
-                            colorScheme="pink"
-                            size="sm" 
-                            fontSize="sm" 
-                            leftIcon={<Icon as={FaSearchPlus} fontSize="16"/>}
-                          >
-                            Mais detalhes
-                          </Button>
-                        </NextLink>
-                      </Td> */}
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-              
-              <Box w="100%" mt="3" mb="5">
-                <Pagination 
-                  currentPage={page} 
-                  totalRegisters={data?.totalPatients} 
-                  onPageChange={setPage}
-                />
-              </Box>
+                    <Tbody>
+                      { data?.patients.map(patient => (
+                        <Tr key={patient.id} _hover={{ bgColor: 'gray.50' }}>
+                          <Td>
+                            <Box textAlign="left">
+                              <Text>{patient.name}</Text>
+                              <Text fontSize="sm" color="gray.500">{patient.email}</Text>
+                            </Box>
+                          </Td>
+                          <Td w="100">
+                            <Text>{patient.CPF}</Text>
+                          </Td>
+                          <Td>
+                            <Text>{patient.birthdate}</Text>
+                          </Td>
+                          <Td>
+                            <Text>{patient.neighborhood}</Text>
+                          </Td>
+                          <Td>
+                            <Badge colorScheme={patient.hasHealthPlan ? 'green' : 'red'}>
+                              {patient.hasHealthPlan ? 'Possui' : 'Não possui'}
+                            </Badge>
+                          </Td>
+                          <Td>
+                            <Badge colorScheme={getBadgeColor(patient.status)}>
+                              {patient.status}
+                            </Badge>
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                  
+                  <Box w="100%" mt="3" mb="5">
+                    <Pagination 
+                      currentPage={page} 
+                      totalRegisters={data?.totalPatients} 
+                      onPageChange={setPage}
+                    />
+                  </Box>
+                </>
+              )}
             </Flex>
           </>
         )}
@@ -165,13 +162,6 @@ export default function Patients() {
 
 Patients.layout = DashboardLayout
 
-export const getServerSideProps = withSSRAuth(async (ctx) => {
-  // const apiClient = setupAPIClient(ctx)
-  // const response = await apiClient.get('/systemuser/me')
-
-  // console.log(response.data)
-  
-  return {
-    props: {}
-  }
+export const getServerSideProps = withSSRAuth(async (ctx) => { 
+  return { props: {} }
 })

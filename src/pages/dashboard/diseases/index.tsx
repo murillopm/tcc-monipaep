@@ -131,7 +131,7 @@ export default function Diseases() {
             <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
-                <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar por nome..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
               { isAdmin && (
                 <Button  
@@ -148,13 +148,15 @@ export default function Diseases() {
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalDiseases === 0 ? (
-                <Text mt="2">Não existem doenças registradas até o momento.</Text>
+                <Text mt="2">
+                  { search === '' ? 'Não existem doenças registradas até o momento.': 'A busca não encontrou nenhuma doença com esse nome.'}
+                </Text>
               ) : (
                 <>
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th rowSpan={2} w="30%">Doença</Th>
+                        <Th rowSpan={2} w="30%">Nome</Th>
                         <Th colSpan={2} isNumeric w="20%">
                           Período de monitoramento (dias)
                         </Th>

@@ -126,7 +126,7 @@ export default function Faqs() {
             <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
-                <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar por pergunta..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
               <Button  
                 size="sm" 
@@ -142,7 +142,9 @@ export default function Faqs() {
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalFaqs === 0 ? (
-                <Text mt="2">Não existem questões registradas até o momento.</Text>
+                <Text mt="2">
+                  { search === '' ? 'Não existem questões registradas até o momento.': 'A busca não encontrou nenhuma pergunta com esse filtro.'}
+                </Text>
               ) : (
                 <>
                   <Accordion 
