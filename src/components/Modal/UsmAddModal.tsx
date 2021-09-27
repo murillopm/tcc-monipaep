@@ -165,13 +165,7 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
             <Button onClick={handleCoordinatesFetch} mb="2" w="100%" colorScheme="pink" isLoading={isFetching}>
               Buscar coordenadas
             </Button>
-            { coords && (
-              <>
-                <Text mb="1">Latitude: {coords.lat}</Text>
-                <Text mb="1">Longitude: {coords.lng}</Text>
-                <Map center={coords} updatePosition={updatePosition}/>
-              </>
-            )}
+            { coords && <Map center={coords} updatePosition={updatePosition}/> }
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>

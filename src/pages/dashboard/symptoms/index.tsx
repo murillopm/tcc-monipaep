@@ -90,7 +90,7 @@ export default function Symptoms() {
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
         <Heading ml="8" my="6">
           Sintomas
-          {!isLoading && isFetching && <Spinner ml="4"/>}
+          { !isLoading && isFetching && <Spinner ml="4"/> }
         </Heading>
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
@@ -147,7 +147,10 @@ export default function Symptoms() {
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalSymptoms === 0 ? (
                 <Text mt="2">
-                  { search === '' ? 'Não existem sintomas registrados até o momento.': 'A busca não encontrou nenhum sintoma com esse nome.'}
+                  { search === '' ? 
+                    'Não existem sintomas registrados até o momento.' : 
+                    'A busca não encontrou nenhum sintoma com esse nome.'
+                  }
                 </Text>
               ) : (
                 <>
@@ -155,7 +158,7 @@ export default function Symptoms() {
                     <Thead bgColor="gray.200">
                       <Tr>
                         <Th>Sintoma</Th>
-                        { isAdmin && (<Th></Th>)}
+                        { isAdmin && <Th></Th> }
                       </Tr>
                     </Thead>
 

@@ -1,3 +1,4 @@
+import { useState, useEffect, ChangeEvent } from 'react';
 import {
   Button,
   Flex,
@@ -12,7 +13,7 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+
 import { api } from '../../services/apiClient';
 
 type Disease = {

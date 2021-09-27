@@ -94,7 +94,7 @@ export default function Usms() {
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
         <Heading ml="8" my="6">
           Unidades de saúde
-          {!isLoading && isFetching && <Spinner ml="4"/>}
+          { !isLoading && isFetching && <Spinner ml="4"/> }
         </Heading>
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
@@ -151,7 +151,10 @@ export default function Usms() {
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalUsms === 0 ? (
                 <Text mt="2">
-                  { search === '' ? 'Não existem unidades de saúde registradas até o momento.': 'A busca não encontrou nenhuma unidade de saúde com esse nome.'}
+                  { search === '' ? 
+                    'Não existem unidades de saúde registradas até o momento.' : 
+                    'A busca não encontrou nenhuma unidade de saúde com esse nome.'
+                  }
                 </Text>
               ) : (
                 <>
@@ -161,7 +164,7 @@ export default function Usms() {
                         <Th>Nome</Th>
                         <Th>Endereço</Th>
                         <Th>Bairro</Th>
-                        { isAdmin && (<Th></Th>)}
+                        { isAdmin && <Th></Th> }
                       </Tr>
                     </Thead>
 

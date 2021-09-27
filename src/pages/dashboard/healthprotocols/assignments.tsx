@@ -21,7 +21,7 @@ import {
   Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
-import { BiPencil, BiTrash } from 'react-icons/bi'
+import { BiTrash } from 'react-icons/bi'
 import { MdSearch } from 'react-icons/md'
 import { RiAddLine } from 'react-icons/ri'
 
@@ -44,7 +44,10 @@ export default function AssignedHealthProtocols() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('disease_name')
-  const [assignedHealthProtocolToBeDeleted, setAssignedHealthProtocolToBeDeleted] = useState<AssignedHealthProtocol | undefined>(undefined)
+  const [
+    assignedHealthProtocolToBeDeleted, 
+    setAssignedHealthProtocolToBeDeleted
+  ] = useState<AssignedHealthProtocol | undefined>(undefined)
   const isUserAllowed = useCan({ isUsm: true })
   const { data, isLoading, isFetching, error, refetch } = useAssignedHealthProtocols({ page, filter: [filter, search] })
 
@@ -118,7 +121,7 @@ export default function AssignedHealthProtocols() {
                 <option value="disease_name">Doença</option>
                 <option value="healthprotocol_description">Protocolo de saúde</option>
               </Select>  
-              {!isLoading && isFetching && <Spinner ml="4"/>}
+              { !isLoading && isFetching && <Spinner ml="4"/> }
               { isUserAllowed && (
                 <Button 
                   ml="auto" 
@@ -148,7 +151,7 @@ export default function AssignedHealthProtocols() {
                       <Tr>
                         <Th>Protocolo de saúde</Th>
                         <Th>Doença</Th>
-                        { isUserAllowed && (<Th></Th>)}
+                        { isUserAllowed && <Th></Th> }
                       </Tr>
                     </Thead>
 

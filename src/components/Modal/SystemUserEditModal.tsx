@@ -1,8 +1,8 @@
+import { useState, useEffect, ChangeEvent } from 'react';
 import {
   Button,
   Checkbox,
   Divider,
-  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -12,12 +12,10 @@ import {
   ModalHeader,
   Select,
   Text,
-  Input,
   VStack,
-  useCheckbox,
   useToast,
 } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+
 import { useCan } from '../../hooks/useCan';
 import { api } from '../../services/apiClient';
 
@@ -48,10 +46,8 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
   const [touched, setTouched] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const toast = useToast()
-
   const isGeneralAdm = useCan({ roles: ['general.admin'] })
   
-
   useEffect(() => {
     setDepartment(systemUser.systemUser.department)
     setAuthorized(systemUser.authorized)
@@ -95,7 +91,6 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
       setTouched(true)
     }
   }
-
 
   async function handleUserUpdate() {
     setIsUpdating(true)

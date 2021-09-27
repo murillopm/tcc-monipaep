@@ -1,7 +1,7 @@
-import { Avatar, Box, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { useContext } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { Avatar, Box, Flex, IconButton, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { BsCaretDownFill } from "react-icons/bs"
+import { AuthContext } from "../../contexts/AuthContext";
 
 export function Header() {
   const { user, signOut } = useContext(AuthContext)

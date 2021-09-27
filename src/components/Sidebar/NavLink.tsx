@@ -1,7 +1,7 @@
-import { Box, Icon, Text, LinkProps as ChakraLinkProps, Link as ChakraLink } from "@chakra-ui/react";
+import { ElementType } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ElementType } from "react";
+import { Box, Icon, Text, LinkProps as ChakraLinkProps, Link as ChakraLink } from "@chakra-ui/react";
 
 interface NavLinkProps extends ChakraLinkProps {
   href: string;

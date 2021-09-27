@@ -60,7 +60,7 @@ export async function getPatients(page: number, filter?: FilterPatient) {
 }
 
 export function usePatients({ page, filter = ['name', ''] }: UsePatientsProps) {
-  const key = filter[1] === '' ? page : `${filter[0]}-${filter[1]}-${page}-` 
+  const key = filter[1] === '' ? page : `${filter[0]}-${filter[1]}-${page}` 
   return useQuery(['patients', key], () => {
     if(!filter || filter[1] === '') {
       return getPatients(page)

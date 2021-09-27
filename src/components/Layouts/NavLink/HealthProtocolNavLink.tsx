@@ -1,6 +1,6 @@
-import { Box, Divider, Flex, Heading, Link, Text, LinkProps } from "@chakra-ui/react";
 import NextLink from 'next/link'
 import { useRouter } from "next/router";
+import { Link, LinkProps } from "@chakra-ui/react";
 
 interface HealthProtocolNavLinkProps extends LinkProps {
   children: string;

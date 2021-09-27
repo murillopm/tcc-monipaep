@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup";
 import InputMask from 'react-input-mask'
+
 import { 
   Box,
   Button, 
@@ -26,6 +27,7 @@ import {
 } from '@chakra-ui/react'
 import { MdEmail, MdPerson, MdVisibility, MdVisibilityOff } from 'react-icons/md'
 import { HiLockClosed, HiIdentification } from 'react-icons/hi'
+
 import "../validators/cpfValidator"
 import { api } from '../services/apiClient'
 
@@ -294,7 +296,6 @@ export default function SignUp() {
               </Link>
             </Box>
           </Flex>
-          
         </Flex>
       </Flex>
     </>

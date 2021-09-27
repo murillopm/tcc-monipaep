@@ -127,7 +127,7 @@ export default function HealthProtocols() {
                 <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
                 <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
-              {!isLoading && isFetching && <Spinner ml="4"/>}
+              { !isLoading && isFetching && <Spinner ml="4"/> }
               { isUserAllowed && (
                 <Button 
                   ml="auto" 
@@ -146,7 +146,7 @@ export default function HealthProtocols() {
               { data?.totalHealthProtocols === 0 ? (
                 <Text mt="2">
                   { search === '' ? 
-                    'Não existem protocolos de saúde registradas até o momento.' :
+                    'Não existem protocolos de saúde registrados até o momento.' :
                     'A busca não encontrou nenhum protocolo de saúde com essa descrição.'
                   }
                 </Text>
@@ -156,7 +156,7 @@ export default function HealthProtocols() {
                     <Thead bgColor="gray.200">
                       <Tr>
                         <Th>Descrição</Th>
-                        { isUserAllowed && (<Th></Th>)}
+                        { isUserAllowed && <Th></Th> }
                       </Tr>
                     </Thead>
 

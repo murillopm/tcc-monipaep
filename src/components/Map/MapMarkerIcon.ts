@@ -1,6 +1,6 @@
 import { icon } from 'leaflet'
 
 export const MapMarkerIcon = icon({
-  iconUrl: "/img/leaflet/marker-icon-2x.png",
+  iconUrl: "/images/markerIcon.png",
   iconSize: [30, 49.2]
 })

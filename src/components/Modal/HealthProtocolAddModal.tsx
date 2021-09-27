@@ -1,3 +1,4 @@
+import { useState, ChangeEvent } from 'react';
 import {
   Button,
   Modal,
@@ -9,10 +10,9 @@ import {
   ModalHeader,
   Text,
   Textarea,
-  Input,
   useToast,
 } from '@chakra-ui/react';
-import { useState, ChangeEvent } from 'react';
+
 import { api } from '../../services/apiClient';
 
 interface HealthProtocolAddModalProps {
@@ -47,7 +47,7 @@ export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthP
         const response = await api.post('/healthprotocol/', { description: healthProtocol })
         toast({
           title: "Sucesso",
-          description: response.data?.message,
+          description: response.data?.success,
           status: "success",
           isClosable: true
         })
@@ -88,7 +88,7 @@ export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthP
           <ModalCloseButton />
           <ModalBody>
             <Text fontWeight="semibold" mb="2">Descrição</Text>
-            <Textarea value={healthProtocol} mb="2" onChange={handleHealthProtocolInputChanged}/>
+            <Textarea value={healthProtocol} mb="2" height="100px" onChange={handleHealthProtocolInputChanged}/>
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>

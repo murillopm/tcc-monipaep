@@ -92,7 +92,7 @@ export default function Diseases() {
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
         <Heading ml="8" my="6">
           Doenças
-          {!isLoading && isFetching && <Spinner ml="4"/>}
+          { !isLoading && isFetching && <Spinner ml="4"/> }
         </Heading>
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
@@ -149,7 +149,10 @@ export default function Diseases() {
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalDiseases === 0 ? (
                 <Text mt="2">
-                  { search === '' ? 'Não existem doenças registradas até o momento.': 'A busca não encontrou nenhuma doença com esse nome.'}
+                  { search === '' ? 
+                    'Não existem doenças registradas até o momento.' : 
+                    'A busca não encontrou nenhuma doença com esse nome.'
+                  }
                 </Text>
               ) : (
                 <>
@@ -160,12 +163,12 @@ export default function Diseases() {
                         <Th colSpan={2} isNumeric w="20%">
                           Período de monitoramento (dias)
                         </Th>
-                        { isAdmin && (<Th w="20%"></Th>) }
+                        { isAdmin && <Th w="20%"></Th> }
                       </Tr>
                       <Tr>
                         <Th isNumeric>Suspeito</Th>
                         <Th isNumeric>Infectado</Th>
-                        { isAdmin && (<Th></Th>) }
+                        { isAdmin && <Th></Th> }
                       </Tr>
                     </Thead>
 

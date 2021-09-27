@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Button,
   Modal,
@@ -11,7 +12,7 @@ import {
   Text,
   useToast,
 } from '@chakra-ui/react';
-import { useState, ChangeEvent, useEffect } from 'react';
+
 import { api } from '../../services/apiClient';
 
 type HealthProtocol = {

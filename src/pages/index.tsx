@@ -4,8 +4,7 @@ import Link from 'next/link'
 import Head from 'next/head'
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { MdEmail, MdVisibility, MdVisibilityOff } from 'react-icons/md'
-import { HiLockClosed } from 'react-icons/hi'
+
 import { 
   Box, 
   Button, 
@@ -23,9 +22,11 @@ import {
   Text, 
   useToast 
 } from '@chakra-ui/react'
-import { AuthContext } from '../contexts/AuthContext'
+import { MdEmail, MdVisibility, MdVisibilityOff } from 'react-icons/md'
+import { HiLockClosed } from 'react-icons/hi'
 
 import { withSSRGuest } from '../utils/withSSRGuest'
+import { AuthContext } from '../contexts/AuthContext'
 
 type LoginData = {
   email: string;
@@ -40,7 +41,7 @@ const schema = yup.object().shape({
 const Home = () => {
   const [showPassword, setShowPassword] = useState(false)
   const { signIn } = useContext(AuthContext)
-  const { register, handleSubmit, formState, control } = useForm({
+  const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(schema)
   })
   const { errors } = formState
@@ -159,9 +160,7 @@ const Home = () => {
 }
 
 export const getServerSideProps = withSSRGuest(async (ctx) => {
-  return {
-    props: {}
-  }
+  return { props: {} }
 })
 
 export default Home

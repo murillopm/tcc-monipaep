@@ -26,10 +26,11 @@ interface UseAssignedHealthProtocolProps {
 
 export async function getAssignedHealthProtocols(page: number, filter?: FilterAssignedHealthProtocol) {
   let params: any = { page }
+
   if(filter) {
     params = { ...params, [filter[0]]: filter[1] }
   }
-  console.log(filter)
+  
   const { data } = await api.get<GetAssignedHealthProtocolsResponse>('/assignedhealthprotocol', { params })
   const formattedData = data.assignedHealthProtocols.map(assignedHealthProtocol => {
     return {
@@ -37,6 +38,7 @@ export async function getAssignedHealthProtocols(page: number, filter?: FilterAs
       healthProtocol: assignedHealthProtocol.healthprotocol
     }
   })
+
   return {
     assignedHealthProtocols: formattedData,
     totalAssignedHealthProtocols: data.totalAssignedHealthProtocols,

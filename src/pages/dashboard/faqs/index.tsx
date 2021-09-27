@@ -83,11 +83,10 @@ export default function Faqs() {
         <title>MoniPaEp | FAQs</title>
       </Head>
       
-
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
         <Heading ml="8" my="6">
           FAQs
-          {!isLoading && isFetching && <Spinner ml="4"/>}
+          { !isLoading && isFetching && <Spinner ml="4"/> }
         </Heading>
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
@@ -143,7 +142,10 @@ export default function Faqs() {
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalFaqs === 0 ? (
                 <Text mt="2">
-                  { search === '' ? 'Não existem questões registradas até o momento.': 'A busca não encontrou nenhuma pergunta com esse filtro.'}
+                  { search === '' ? 
+                    'Não existem questões registradas até o momento.' : 
+                    'A busca não encontrou nenhuma pergunta com esse filtro.'
+                  }
                 </Text>
               ) : (
                 <>

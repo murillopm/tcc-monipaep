@@ -1,3 +1,4 @@
+import { useState, useEffect, ChangeEvent } from 'react';
 import {
   Button,
   Modal,
@@ -9,10 +10,9 @@ import {
   ModalHeader,
   Text,
   Textarea,
-  Input,
   useToast,
 } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useState } from 'react';
+
 import { api } from '../../services/apiClient';
 
 type HealthProtocol = {
@@ -97,11 +97,11 @@ export function HealthProtocolEditModal({ isOpen, onClose, healthProtocol, refet
     >
       <ModalOverlay>
         <ModalContent height="auto" width="500px">
-          <ModalHeader textAlign="center">Editar sintoma</ModalHeader>
+          <ModalHeader textAlign="center">Editar protocolo de saúde</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text fontWeight="semibold" mb="2">Nome do sintoma</Text>
-            <Textarea value={healthProtocolDescription} mb="2" onChange={handleDescriptionInputChanged}/>
+            <Text fontWeight="semibold" mb="2">Descrição</Text>
+            <Textarea value={healthProtocolDescription} mb="2" height="100px" onChange={handleDescriptionInputChanged}/>
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>

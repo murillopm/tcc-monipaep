@@ -1,11 +1,7 @@
-import { useState, ChangeEvent, useCallback } from "react";
+import { useState, useCallback, ChangeEvent } from "react";
 import Head from "next/head"
 import { debounce } from "ts-debounce"
 
-import { withSSRAuth } from "../../../utils/withSSRAuth";
-
-import DashboardLayout from "../../../components/Layouts/DashboardLayout";
-import { Pagination } from "../../../components/Pagination";
 import { 
   Badge, 
   Box, 
@@ -26,7 +22,11 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { MdSearch } from 'react-icons/md'
+
+import { withSSRAuth } from "../../../utils/withSSRAuth";
 import { usePatients } from "../../../hooks/usePatients";
+import { Pagination } from "../../../components/Pagination";
+import DashboardLayout from "../../../components/Layouts/DashboardLayout";
 
 function getBadgeColor(status: string) {
   if(status === "Saudável") {
@@ -63,7 +63,7 @@ export default function Patients() {
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
         <Heading ml="8" my="6">
           Pacientes
-          {!isLoading && isFetching && <Spinner ml="4"/>}
+          { !isLoading && isFetching && <Spinner ml="4"/> }
         </Heading>
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">

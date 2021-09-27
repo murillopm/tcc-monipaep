@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Box, Button, Flex, Heading, Icon } from "@chakra-ui/react";
+
 import { AiOutlineDatabase } from "react-icons/ai"
 import { BiArchive, BiBookHeart, BiClinic, BiHealth } from "react-icons/bi"
 import { FiUsers } from "react-icons/fi"
@@ -68,6 +69,7 @@ export function Sidebar() {
           Protocolos de saúde
         </NavLink>
       </NavSection>
+      
       <Can roles={["local.admin", "general.admin"]}>
         <NavSection title="PAINEL DE ADMINISTRADOR">
           <NavLink href="/dashboard/systemusers" icon={BiBookHeart}>

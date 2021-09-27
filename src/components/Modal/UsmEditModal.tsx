@@ -1,6 +1,5 @@
 import { useState, ChangeEvent, useEffect } from 'react';
 import dynamic from 'next/dynamic'
-
 import {
   Button,
   Modal,
@@ -14,6 +13,7 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
+
 import { googleApi } from '../../services/googleApi';
 import { api } from '../../services/apiClient';
 
@@ -40,7 +40,6 @@ interface UsmEditModalProps {
   onClose: () => void;
   refetchList: () => void;
 }
-
 
 export function UsmEditModal({ isOpen, onClose, usm, refetchList }: UsmEditModalProps) {
   const [usmName, setUsmName] = useState(usm.name)
@@ -183,9 +182,7 @@ export function UsmEditModal({ isOpen, onClose, usm, refetchList }: UsmEditModal
             <Button onClick={handleCoordinatesFetch} mb="4" w="100%" colorScheme="pink" isLoading={isFetching}>
               Buscar coordenadas
             </Button>
-            { coords && (
-              <Map center={coords} updatePosition={updatePosition}/>
-            )}
+            { coords && <Map center={coords} updatePosition={updatePosition}/> }
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>

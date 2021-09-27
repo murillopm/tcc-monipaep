@@ -1,3 +1,4 @@
+import { useState, ChangeEvent } from 'react';
 import {
   Button,
   Modal,
@@ -11,7 +12,7 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
-import { useState, ChangeEvent } from 'react';
+
 import { api } from '../../services/apiClient';
 
 interface SymptomAddModalProps {

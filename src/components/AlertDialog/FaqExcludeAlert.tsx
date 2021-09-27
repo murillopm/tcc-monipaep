@@ -60,7 +60,7 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
             Confirmação necessária
           </AlertDialogHeader>
           <AlertDialogBody>
-            Tem certeza que deseja excluir essa questão?
+            Tem certeza que deseja excluir esta questão?
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose} variant="outline">
