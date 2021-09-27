@@ -44,7 +44,7 @@ export function Sidebar() {
         <NavLink href="/dashboard/patients" icon={FiUsers}>
           Pacientes
         </NavLink>
-        <NavLink href="#" icon={BiArchive}>
+        <NavLink href="/dashboard/diseaseoccurrences" icon={BiArchive}>
           Ocorrências de doenças
         </NavLink>
         <NavLink href="#" icon={HiOutlineClipboardList}>
