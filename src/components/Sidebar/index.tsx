@@ -47,7 +47,7 @@ export function Sidebar() {
         <NavLink href="/dashboard/diseaseoccurrences" icon={BiArchive}>
           Ocorrências de doenças
         </NavLink>
-        <NavLink href="#" icon={HiOutlineClipboardList}>
+        <NavLink href="/dashboard/symptomoccurrences" icon={HiOutlineClipboardList}>
           Ocorrências de sintomas
         </NavLink>
         
