@@ -1,4 +1,4 @@
-import { useState, useCallback, ChangeEvent } from "react";
+import { useState, useCallback, ChangeEvent, useMemo } from "react";
 import Head from "next/head"
 import { debounce } from "ts-debounce"
 import DashboardLayout from "../../../components/Layouts/DashboardLayout";
@@ -41,14 +41,14 @@ export default function SymptomOccurrences() {
   //   onClose: onCloseEditModal 
   // } = useDisclosure()
 
-  const debouncedChangeInputHandler = useCallback(
-    debounce(handleChangeInput, 600)
-  , []) 
-
-  function handleChangeInput(event: ChangeEvent<HTMLInputElement>) {
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setPage(1)
     setSearch(event.target.value)
-  }
+  }, [])
+
+  const debouncedChangeInputHandler = useMemo(
+    () => debounce(handleChangeInput, 600)  
+  , [handleChangeInput]) 
 
   // function handleEditSymptom(symptom: Symptom) {
   //   setSymptomToBeEdited(symptom)
@@ -89,7 +89,9 @@ export default function SymptomOccurrences() {
 
             <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
-                <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
+                <InputLeftElement>
+                  <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
+                </InputLeftElement>
                 <Input placeholder="Filtrar pelo nome..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
             </Flex>

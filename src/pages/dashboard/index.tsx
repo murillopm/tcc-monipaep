@@ -22,7 +22,7 @@ export default function Dashboard() {
       <Can permissions={['usm.user']}>
         <h1>Pode</h1>
       </Can>
-      <Link href="/">
+      <Link href="/" passHref>
         <ChakraLink>Dashboard</ChakraLink>
       </Link>
     </>

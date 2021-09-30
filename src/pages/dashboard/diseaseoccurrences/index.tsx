@@ -1,4 +1,4 @@
-import { useState, useCallback, ChangeEvent } from "react";
+import { useState, useCallback, ChangeEvent, useMemo } from "react";
 import Head from "next/head"
 import { debounce } from "ts-debounce"
 
@@ -46,14 +46,14 @@ export default function DiseaseOccurrences() {
   const [search, setSearch] = useState('')
   const { data , isLoading, isFetching, error } = useDiseaseOccurrences({ page, filter: [filter, search]})
 
-  function handleChangeInput(event: ChangeEvent<HTMLInputElement>) {
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setPage(1)
     setSearch(event.target.value)
-  }
+  }, [])
 
-  const debouncedChangeInputHandler = useCallback(
-    debounce(handleChangeInput, 600)
-  , []) 
+  const debouncedChangeInputHandler = useMemo(
+    () => debounce(handleChangeInput, 600)  
+  , [handleChangeInput]) 
   
   return (
     <>
@@ -77,7 +77,9 @@ export default function DiseaseOccurrences() {
           <>
             <Flex mx="8" mb="8">
               <InputGroup w="30">
-                <InputLeftElement children={<Icon as={MdSearch} fontSize="xl" color="gray.400"/>}/>
+                <InputLeftElement>
+                  <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
+                </InputLeftElement>
                 <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>
               <Select w="32" onChange={e => {setFilter(e.target.value)}} ml="2">

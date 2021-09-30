@@ -37,7 +37,7 @@ function DraggableMarker({ initialPosition, updatePosition }: DraggableMarkerPro
         updatePosition(position)
       }
     },
-  }),[],)
+  }), [updatePosition])
 
   return (
     <Marker
