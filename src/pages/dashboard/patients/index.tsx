@@ -1,5 +1,6 @@
 import { useState, useCallback, ChangeEvent } from "react";
 import Head from "next/head"
+import NextLink from "next/link"
 import { debounce } from "ts-debounce"
 
 import { 
@@ -11,6 +12,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Link,
   Table, 
   Tbody, 
   Td, 
@@ -49,6 +51,10 @@ export default function Patients() {
   function handleChangeInput(event: ChangeEvent<HTMLInputElement>) {
     setPage(1)
     setSearch(event.target.value)
+  }
+
+  function handlePatientClick(id: string) {
+    console.log(id)
   }
 
   const debouncedChangeInputHandler = useCallback(
@@ -112,10 +118,16 @@ export default function Patients() {
 
                     <Tbody>
                       { data?.patients.map(patient => (
-                        <Tr key={patient.id} _hover={{ bgColor: 'gray.50' }}>
+                        <Tr 
+                          key={patient.id} 
+                          _hover={{ bgColor: 'gray.50' }} 
+                          
+                        >
                           <Td>
                             <Box textAlign="left">
-                              <Text>{patient.name}</Text>
+                              <NextLink href={`/dashboard/patients/details/${patient.id}`} passHref>
+                                <Link>{patient.name}</Link>
+                              </NextLink>
                               <Text fontSize="sm" color="gray.500">{patient.email}</Text>
                             </Box>
                           </Td>

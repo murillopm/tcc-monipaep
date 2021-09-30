@@ -5,17 +5,33 @@ import { Link, LinkProps } from "@chakra-ui/react";
 interface HealthProtocolNavLinkProps extends LinkProps {
   children: string;
   href: string;
+  dynamicRoute?: boolean;
 }
 
-export function HealthProtocolNavLink({ href, children, ...rest }: HealthProtocolNavLinkProps) {
+export function TabNavLink({ href, children, dynamicRoute = false, ...rest }: HealthProtocolNavLinkProps) {
   const { asPath } = useRouter()
   
   let isActive = false
 
-  if(asPath === href) {
+  if(asPath === href && !dynamicRoute) {
     isActive = true
   }
+
+  let indexLastSlash = href.length
+
+  for(let i = href.length; i >= 0; i--) {
+    if(href[i] === '/') {
+      indexLastSlash = i
+      break;
+    }
+  }
+
+  const rawPath = href.slice(0, indexLastSlash)
   
+  if(asPath.includes(rawPath) && dynamicRoute) {
+    isActive = true
+  }
+
   return (
     <NextLink href={href} passHref>
       <Link 

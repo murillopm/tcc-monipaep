@@ -1,8 +1,7 @@
 import { ReactNode } from "react";
 import { Divider, Flex, Heading } from "@chakra-ui/react";
 import { Sidebar } from "../Sidebar";
-import { HealthProtocolNavLink } from "./NavLink/HealthProtocolNavLink";
-
+import { TabNavLink } from "./NavLink/TabNavLink";
 interface HealthProtocolsLayoutProps {
   children: ReactNode
 }
@@ -16,12 +15,12 @@ const HealthProtocolsLayout = ({ children }: HealthProtocolsLayoutProps) => {
           Protocolos de saúde
         </Heading>
         <Flex ml="8">
-          <HealthProtocolNavLink href="/dashboard/healthprotocols">
+          <TabNavLink href="/dashboard/healthprotocols">
             Protocolos
-          </HealthProtocolNavLink>
-          <HealthProtocolNavLink href="/dashboard/healthprotocols/assignments" ml="6">
+          </TabNavLink>
+          <TabNavLink href="/dashboard/healthprotocols/assignments" ml="6">
             Associações
-          </HealthProtocolNavLink>
+          </TabNavLink>
         </Flex>
         <Divider />
         {children}
