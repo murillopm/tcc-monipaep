@@ -33,6 +33,9 @@ import { AuthProvider } from '../contexts/AuthContext'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from '../styles/theme'
 
+import "../styles/date-picker.css"
+import "react-datepicker/dist/react-datepicker.css";
+
 const NoOption =  ({ children }: any) => children
 const queryClient = new QueryClient()
 class MyApp extends App {

@@ -4,11 +4,19 @@ import ptBR from "date-fns/locale/pt-BR";
 
 import { api } from "../services/apiClient";
 
-type SymptomOccurrence = {
+type SymptomOccurrencesResponse = {
   id: string;
   patient_id: string;
   symptom_name: string;
   registered_date: string;
+}
+
+type SymptomOccurrences = {
+  id: string;
+  patient_id: string;
+  symptom_name: string;
+  registered_date: string;
+  formatted_date: string;
 }
 
 interface UsePatientSymptomOccurrencesProps {
@@ -16,17 +24,17 @@ interface UsePatientSymptomOccurrencesProps {
 }
 
 export async function getPatientSymptomOccurrences(patientId: string) {
-  const { data } = await api.get<SymptomOccurrence[]>('/symptomoccurrence/', { 
+  const { data } = await api.get<SymptomOccurrencesResponse[]>('/symptomoccurrence/', { 
     params: {
       patient_id: patientId,
       unassigned: 't',
     } 
   })
-  const formattedData: SymptomOccurrence[] = data.map(occurrence => {
+  const formattedData: SymptomOccurrences[] = data.map(occurrence => {
     const formattedDate = format(parseISO(occurrence.registered_date), 'Pp', { locale: ptBR })
     return {
       ...occurrence,
-      registered_date: formattedDate.replace(",", " às")
+      formatted_date: formattedDate.replace(",", " às")
     }
   })
 

@@ -1,5 +1,6 @@
 import { useState, useCallback, ChangeEvent, useMemo } from "react";
 import Head from "next/head"
+import NextLink from "next/link"
 import { debounce } from "ts-debounce"
 import DashboardLayout from "../../../components/Layouts/DashboardLayout";
 import { 
@@ -11,6 +12,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Link,
   Table, 
   Tbody, 
   Td, 
@@ -113,13 +115,17 @@ export default function SymptomOccurrences() {
                         <Th>Inicio dos sintomas</Th>
                       </Tr>
                     </Thead>
-
                     <Tbody>
                       { data?.symptomOccurrences.map(symptomOccurrence => (
                         <Tr key={symptomOccurrence.id} _hover={{ bgColor: 'gray.50' }}>
                           <Td>
                             <Box textAlign="left">
-                              <Text>{symptomOccurrence.patient.name}</Text>
+                              <NextLink 
+                                href={`/dashboard/patients/unassignedsymptoms/${symptomOccurrence.patient_id}`} 
+                                passHref
+                              >
+                                <Link>{symptomOccurrence.patient.name}</Link>
+                              </NextLink>
                               <Text fontSize="sm" color="gray.500">
                                 {symptomOccurrence.patient.email}
                               </Text>

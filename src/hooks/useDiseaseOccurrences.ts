@@ -43,7 +43,7 @@ export async function getDiseaseOccurrences(page: number, filter?: FilterDisease
   const { data } = await api.get<GetDiseaseOccurrencesResponse>('/diseaseoccurrence', { params })
 
   const formattedData = data.diseaseOccurrences.map(diseaseOccurrence => {
-    const dateStartFormatted = format(parseISO(diseaseOccurrence.date_start), 'P', { locale: ptBR })
+    const dateStartFormatted = format(parseISO(diseaseOccurrence.date_start), 'Pp', { locale: ptBR })
     let dateEndFormatted = diseaseOccurrence.date_end
 
     if(dateEndFormatted) {
