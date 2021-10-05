@@ -46,6 +46,6 @@ export function usePatientSymptomOccurrences({ patientId }: UsePatientSymptomOcc
     return getPatientSymptomOccurrences(patientId)
   }, {
     keepPreviousData: true,
-    staleTime: 1000 * 60
+    staleTime: 1000 * 5
   })
 }

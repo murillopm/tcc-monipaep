@@ -124,7 +124,9 @@ export default function Patients() {
                           <Td>
                             <Box textAlign="left">
                               <NextLink href={`/dashboard/patients/details/${patient.id}`} passHref>
-                                <Link>{patient.name}</Link>
+                                <Link color="blue.500" fontWeight="semibold">
+                                  {patient.name}
+                                </Link>
                               </NextLink>
                               <Text fontSize="sm" color="gray.500">{patient.email}</Text>
                             </Box>

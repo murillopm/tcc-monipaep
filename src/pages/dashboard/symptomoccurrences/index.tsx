@@ -124,7 +124,9 @@ export default function SymptomOccurrences() {
                                 href={`/dashboard/patients/unassignedsymptoms/${symptomOccurrence.patient_id}`} 
                                 passHref
                               >
-                                <Link>{symptomOccurrence.patient.name}</Link>
+                                <Link color="blue.500" fontWeight="semibold">
+                                  {symptomOccurrence.patient.name}
+                                </Link>
                               </NextLink>
                               <Text fontSize="sm" color="gray.500">
                                 {symptomOccurrence.patient.email}

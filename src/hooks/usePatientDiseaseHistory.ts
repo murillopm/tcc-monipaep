@@ -4,37 +4,33 @@ import ptBR from "date-fns/locale/pt-BR";
 
 import { api } from "../services/apiClient";
 
-type DiseaseOccurrences = {
+type DiseaseOccurrence = {
   id: string;
-  patient_id: string;
   disease_name: string;
   diagnosis: string;
   date_start: string;
   date_end: string | null;
   status: string;
-  patient: {
-    name: string;
-    email: string;
-  };
 }
 
 type GetDiseaseOccurrencesResponse = {
-  diseaseOccurrences: DiseaseOccurrences[],
+  diseaseOccurrences: DiseaseOccurrence[],
   totalDiseaseOccurrences: number,
 }
 
-type FilterDiseaseOccurrences = [
+type FilterPatientDiseaseHistory = [
   filter: string,
   value: string
 ]
 
-interface UseDiseaseOccurrencesProps {
+interface UsePatientDiseaseHistoryProps {
+  patientId: string
   page: number;
-  filter?: FilterDiseaseOccurrences
+  filter?: FilterPatientDiseaseHistory
 }
 
-export async function getDiseaseOccurrences(page: number, filter?: FilterDiseaseOccurrences) {
-  let params = { page }
+export async function getPatientDiseaseHistory(page: number, patientId: string, filter?: FilterPatientDiseaseHistory) {
+  let params = { page, patient_id: patientId }
 
   if(filter) {
     params = { ...params, [filter[0]]: filter[1] }
@@ -64,15 +60,15 @@ export async function getDiseaseOccurrences(page: number, filter?: FilterDisease
   return diseaseOccurrences
 }
 
-export function useDiseaseOccurrences({ page, filter = ['patient_name', ''] }: UseDiseaseOccurrencesProps) {
+export function usePatientDiseaseHistory({ page, patientId, filter = ['disease_name', ''] }: UsePatientDiseaseHistoryProps) {
   const key = filter[1] === '' ? page : `${filter[0]}-${filter[1]}-${page}` 
-  return useQuery(['diseaseOccurrences', key], () => {
+  return useQuery(['patientDiseaseHistory', patientId, key], () => {
     if(!filter || filter[1] === '') {
-      return getDiseaseOccurrences(page)
+      return getPatientDiseaseHistory(page, patientId)
     }
-    return getDiseaseOccurrences(page, filter)
+    return getPatientDiseaseHistory(page, patientId, filter)
   }, {
     keepPreviousData: true,
-    staleTime: 1000 * 5
+    staleTime: 1000 * 10
   })
 }

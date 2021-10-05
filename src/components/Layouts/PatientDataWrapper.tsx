@@ -22,7 +22,7 @@ export function PatientDataWrapper({ children, id, isFetching, isLoading }: Pati
         <TabNavLink href={`/dashboard/patients/details/${id}`} dynamicRoute>
           Dados cadastrais
         </TabNavLink>
-        <TabNavLink href="#" ml="6" dynamicRoute>
+        <TabNavLink href={`/dashboard/patients/diseasehistory/${id}`} ml="6" dynamicRoute>
           Histórico de doenças
         </TabNavLink>
         <TabNavLink href={`/dashboard/patients/unassignedsymptoms/${id}`} ml="6" dynamicRoute>

@@ -7,7 +7,6 @@ import {
   Badge, 
   Box, 
   Flex, 
-  Heading, 
   Icon,
   Input,
   InputGroup,
@@ -25,10 +24,15 @@ import {
 } from "@chakra-ui/react";
 import { MdSearch } from 'react-icons/md'
 
-import { withSSRAuth } from "../../../utils/withSSRAuth";
-import { useDiseaseOccurrences } from "../../../hooks/useDiseaseOccurrences";
-import { Pagination } from "../../../components/Pagination";
-import DashboardLayout from "../../../components/Layouts/DashboardLayout";
+import { withSSRAuth } from "../../../../../utils/withSSRAuth";
+import { Pagination } from "../../../../../components/Pagination";
+import DashboardLayout from "../../../../../components/Layouts/DashboardLayout";
+import { usePatientDiseaseHistory } from "../../../../../hooks/usePatientDiseaseHistory";
+import { PatientDataWrapper } from "../../../../../components/Layouts/PatientDataWrapper";
+
+interface PatientDiseaseHistoryProps {
+  patientId: string;
+}
 
 function getBadgeColor(status: string) {
   if(status === "Saudável" || status === "Curado") {
@@ -42,11 +46,11 @@ function getBadgeColor(status: string) {
   }
 }
 
-export default function DiseaseOccurrences() {
+export default function PatientDiseaseHistory({ patientId }: PatientDiseaseHistoryProps) {
   const [page, setPage] = useState(1)
-  const [filter, setFilter] = useState('patient_name')
+  const [filter, setFilter] = useState('disease_name')
   const [search, setSearch] = useState('')
-  const { data , isLoading, isFetching, error } = useDiseaseOccurrences({ page, filter: [filter, search]})
+  const { data , isLoading, isFetching, error } = usePatientDiseaseHistory({ page, patientId, filter: [filter, search]})
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setPage(1)
@@ -58,18 +62,14 @@ export default function DiseaseOccurrences() {
   , [handleChangeInput]) 
   
   return (
-    <>
+    <PatientDataWrapper id={patientId} isFetching={isFetching} isLoading={isLoading}>
       <Head>
-        <title>MoniPaEp | Ocorrências de doenças</title>
+        <title>MoniPaEp | Histórico de doenças</title>
       </Head>
-      <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
-        <Heading ml="8" my="6">
-          Ocorrências de doenças
-          { !isLoading && isFetching && <Spinner ml="4"/> }
-        </Heading>
+      <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" mt="9">
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
-            <Spinner size="lg"/>
+            <Spinner size="lg" mt="10"/>
           </Box>
         ) : error ? (
           <Box w="100%" display="flex" justifyContent="center" alignItems="center">
@@ -77,25 +77,26 @@ export default function DiseaseOccurrences() {
           </Box>
         ) : (
           <>
-            <Flex mx="8" mb="8">
-              <InputGroup w="30">
-                <InputLeftElement>
-                  <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
-                </InputLeftElement>
-                <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
-              </InputGroup>
-              <Select w="32" onChange={e => {setFilter(e.target.value)}} ml="2">
-                <option value="patient_name">Paciente</option>
-                <option value="disease_name">Doença</option>
-                <option value="status">Status</option>
-              </Select>            
-            </Flex>
+            { (data?.totalDiseaseOccurrences === 0 && search === '') ? <></> : (
+              <Flex mx="8" mb="8">
+                <InputGroup w="30">
+                  <InputLeftElement>
+                    <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
+                  </InputLeftElement>
+                  <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
+                </InputGroup>
+                <Select w="32" onChange={e => {setFilter(e.target.value)}} ml="2">
+                  <option value="disease_name">Doença</option>
+                  <option value="status">Status</option>
+                </Select>            
+              </Flex>
+            )}  
 
             <Flex direction="column" w="100%" overflow="auto" px="8">
               { data?.totalDiseaseOccurrences === 0 ? (
-                <Text mt="2">
+                <Text>
                   { search === '' ? 
-                    'Não existem ocorrências de doença registradas até o momento.' :
+                    'Não existem ocorrências de doença registradas até o momento para este paciente.' :
                     'A busca não encontrou nenhuma ocorrência de doença com esse filtro.'
                   }
                 </Text>
@@ -104,7 +105,6 @@ export default function DiseaseOccurrences() {
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th>Paciente</Th>
                         <Th>Doença</Th>
                         <Th>Data de início</Th>
                         <Th>Data de término</Th>
@@ -116,20 +116,14 @@ export default function DiseaseOccurrences() {
                       { data?.diseaseOccurrences.map(diseaseOccurrence => (
                         <Tr key={diseaseOccurrence.id} _hover={{ bgColor: 'gray.50' }}>
                           <Td>
-                            <Box textAlign="left">
-                              <NextLink 
-                                href={`/dashboard/patients/diseasehistory/${diseaseOccurrence.patient_id}`} 
-                                passHref
-                              >
-                                <Link color="blue.500" fontWeight="semibold">
-                                  {diseaseOccurrence.patient.name}
-                                </Link>
-                              </NextLink>
-                              <Text fontSize="sm" color="gray.500">{diseaseOccurrence.patient.email}</Text>
-                            </Box>
-                          </Td>
-                          <Td>
-                            <Text>{diseaseOccurrence.disease_name}</Text>
+                            <NextLink 
+                              href={`/dashboard/patients/diseasehistory/${patientId}/${diseaseOccurrence.id}`} 
+                              passHref
+                            >
+                              <Link color="blue.500" fontWeight="semibold">
+                                {diseaseOccurrence.disease_name}
+                              </Link>
+                            </NextLink>
                           </Td>
                           <Td>
                             <Text>{diseaseOccurrence.date_start}</Text>
@@ -166,12 +160,17 @@ export default function DiseaseOccurrences() {
           </>
         )}
       </Flex>
-    </>
+    </PatientDataWrapper>
   )
 }
 
-DiseaseOccurrences.layout = DashboardLayout
+PatientDiseaseHistory.layout = DashboardLayout
 
 export const getServerSideProps = withSSRAuth(async (ctx) => { 
-  return { props: {} }
+  const params = ctx.params
+  return { 
+    props: { 
+      patientId: params?.patient 
+    } 
+  }
 })
