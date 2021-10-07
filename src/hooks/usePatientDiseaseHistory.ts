@@ -69,6 +69,6 @@ export function usePatientDiseaseHistory({ page, patientId, filter = ['disease_n
     return getPatientDiseaseHistory(page, patientId, filter)
   }, {
     keepPreviousData: true,
-    staleTime: 1000 * 10
+    staleTime: 1000 * 5
   })
 }

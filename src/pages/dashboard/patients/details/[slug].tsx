@@ -1,6 +1,8 @@
 import Head from "next/head"
+import NextLink from "next/link"
 
-import { Box, Flex, Text, Spinner, VStack } from "@chakra-ui/react";
+import { Box, Flex, Icon, Link, Text, Spinner, VStack } from "@chakra-ui/react";
+import { IoChevronBack } from "react-icons/io5"
 
 import { withSSRAuth } from "../../../../utils/withSSRAuth";
 import { usePatientDetails } from "../../../../hooks/usePatientDetails";
@@ -13,7 +15,7 @@ interface PatientDetailsProps {
 
 export default function PatientDetails({ patientId }: PatientDetailsProps) {
   const { data, isLoading, isFetching, error } = usePatientDetails({ patientId })
-  
+
   return (
     <PatientDataWrapper id={patientId} isFetching={isFetching} isLoading={isLoading}>
       <Head>
@@ -29,8 +31,17 @@ export default function PatientDetails({ patientId }: PatientDetailsProps) {
             <Text>Erro ao carregar os dados</Text>
           </Box>
         ) : (
-          <>
-            <VStack ml="8" mt="6" alignItems="flex-start">
+          <Flex pl="5">
+            <NextLink href={"/dashboard/patients"} passHref>
+              <Link height="27px" mt="8" mr="6">
+                <Icon 
+                  as={IoChevronBack} 
+                  fontSize="22px" 
+                  _hover={{ cursor: 'pointer' }}
+                />
+              </Link>
+            </NextLink>
+            <VStack mt="8" alignItems="flex-start">
               <Flex>
                 <Text fontWeight="bold">Nome:&nbsp;</Text>
                 <Text>{data?.patients[0].name}</Text>
@@ -80,7 +91,7 @@ export default function PatientDetails({ patientId }: PatientDetailsProps) {
                 <Text>{data?.patients[0].createdAt}</Text>
               </Flex>
             </VStack>
-          </>
+          </Flex>
         )}
       </Flex>
     </PatientDataWrapper>

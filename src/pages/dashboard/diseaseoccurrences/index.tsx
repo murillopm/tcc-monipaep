@@ -72,9 +72,9 @@ export default function DiseaseOccurrences() {
             <Spinner size="lg"/>
           </Box>
         ) : error ? (
-          <Box w="100%" display="flex" justifyContent="center" alignItems="center">
+          <Flex mx="8" mt="2" alignItems="flex-start" justifyContent="flex-start">
             <Text>Erro ao carregar os dados</Text>
-          </Box>
+          </Flex>
         ) : (
           <>
             <Flex mx="8" mb="8">
@@ -118,7 +118,7 @@ export default function DiseaseOccurrences() {
                           <Td>
                             <Box textAlign="left">
                               <NextLink 
-                                href={`/dashboard/patients/diseasehistory/${diseaseOccurrence.patient_id}`} 
+                                href={`/dashboard/patients/diseasehistory/${diseaseOccurrence.patient_id}/${diseaseOccurrence.id}`} 
                                 passHref
                               >
                                 <Link color="blue.500" fontWeight="semibold">

@@ -72,9 +72,9 @@ export default function PatientDiseaseHistory({ patientId }: PatientDiseaseHisto
             <Spinner size="lg" mt="10"/>
           </Box>
         ) : error ? (
-          <Box w="100%" display="flex" justifyContent="center" alignItems="center">
+          <Flex mx="8" mt="2" alignItems="flex-start" justifyContent="flex-start">
             <Text>Erro ao carregar os dados</Text>
-          </Box>
+          </Flex>
         ) : (
           <>
             { (data?.totalDiseaseOccurrences === 0 && search === '') ? <></> : (
