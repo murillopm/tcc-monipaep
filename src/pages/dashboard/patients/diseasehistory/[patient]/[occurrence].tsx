@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import NextLink from "next/link"
 import Head from "next/head"
-import { registerLocale } from "react-datepicker";
-import ptBR from "date-fns/locale/pt-BR";
 import { 
   Box, 
   Button,
@@ -20,47 +18,43 @@ import {
   Tr,  
   Spinner,
   useDisclosure,
-  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { IoChevronBack } from "react-icons/io5"
-import { RiAddLine } from 'react-icons/ri'
 import { BiPencil, BiTrash } from 'react-icons/bi'
 
 import { withSSRAuth } from "../../../../../utils/withSSRAuth";
-import { PatientDataWrapper } from "../../../../../components/Layouts/PatientDataWrapper";
-import DashboardLayout from "../../../../../components/Layouts/DashboardLayout";
 import { usePatientDiseaseOccurrence } from "../../../../../hooks/usePatientDiseaseOccurrence";
+import DashboardLayout from "../../../../../components/Layouts/DashboardLayout";
+import { PatientDataWrapper } from "../../../../../components/Layouts/PatientDataWrapper";
 import { DiseaseOccurrenceExcludeAlert } from "../../../../../components/AlertDialog/DiseaseOccurrenceExcludeAlert";
+import { DiseaseOccurrenceEditModal } from "../../../../../components/Modal/DiseaseOccurrenceEditModal";
 
-type GetDiseasesResponse = {
-  diseases: {
-    name: string;
-  } []
+
+type DiseaseOccurrence = {
+  id: string;
+  patient_id: string;
+  disease_name: string;
+  diagnosis: string;
+  date_start: string;
+  date_end: string | null;
+  date_start_formatted: string;
+  date_end_formatted: string | null;
+  status: string;
 }
 
-type DiseaseList = {
-  diseaseName: string;
-  selected: boolean;
-}
 interface PatientDiseaseOccurrenceProps {
   patientId: string;
   occurrenceId: string;
 }
 
-registerLocale('ptBR', ptBR)
 export default function PatientDiseaseOccurrence({ patientId, occurrenceId }: PatientDiseaseOccurrenceProps) {
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined)
-  const [diseaseList, setDiseaseList] = useState<DiseaseList[] | undefined>(undefined)
-  const [diseaseStatus, setDiseaseStatus] = useState('Suspeito')
-  const [diagnosis, setDiagnosis] = useState('')
-  const [isPosting, setIsPosting] = useState(false)
-  const { data, isLoading, isFetching, error,  } = usePatientDiseaseOccurrence({ occurrenceId })
-  const toast = useToast()
+  const { data, isLoading, isFetching, error, refetch } = usePatientDiseaseOccurrence({ occurrenceId })
+  const [occurrenceDetails, setOccurrenceDetails] = useState<DiseaseOccurrence | undefined>(undefined)
 
   useEffect(() => {
-    if(data) {
-      setStartDate(new Date(data.occurrenceDetails.date_start))
+    if(data && occurrenceDetails === undefined) {
+      setOccurrenceDetails(data.occurrenceDetails)
     }
   }, [isLoading])
 
@@ -68,6 +62,12 @@ export default function PatientDiseaseOccurrence({ patientId, occurrenceId }: Pa
     isOpen: isOpenExcludeAlert, 
     onOpen: onOpenExcludeAlert, 
     onClose: onCloseExcludeAlert 
+  } = useDisclosure()
+
+  const { 
+    isOpen: isOpenEditModal, 
+    onOpen: onOpenEditModal, 
+    onClose: onCloseEditModal 
   } = useDisclosure()
 
   return (
@@ -92,6 +92,15 @@ export default function PatientDiseaseOccurrence({ patientId, occurrenceId }: Pa
               diseaseOccurrenceId={occurrenceId}
               patientId={patientId}
             />
+
+            { occurrenceDetails && (
+              <DiseaseOccurrenceEditModal 
+                isOpen={isOpenEditModal} 
+                onClose={onCloseEditModal} 
+                diseaseOccurrence={occurrenceDetails}
+                refetchData={refetch}
+              />
+            )}
             <Flex w="100%" pl="5" pr="8" justifyContent="space-between">
               { data?.symptomsList.length === 0 ? (
                 <Text mt="9" ml="3">
@@ -130,6 +139,7 @@ export default function PatientDiseaseOccurrence({ patientId, occurrenceId }: Pa
                           colorScheme="blue"
                           flex="1"
                           leftIcon={<Icon as={BiPencil} fontSize="20"/>}
+                          onClick={onOpenEditModal}
                         >
                           Editar
                         </Button>

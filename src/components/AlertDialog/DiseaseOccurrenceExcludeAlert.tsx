@@ -50,7 +50,6 @@ export function DiseaseOccurrenceExcludeAlert({
         isClosable: true
       })
     }
-    //setIsDeleting(false)
   }
   
   return (
