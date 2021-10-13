@@ -16,7 +16,7 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>MoniPaEp | Início</title>
+        <title>MoniPaEp | Dashboard</title>
       </Head>
       <h1>Dashboard: {user?.user.email}</h1>
       <Can permissions={['usm.user']}>

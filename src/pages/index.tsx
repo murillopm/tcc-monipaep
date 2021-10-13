@@ -66,7 +66,7 @@ const Home = () => {
         <title>MoniPaEp | Login</title>
       </Head>
       <Flex height="100vh" alignItems="center" justifyContent="center" background="custom.blue-300">
-        <Flex direction="column" background="custom.blue-50" p={12} rounded={6} maxWidth={400} mx="auto">
+        <Flex direction="column" background="custom.blue-50" p="8" rounded="7" maxWidth="400" mx="auto">
           <Heading mb={6} color="custom.gray-800" textAlign="center">Faça seu login no MoniPaEp</Heading>
           <Flex as="form" direction="column" onSubmit={handleSubmit(handleSignIn)}>
             <Stack spacing={4} mb={4}>     
@@ -135,6 +135,7 @@ const Home = () => {
         
             <Button 
               type="submit" 
+              mt="2"
               bgColor="custom.blue-600" 
               color="white"
               _hover={{'bgColor': 'custom.blue-500'}}
@@ -142,17 +143,22 @@ const Home = () => {
               ENTRAR
             </Button>
 
-            <Box display="flex" width="100%" justifyContent="center" mt={3}>
-              <Text>Não tem uma conta?&nbsp;</Text>
-              <Link href="/signup" passHref>
-                <ChakraLink>Cadastre-se</ChakraLink>
+            <Stack spacing="2" width="100%" justifyContent="center" alignItems="center" mt="6">
+              <Box w="100%" display="flex" justifyContent="center">
+                <Text>Não tem uma conta?&nbsp;</Text>
+                <Link href="/signup" passHref>
+                  <ChakraLink color="blue.600" fontWeight="semibold">
+                    Cadastre-se
+                  </ChakraLink>
+                </Link>
+              </Box>
+              <Link href="#" passHref>
+                <ChakraLink textAlign="center" color="blue.600" fontWeight="semibold">
+                  Esqueceu a senha?
+                </ChakraLink>
               </Link>
-            </Box>
-            <Link href="#" passHref>
-              <ChakraLink textAlign="center">Esqueceu a senha?</ChakraLink>
-            </Link>
+            </Stack>
           </Flex>
-          
         </Flex>
       </Flex>
     </>

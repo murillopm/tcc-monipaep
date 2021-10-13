@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
+import InputMask from 'react-input-mask'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from "yup";
-import InputMask from 'react-input-mask'
 
 import { 
   Box,
@@ -64,14 +64,11 @@ export default function SignUp() {
   })
   const { errors } = formState
 
-
   const handleSignIn: SubmitHandler<SignUpData> = async (values) => {
-    const cpfCleaned = values.cpf.replaceAll( /[.-]/g, '')
-    
     try {
       const response = await api.post('/systemuser/signup', {
         name: values.name,
-        CPF: values.cpf,
+        CPF: values.cpf.replaceAll(/[.-]/g, ''),
         email: values.email,
         password: values.password,
         department: values.sector,
@@ -82,7 +79,6 @@ export default function SignUp() {
         status: "success",
         isClosable: true
       })
-      console.log(response)
     } catch (error: any) {
       toast({
         title: "Erro no cadastro",
@@ -99,7 +95,7 @@ export default function SignUp() {
         <title>MoniPaEp | Cadastro</title>
       </Head>
       <Flex height="100vh" alignItems="center" justifyContent="center" background="custom.blue-300" overflow="auto">
-        <Flex direction="column" background="custom.blue-50" p={12} rounded={6} maxWidth={400} m="auto">
+        <Flex direction="column" background="custom.blue-50" p="9" rounded="7" maxWidth={400} m="auto">
           <Heading mb={6} color="custom.gray-800" textAlign="center" >Cadastre-se no MoniPaEp</Heading >
           <Flex as="form" direction="column" onSubmit={handleSubmit(handleSignIn)}>
             <Stack spacing={4} mb={4}>     
@@ -282,6 +278,7 @@ export default function SignUp() {
         
             <Button 
               type="submit" 
+              mt="2"
               bgColor="custom.blue-600" 
               color="white"
               _hover={{'bgColor': 'custom.blue-500'}}
@@ -289,10 +286,12 @@ export default function SignUp() {
               CADASTRAR
             </Button>
             
-            <Box display="flex" width="100%" justifyContent="center" mt={3}>
+            <Box display="flex" width="100%" justifyContent="center" mt="8">
               <Text>Já tem uma conta?&nbsp;</Text>
               <Link href="/" passHref>
-                <ChakraLink>Entrar</ChakraLink>
+                <ChakraLink color="blue.600" fontWeight="semibold">
+                  Entrar
+                </ChakraLink>
               </Link>
             </Box>
           </Flex>
