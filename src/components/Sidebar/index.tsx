@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { Box, Button, Flex, Heading, Icon } from "@chakra-ui/react";
+import { Box, Flex, Heading, Icon } from "@chakra-ui/react";
 
 import { AiOutlineDatabase } from "react-icons/ai"
 import { BiArchive, BiBookHeart, BiClinic, BiHealth } from "react-icons/bi"
@@ -10,15 +9,15 @@ import { HiOutlineClipboardList } from "react-icons/hi"
 import { Can } from "../Can";
 import { NavLink } from "./NavLink";
 import { NavSection } from "./NavSection";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AccountSection } from "./AccountSection";
 
 export function Sidebar() {
-  const { signOut } = useContext(AuthContext)
   return (
     <Box 
       as="aside" 
       w="64" 
       h="100%" 
+      pb="9"
       bgColor="custom.blue-dark"
       display="flex"
       flexDir="column"
@@ -72,14 +71,13 @@ export function Sidebar() {
       
       <Can roles={["local.admin", "general.admin"]}>
         <NavSection title="PAINEL DE ADMINISTRADOR">
-          <NavLink href="/dashboard/systemusers" icon={BiBookHeart}>
+          <NavLink href="/dashboard/systemusers" icon={FiUsers}>
             Usuários do sistema
           </NavLink>
         </NavSection>
       </Can>
-      <Button onClick={signOut} mt="4">
-        Sair
-      </Button>
+
+      <AccountSection />
     </Box>
   )
 }

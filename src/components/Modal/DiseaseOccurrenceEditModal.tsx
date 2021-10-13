@@ -66,7 +66,7 @@ export function DiseaseOccurrenceEditModal({ isOpen, onClose, diseaseOccurrence,
     setDisease(diseaseOccurrence.disease_name)
     setDiseaseStatus(diseaseOccurrence.status)
     setDiagnosis(diseaseOccurrence.diagnosis)
-  }, [])
+  }, [diseaseOccurrence])
 
   useEffect(() => {
     const getDiseaseOptions = async() => {

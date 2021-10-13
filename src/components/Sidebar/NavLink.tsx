@@ -19,8 +19,8 @@ export function NavLink({ href, icon, children, ...rest }: NavLinkProps) {
   }
   
   return (
-    <Link href={href} passHref >
-      <ChakraLink {...rest} _hover={{ textDecoration: "none" }}>
+    <Link href={href} passHref>
+      <ChakraLink {...rest} _hover={{ textDecoration: "none" }} w="100%">
         <Box 
           w="100%" 
           role="group"

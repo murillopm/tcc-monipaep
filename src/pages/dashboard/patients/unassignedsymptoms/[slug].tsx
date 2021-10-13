@@ -62,7 +62,7 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
     if(data && data.length > 0) {
       setStartDate(new Date(data[data.length - 1]?.registered_date))
     }
-  }, [isLoading])
+  }, [isLoading, data])
 
   useEffect(() => {
     const getDiseaseOptions = async() => {

@@ -56,7 +56,7 @@ export default function PatientDiseaseOccurrence({ patientId, occurrenceId }: Pa
     if(data && occurrenceDetails === undefined) {
       setOccurrenceDetails(data.occurrenceDetails)
     }
-  }, [isLoading])
+  }, [isLoading, data, occurrenceDetails])
 
   const { 
     isOpen: isOpenExcludeAlert, 
