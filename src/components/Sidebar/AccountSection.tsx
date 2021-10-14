@@ -5,7 +5,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { NavLink } from "./NavLink";
 
 export function AccountSection() {
-  const { signOut } = useContext(AuthContext)
+  const { user, signOut } = useContext(AuthContext)
   return (
     <Box w="100%" maxW="100%" mt="auto">
       <Flex 
@@ -17,19 +17,19 @@ export function AccountSection() {
         p="3"
         rounded="8"
       >
-        <Avatar size="sm" name="Murillo Mesquita" />
+        <Avatar size="sm" name={user?.user.name} />
         <Flex 
           ml="3"  
           direction="column"
           alignItems="flex-start"
         >
-          <Text color="white">Murillo Mesquita</Text>
-          <Text color="gray.400" fontSize="small">mu.pracucio@gmail.com</Text>
+          <Text color="white">{user?.user.name}</Text>
+          <Text color="gray.400" fontSize="small">{user?.user.email}</Text>
         </Flex>
       </Flex>
 
       <Stack spacing="2" w="calc(100% - 2rem)" mx="auto">
-        <NavLink href="#" icon={FiSettings}>
+        <NavLink href="/dashboard/account" icon={FiSettings}>
           Conta
         </NavLink>
         <Box 
@@ -46,7 +46,7 @@ export function AccountSection() {
           borderRadius={4}
           height="9"
           alignItems="center"
-          onClick={() => console.log('click')}
+          onClick={() => signOut()}
         >
           <Icon 
             as={FiLogOut} 

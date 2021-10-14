@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Head from "next/head"
 import Router from "next/router"
-import NextLink from "next/link"
 import DatePicker, { registerLocale } from "react-datepicker";
 import ptBR from "date-fns/locale/pt-BR";
 import { 
@@ -55,6 +54,7 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
   const [diseaseStatus, setDiseaseStatus] = useState('Suspeito')
   const [diagnosis, setDiagnosis] = useState('')
   const [isPosting, setIsPosting] = useState(false)
+  const [isLoadingDiseases, setIsLoadingDiseases] = useState(false)
   const { data, isLoading, isFetching, error,  } = usePatientSymptomOccurrences({ patientId })
   const toast = useToast()
 
@@ -66,6 +66,7 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
 
   useEffect(() => {
     const getDiseaseOptions = async() => {
+      setIsLoadingDiseases(true)
       const { data } = await api.get<GetDiseasesResponse>('/disease')
       const diseaseList: DiseaseList[] = data.diseases.map(disease => {
         return {
@@ -74,6 +75,7 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
         }
       })
       setDiseaseList(diseaseList)
+      setIsLoadingDiseases(false)
     }
     getDiseaseOptions()
   }, [])
@@ -157,15 +159,14 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
             ) : (
               <>
                 <Flex maxW="47%" w="100%">
-                  <NextLink href={"/dashboard/symptomoccurrences"} passHref>
-                    <Link height="27px" mt="8" mr="6">
-                      <Icon 
-                        as={IoChevronBack} 
-                        fontSize="22px" 
-                        _hover={{ cursor: 'pointer' }}
-                      />
-                    </Link>
-                  </NextLink>
+                  <Icon 
+                    as={IoChevronBack} 
+                    fontSize="22px" 
+                    mt="9" 
+                    mr="6"
+                    _hover={{ cursor: 'pointer' }}
+                    onClick={() => Router.back()}
+                  />
                   <Box w="100%">
                     <Text fontSize="lg" mb="5" mt="8" fontWeight="semibold">
                       Histórico de sintomas do paciente
@@ -226,26 +227,30 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
                     </Flex>
                     <Flex w="100%" direction="column">
                       <Text mb="3" fontWeight="500">Doenças suspeitas:</Text>
-                      <SimpleGrid 
-                        w="100%" 
-                        alignItems="center" 
-                        spacing="4" 
-                        minChildWidth="80px" 
-                        columnGap="30px"
-                        rowGap="10px"
-                      >
-                        { diseaseList && (
-                          diseaseList.map(disease => (
-                            <Checkbox 
-                              key={disease.diseaseName} 
-                              isChecked={disease.selected} 
-                              onChange={() => handleCheckboxClick(disease.diseaseName)}
-                            >
-                              {disease.diseaseName}
-                            </Checkbox>
-                          ))
-                        )}
-                      </SimpleGrid>
+                      { isLoadingDiseases ? (
+                        <Spinner size="lg" mt="2" alignSelf="center"/>
+                      ) : (
+                        <SimpleGrid 
+                          w="100%" 
+                          alignItems="center" 
+                          spacing="4" 
+                          minChildWidth="80px" 
+                          columnGap="30px"
+                          rowGap="10px"
+                        >
+                          { diseaseList && (
+                            diseaseList.map(disease => (
+                              <Checkbox 
+                                key={disease.diseaseName} 
+                                isChecked={disease.selected} 
+                                onChange={() => handleCheckboxClick(disease.diseaseName)}
+                              >
+                                {disease.diseaseName}
+                              </Checkbox>
+                            ))
+                          )}
+                        </SimpleGrid>
+                      )}
                     </Flex>
                   </VStack>
                   <Button 

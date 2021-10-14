@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NextLink from "next/link"
+import Router from "next/router"
 import Head from "next/head"
 import { 
   Box, 
@@ -92,7 +92,6 @@ export default function PatientDiseaseOccurrence({ patientId, occurrenceId }: Pa
               diseaseOccurrenceId={occurrenceId}
               patientId={patientId}
             />
-
             { occurrenceDetails && (
               <DiseaseOccurrenceEditModal 
                 isOpen={isOpenEditModal} 
@@ -109,20 +108,14 @@ export default function PatientDiseaseOccurrence({ patientId, occurrenceId }: Pa
               ) : (
                 <>
                   <Flex maxW="26%" w="100%">
-                    <Flex mt="8" mr="6">
-                      <NextLink 
-                        href={`/dashboard/patients/diseasehistory/${patientId}`} 
-                        passHref
-                      >
-                        <Link height="27px">
-                          <Icon 
-                            as={IoChevronBack} 
-                            fontSize="22px" 
-                            _hover={{ cursor: 'pointer' }}
-                          />
-                        </Link>
-                      </NextLink>
-                    </Flex>
+                    <Icon 
+                      as={IoChevronBack} 
+                      fontSize="22px" 
+                      mt="9" 
+                      mr="6"
+                      _hover={{ cursor: 'pointer' }}
+                      onClick={() => Router.back()}
+                    />
                     <Flex direction="column">
                       <Text w="100%" mt="8" mb="5" fontWeight="semibold" fontSize="lg">
                         Detalhes da ocorrência de doença

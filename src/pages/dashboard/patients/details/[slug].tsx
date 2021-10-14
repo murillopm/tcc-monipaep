@@ -1,4 +1,5 @@
 import Head from "next/head"
+import Router from "next/router"
 import NextLink from "next/link"
 
 import { Box, Flex, Icon, Link, Text, Spinner, VStack } from "@chakra-ui/react";
@@ -32,15 +33,14 @@ export default function PatientDetails({ patientId }: PatientDetailsProps) {
           </Box>
         ) : (
           <Flex pl="5">
-            <NextLink href={"/dashboard/patients"} passHref>
-              <Link height="27px" mt="8" mr="6">
-                <Icon 
-                  as={IoChevronBack} 
-                  fontSize="22px" 
-                  _hover={{ cursor: 'pointer' }}
-                />
-              </Link>
-            </NextLink>
+            <Icon 
+              as={IoChevronBack} 
+              fontSize="22px" 
+              mt="9" 
+              mr="6"
+              _hover={{ cursor: 'pointer' }}
+              onClick={() => Router.back()}
+            />
             <VStack mt="8" alignItems="flex-start">
               <Flex>
                 <Text fontWeight="bold">Nome:&nbsp;</Text>

@@ -18,13 +18,6 @@ export default function Dashboard() {
       <Head>
         <title>MoniPaEp | Dashboard</title>
       </Head>
-      <h1>Dashboard: {user?.user.email}</h1>
-      <Can permissions={['usm.user']}>
-        <h1>Pode</h1>
-      </Can>
-      <Link href="/" passHref>
-        <ChakraLink>Dashboard</ChakraLink>
-      </Link>
     </>
   )
 }
