@@ -1,72 +1,44 @@
-import { useState, useCallback, ChangeEvent, useMemo, useEffect, useContext } from "react";
+import { useContext } from "react";
 import Head from "next/head"
 import Router from "next/router"
-import { debounce } from "ts-debounce"
-import { format, parseISO } from "date-fns";
-import ptBR from "date-fns/locale/pt-BR";
 
 import { 
-  Badge, 
   Box, 
+  Button,
   Flex, 
   Heading, 
+  HStack,
   Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  Table, 
-  Tbody, 
-  Td, 
   Text, 
-  Th, 
-  Thead, 
-  Tr, 
-  Select, 
   Spinner,
   VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { MdSearch } from 'react-icons/md'
+import { BiPencil } from 'react-icons/bi'
+import { RiLockPasswordLine } from 'react-icons/ri'
 import { IoChevronBack } from "react-icons/io5"
 
 import { withSSRAuth } from "../../utils/withSSRAuth";
-import { Pagination } from "../../components/Pagination";
-import DashboardLayout from "../../components/Layouts/DashboardLayout";
-import { api } from "../../services/apiClient";
+import { useUserDetails } from "../../hooks/useUserDetails";
 import { AuthContext } from "../../contexts/AuthContext";
-
-type SystemUser = {
-  id: string;
-  name: string;
-  CPF: string;
-  email: string;
-  department: string;
-  createdAt: string;
-}
+import DashboardLayout from "../../components/Layouts/DashboardLayout";
+import { UserDetailsEditModal } from "../../components/Modal/UserDetailsEditModal";
+import { UserPasswordEditModal } from "../../components/Modal/UserPasswordEditModal";
 
 export default function Account() {
-  const [accountDetails, setAccountDetails] = useState({} as SystemUser)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isUpdating, setIsUpdating] = useState(false)
   const { user } = useContext(AuthContext)
+  const { data, isLoading, isFetching, error, refetch } = useUserDetails({ userId: user?.user.id })
+  const { 
+    isOpen: isOpenEditDetailsModal, 
+    onOpen: onOpenEditDetailsModal, 
+    onClose: onCloseEditDetailsModal 
+  } = useDisclosure()
 
-  useEffect(() => {
-    async function getAccountDetails() {
-      const { data } = await api.get<SystemUser[]>('/systemuser/', {
-        params: { id: user?.user.id }
-      })
-      const formattedData: SystemUser[] = data.map(user => {
-        const formattedDate = format(parseISO(user.createdAt), 'Pp', { locale: ptBR })
-        return {
-          ...user,
-          createdAt: formattedDate
-        }
-      })
-      setAccountDetails(formattedData[0])
-      setIsLoading(false)
-    }
-    getAccountDetails()
-  }, [isUpdating, user])
+  const { 
+    isOpen: isOpenEditPasswordModal, 
+    onOpen: onOpenEditPasswordModal, 
+    onClose: onCloseEditPasswordModal 
+  } = useDisclosure()
 
   return (
     <>
@@ -76,44 +48,86 @@ export default function Account() {
       <Flex h="100%" w="100%" bgColor="white" borderRadius="4" direction="column" >
         <Heading ml="8" my="6">
           Detalhes do usuário
+          { !isLoading && isFetching && <Spinner ml="4"/> }
         </Heading>
         { isLoading ? (
           <Box w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
-            <Spinner size="lg"/>
+            <Spinner size="lg" mt="10"/>
+          </Box>
+        ) : error ? (
+          <Box w="100%" display="flex" justifyContent="center" alignItems="center">
+            <Text>Erro ao carregar os dados</Text>
           </Box>
         ) : (
-          <Flex pl="5">
-            <Icon 
-              as={IoChevronBack} 
-              fontSize="22px" 
-              mt="9" 
-              mr="6"
-              _hover={{ cursor: 'pointer' }}
-              onClick={() => Router.back()}
-            />
-            <VStack mt="8" alignItems="flex-start">
-              <Flex>
-                <Text fontWeight="bold">Nome:&nbsp;</Text>
-                <Text>{accountDetails?.name}</Text>
-              </Flex>
-              <Flex>
-                <Text fontWeight="bold">CPF:&nbsp;</Text>
-                <Text>{accountDetails.CPF}</Text>
-              </Flex>
-              <Flex>
-                <Text fontWeight="bold">Email:&nbsp;</Text>
-                <Text>{accountDetails.email}</Text>
-              </Flex>
-              <Flex>
-                <Text fontWeight="bold">Departamento:&nbsp;</Text>
-                <Text>{accountDetails.department}</Text>
-              </Flex>
-              <Flex>
-                <Text fontWeight="bold">Criado em:&nbsp;</Text>
-                <Text>{accountDetails.createdAt}</Text>
-              </Flex>
-            </VStack>
-          </Flex>
+          <>
+            { data && (
+              <UserDetailsEditModal 
+                isOpen={isOpenEditDetailsModal}
+                onClose={onCloseEditDetailsModal}
+                user={data}
+                refetch={refetch}
+              />
+            )}
+
+            { data && (
+              <UserPasswordEditModal 
+                isOpen={isOpenEditPasswordModal}
+                onClose={onCloseEditPasswordModal}
+                userId={data?.id}
+              />
+            )}
+
+            <Flex pl="5">
+              <Icon 
+                as={IoChevronBack} 
+                fontSize="22px" 
+                mt="9" 
+                mr="6"
+                _hover={{ cursor: 'pointer' }}
+                onClick={() => Router.back()}
+              />
+              <VStack mt="8" alignItems="flex-start">
+                <Flex>
+                  <Text fontWeight="bold">Nome:&nbsp;</Text>
+                  <Text>{data?.name}</Text>
+                </Flex>
+                <Flex>
+                  <Text fontWeight="bold">CPF:&nbsp;</Text>
+                  <Text>{data?.CPF}</Text>
+                </Flex>
+                <Flex>
+                  <Text fontWeight="bold">Email:&nbsp;</Text>
+                  <Text>{data?.email}</Text>
+                </Flex>
+                <Flex>
+                  <Text fontWeight="bold">Departamento:&nbsp;</Text>
+                  <Text>{data?.department}</Text>
+                </Flex>
+                <Flex>
+                  <Text fontWeight="bold">Criado em:&nbsp;</Text>
+                  <Text>{data?.createdAt}</Text>
+                </Flex>
+                <HStack w="100%" pt="2" spacing="2">
+                  <Button 
+                    colorScheme="blue"
+                    flex="1"
+                    leftIcon={<Icon as={BiPencil} fontSize="20"/>}
+                    onClick={onOpenEditDetailsModal}
+                  >
+                    Editar dados
+                  </Button>
+                  <Button 
+                    colorScheme="purple"
+                    flex="1"
+                    leftIcon={<Icon as={RiLockPasswordLine} fontSize="20"/>}
+                    onClick={onOpenEditPasswordModal}
+                  >
+                    Alterar senha
+                  </Button>
+                </HStack>
+              </VStack>
+            </Flex>
+          </>
         )}
       </Flex>
     </>

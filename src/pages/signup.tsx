@@ -195,8 +195,8 @@ export default function SignUp() {
                   focusBorderColor="custom.blue-500"
                   {...register("sector")}
                 >
-                  <option value="USM">Unidade de Saúde do Município</option>
-                  <option value="SVS">Setor de Vigilância Sanitária</option>
+                  <option value="USM">Unidade de saúde</option>
+                  <option value="SVS">Vigilância em saúde</option>
                 </Select>
                 { !!errors?.sector && (
                   <FormErrorMessage>

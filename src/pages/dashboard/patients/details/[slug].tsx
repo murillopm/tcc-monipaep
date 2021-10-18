@@ -1,8 +1,7 @@
 import Head from "next/head"
 import Router from "next/router"
-import NextLink from "next/link"
 
-import { Box, Flex, Icon, Link, Text, Spinner, VStack } from "@chakra-ui/react";
+import { Box, Flex, Icon, Text, Spinner, VStack } from "@chakra-ui/react";
 import { IoChevronBack } from "react-icons/io5"
 
 import { withSSRAuth } from "../../../../utils/withSSRAuth";

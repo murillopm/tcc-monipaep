@@ -25,7 +25,7 @@ class MyApp extends App {
             </Layout>
           </ChakraProvider>
         </AuthProvider>
-        {/* <ReactQueryDevtools /> */}
+        <ReactQueryDevtools />
       </QueryClientProvider>
     )
   }

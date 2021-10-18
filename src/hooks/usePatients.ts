@@ -39,14 +39,14 @@ export async function getPatients(page: number, filter?: FilterPatient) {
     params = { ...params, [filter[0]]: filter[1] }
   }
   const { data } = await api.get<GetPatientsResponse>('/patients', { params })
-  const formattedData = data.patients.map(pacient => {
-    const createdAtFormatted = format(parseISO(pacient.createdAt), 'P', { locale: ptBR })
-    const birthdateFormatted = format(parseISO(pacient.birthdate), 'P', { locale: ptBR })
+  const formattedData = data.patients.map(patient => {
+    const createdAtFormatted = format(parseISO(patient.createdAt), 'P', { locale: ptBR })
+    const birthdateFormatted = format(parseISO(patient.birthdate), 'P', { locale: ptBR })
     const formattedCPF = 
-      pacient.CPF.slice(0, 3) + "." + pacient.CPF.slice(3, 6) + "."
-      + pacient.CPF.slice(6, 9) + "-" + pacient.CPF.slice(9, 12)
+      patient.CPF.slice(0, 3) + "." + patient.CPF.slice(3, 6) + "."
+      + patient.CPF.slice(6, 9) + "-" + patient.CPF.slice(9, 12)
     return {
-      ...pacient,
+      ...patient,
       CPF: formattedCPF,
       createdAt: createdAtFormatted,
       birthdate: birthdateFormatted
