@@ -35,6 +35,7 @@ import { AssignedHealthProtocolExcludeAlert } from "../../../components/AlertDia
 type AssignedHealthProtocol = {
   healthProtocol: {
     id: string;
+    title: string;
     description: string;
   }
   diseaseName: string;
@@ -121,7 +122,7 @@ export default function AssignedHealthProtocols() {
               </InputGroup> 
               <Select w="34" onChange={e => {setFilter(e.target.value)}} ml="2">
                 <option value="disease_name">Doença</option>
-                <option value="healthprotocol_description">Protocolo de saúde</option>
+                <option value="healthprotocol_title">Protocolo de saúde</option>
               </Select>  
               { !isLoading && isFetching && <Spinner ml="4"/> }
               { isUserAllowed && (
@@ -151,7 +152,7 @@ export default function AssignedHealthProtocols() {
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th>Protocolo de saúde</Th>
+                        <Th>Título do protocolo de saúde</Th>
                         <Th>Doença</Th>
                         { isUserAllowed && <Th></Th> }
                       </Tr>
@@ -164,7 +165,7 @@ export default function AssignedHealthProtocols() {
                           _hover={{ bgColor: 'gray.50' }}
                         >
                           <Td>
-                            <Text textOverflow="ellipsis">{assignedHealthProtocol.healthProtocol.description}</Text>
+                            <Text textOverflow="ellipsis">{assignedHealthProtocol.healthProtocol.title}</Text>
                           </Td>
                           <Td>
                             <Text>{assignedHealthProtocol.diseaseName}</Text>

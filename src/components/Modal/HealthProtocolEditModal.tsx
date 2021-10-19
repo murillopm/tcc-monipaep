@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import {
   Button,
+  Input,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -17,6 +18,7 @@ import { api } from '../../services/apiClient';
 
 type HealthProtocol = {
   id: string;
+  title: string;
   description: string;
 }
 
@@ -28,58 +30,82 @@ interface HealthProtocolEditModalProps {
 }
 
 export function HealthProtocolEditModal({ isOpen, onClose, healthProtocol, refetchList }: HealthProtocolEditModalProps) {
-  const [healthProtocolDescription, setHealthProtocolDescription] = useState(healthProtocol.description)
+  const [title, setTitle] = useState(healthProtocol.title)
+  const [description, setDescription] = useState(healthProtocol.description)
   const [touched, setTouched] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const toast = useToast()
 
   useEffect(() => {
-    setHealthProtocolDescription(healthProtocol.description)
+    setTitle(healthProtocol.title)
+    setDescription(healthProtocol.description)
   }, [healthProtocol])
 
+  function handleTitleInputChanged(event: ChangeEvent<HTMLInputElement>) {
+    setTitle(event.target.value)
+    if(!touched) {
+      setTouched(true)
+    }
+  }
+
   function handleDescriptionInputChanged(event: ChangeEvent<HTMLTextAreaElement>) {
-    setHealthProtocolDescription(event.target.value)
+    setDescription(event.target.value)
     if(!touched) {
       setTouched(true)
     }
   }
 
   function handleClose() {
-    setHealthProtocolDescription(healthProtocol.description)
+    setTitle(healthProtocol.title)
+    setDescription(healthProtocol.description)
     setTouched(false)
     onClose()
   }
 
   async function handleHealthProtocolUpdate() {
-    if(healthProtocolDescription !== '') {
+    if(title !== '' && description !== '') {
       setIsUpdating(true)
-      try {
-        const response = await api.put(`/healthprotocol/${healthProtocol.id}`, {
-          description: healthProtocolDescription 
+      let body: any = {}
+      if(title !== healthProtocol.title) {
+        body = { ...body, title }
+      }
+      if(description !== healthProtocol.description) {
+        body = { ...body, description }
+      }
+      if(Object.keys(body).length === 0) {
+        toast({
+          title: "Erro",
+          description: "Não houve nenhuma alteração nos campos",
+          status: "error",
+          isClosable: true
         })
+        setIsUpdating(false)
+        return
+      }
+      try {
+        const response = await api.put(`/healthprotocol/${healthProtocol.id}`, body)
         toast({
           title: "Sucesso",
           description: response.data?.success,
           status: "success",
           isClosable: true
         })
-      setTouched(false)
-      onClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro na alteração",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsUpdating(false)
-    
+        setTouched(false)
+        onClose()
+        refetchList()
+      } catch (error: any) {
+        toast({
+          title: "Erro na alteração",
+          description: error.response?.data.error,
+          status: "error",
+          isClosable: true
+        })
+      }
+      setIsUpdating(false)
     } else {
       toast({
         title: "Erro",
-        description: 'Preencha o campo com o nome do sintoma',
+        description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
       })
@@ -100,8 +126,10 @@ export function HealthProtocolEditModal({ isOpen, onClose, healthProtocol, refet
           <ModalHeader textAlign="center">Editar protocolo de saúde</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text fontWeight="semibold" mb="2">Descrição</Text>
-            <Textarea value={healthProtocolDescription} mb="2" height="100px" onChange={handleDescriptionInputChanged}/>
+            <Text fontWeight="semibold" mb="2">Título</Text>
+            <Input value={title} mb="2" onChange={handleTitleInputChanged}/>
+            <Text fontWeight="semibold" mt="2">Descrição</Text>
+            <Textarea value={description} mb="2" height="100px" onChange={handleDescriptionInputChanged}/>
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>

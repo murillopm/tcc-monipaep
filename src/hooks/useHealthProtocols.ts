@@ -4,6 +4,7 @@ import { api } from "../services/apiClient";
 
 type HealthProtocol = {
   id: string;
+  title: string;
   description: string;
 }
 
@@ -12,26 +13,31 @@ type GetHealthProtocolsResponse = {
   totalHealthProtocols: number,
 }
 
+type FilterHealthProtocol = [
+  filter: string,
+  value: string
+]
 interface UseHealthProtocolProps {
   page: number;
-  filter?: string;
+  filter?: FilterHealthProtocol;
 }
 
-export async function getHealthProtocols(page: number, filter?: string) {
+export async function getHealthProtocols(page: number, filter?: FilterHealthProtocol) {
   let params: any = { page }
   if(filter) {
-    params = { ...params, description: filter }
+    params = { ...params, [filter[0]]: filter[1] }
   }
   const { data } = await api.get<GetHealthProtocolsResponse>('/healthprotocol', { params })
   return data
 }
 
-export function useHealthProtocols({ page, filter = '' }: UseHealthProtocolProps) { 
-  return useQuery(['healthProtocols', page, filter], () => {
-    if(filter !== '') {
-      return getHealthProtocols(page, filter)
+export function useHealthProtocols({ page, filter = ['title', ''] }: UseHealthProtocolProps) { 
+  const key = filter[1] === '' ? page : `${filter[0]}-${filter[1]}-${page}` 
+  return useQuery(['healthProtocols', key], () => {
+    if(!filter || filter[1] === '') {
+      return getHealthProtocols(page)
     }
-    return getHealthProtocols(page)
+    return getHealthProtocols(page, filter)
   }, {
     keepPreviousData: true,
     staleTime: 1000 * 5

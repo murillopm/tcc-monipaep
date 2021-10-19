@@ -6,6 +6,7 @@ type AssignedHealthProtocolResponse = {
   disease_name: string;
   healthprotocol: {
     id: string;
+    title: string;
     description: string;
   };
 }

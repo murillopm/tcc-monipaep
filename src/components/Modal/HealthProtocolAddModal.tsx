@@ -1,6 +1,7 @@
 import { useState, ChangeEvent } from 'react';
 import {
   Button,
+  Input,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -22,51 +23,59 @@ interface HealthProtocolAddModalProps {
 }
 
 export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthProtocolAddModalProps) {
-  const [healthProtocol, setHealthProtocol] = useState('')
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
   const [touched, setTouched] = useState(false)
   const [isPosting, setIsPosting] = useState(false)
   const toast = useToast()
 
-  function handleHealthProtocolInputChanged(event: ChangeEvent<HTMLTextAreaElement>) {
-    setHealthProtocol(event.target.value)
+  function handleTitleInputChanged(event: ChangeEvent<HTMLInputElement>) {
+    setTitle(event.target.value)
+    if(!touched) {
+      setTouched(true)
+    }
+  }
+
+  function handleDescriptionInputChanged(event: ChangeEvent<HTMLTextAreaElement>) {
+    setDescription(event.target.value)
     if(!touched) {
       setTouched(true)
     }
   }
 
   function handleClose() {
-    setHealthProtocol('')
+    setTitle('')
+    setDescription('')
     setTouched(false)
     onClose()
   }
 
   async function handleHealthProtocolCreation() {
-    if(healthProtocol !== '') {
+    if(title !== '' && description !== '') {
       setIsPosting(true)
       try {
-        const response = await api.post('/healthprotocol/', { description: healthProtocol })
+        const response = await api.post('/healthprotocol/', { title, description })
         toast({
           title: "Sucesso",
           description: response.data?.success,
           status: "success",
           isClosable: true
         })
-      handleClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro na criação",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsPosting(false)
-    
+        handleClose()
+        refetchList()
+      } catch (error: any) {
+        toast({
+          title: "Erro na criação",
+          description: error.response?.data.error,
+          status: "error",
+          isClosable: true
+        })
+      }
+      setIsPosting(false)
     } else {
       toast({
         title: "Erro",
-        description: 'Preencha o campo com o nome do sintoma',
+        description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
       })
@@ -87,8 +96,10 @@ export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthP
           <ModalHeader textAlign="center">Adicionar protocolo de saúde</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text fontWeight="semibold" mb="2">Descrição</Text>
-            <Textarea value={healthProtocol} mb="2" height="100px" onChange={handleHealthProtocolInputChanged}/>
+            <Text fontWeight="semibold" mb="2">Título</Text>
+            <Input value={title} mb="2" onChange={handleTitleInputChanged}/>
+            <Text fontWeight="semibold" mt="2">Descrição</Text>
+            <Textarea value={description} mb="2" height="100px" onChange={handleDescriptionInputChanged}/>
           </ModalBody>
           <ModalFooter>
             <Button onClick={handleClose} mr="3">Cancelar</Button>

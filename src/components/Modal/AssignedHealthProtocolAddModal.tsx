@@ -17,6 +17,7 @@ import { api } from '../../services/apiClient';
 
 type HealthProtocol = {
   id: string;
+  title: string;
   description: string;
 }
 
@@ -38,7 +39,7 @@ export function AssignedHealthProtocolAddModal({ isOpen, onClose, refetchList }:
   const [
     healthProtocolOptions, 
     setHealthProtocolOptions
-  ] = useState<HealthProtocol[]>([{ id: 'unknown', description:'Carregando...' }])
+  ] = useState<HealthProtocol[]>([{ id: 'unknown', title: 'Carregando...', description:'Carregando...' }])
   const [
     diseaseOptions, 
     setDiseaseOptions
@@ -51,10 +52,17 @@ export function AssignedHealthProtocolAddModal({ isOpen, onClose, refetchList }:
           api.get('/healthprotocol'),
           api.get('/disease')
         ])
-        setHealthProtocolOptions(healthProtocolResponse.data.healthProtocols)
-        setHealthProtocol(healthProtocolResponse.data.healthProtocols[0].id)
-        setDiseaseOptions(diseaseResponse.data.diseases)
-        setDisease(diseaseResponse.data.diseases[0].name)
+        const healthProtocols = healthProtocolResponse.data.healthProtocols
+        const diseases = diseaseResponse.data.diseases
+
+        if(healthProtocols.length > 0) {
+          setHealthProtocolOptions(healthProtocols)
+          setHealthProtocol(healthProtocolResponse.data.healthProtocols[0].id)
+        }
+        if(diseases.length > 0) {
+          setDiseaseOptions(diseases)
+          setDisease(diseaseResponse.data.diseases[0].name)
+        }
       }
     }
     getOptions()
@@ -80,18 +88,25 @@ export function AssignedHealthProtocolAddModal({ isOpen, onClose, refetchList }:
           status: "success",
           isClosable: true
         })
-      handleClose()
-      refetchList()
-    } catch (error: any) {
+        handleClose()
+        refetchList()
+      } catch (error: any) {
+        toast({
+          title: "Erro na criação da associação",
+          description: error.response?.data.error,
+          status: "error",
+          isClosable: true
+        })
+      }
+      setIsPosting(false)
+    } else {
       toast({
         title: "Erro na criação da associação",
-        description: error.response?.data.error,
+        description: "Protocolos de saúde e/ou doenças não cadastradas",
         status: "error",
         isClosable: true
       })
     }
-    setIsPosting(false)
-    } 
   }
   
   return (
@@ -112,9 +127,9 @@ export function AssignedHealthProtocolAddModal({ isOpen, onClose, refetchList }:
             <Select mb="3" textOverflow="ellipsis" onChange={e => setHealthProtocol(e.target.value)}>
               { healthProtocolOptions.map(healthProtocol => (
                 <option key={healthProtocol.id} value={healthProtocol.id}>
-                  { healthProtocol.description.length < 54 ? 
-                    healthProtocol.description : 
-                    `${healthProtocol.description.substring(0, 53)}...`
+                  { healthProtocol.title.length < 54 ? 
+                    healthProtocol.title : 
+                    `${healthProtocol.title.substring(0, 53)}...`
                   }
                 </option>
               )) }

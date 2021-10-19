@@ -10,6 +10,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Select,
   Table, 
   Tbody, 
   Td, 
@@ -34,16 +35,18 @@ import { HealthProtocolEditModal } from "../../../components/Modal/HealthProtoco
 
 type HealthProtocol = {
   id: string;
+  title: string;
   description: string;
 }
 
 export default function HealthProtocols() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('title')
   const [healthProtocolToBeEdited, setHealthProtocolToBeEdited] = useState<HealthProtocol | undefined>(undefined)
   const [healthProtocolToBeDeleted, setHealthProtocolToBeDeleted] = useState<HealthProtocol | undefined>(undefined)
   const isUserAllowed = useCan({ isUsm: true })
-  const { data, isLoading, isFetching, error, refetch } = useHealthProtocols({ page, filter: search })
+  const { data, isLoading, isFetching, error, refetch } = useHealthProtocols({ page, filter: [filter, search] })
   const { 
     isOpen: isOpenEditModal, 
     onOpen: onOpenEditModal, 
@@ -127,8 +130,12 @@ export default function HealthProtocols() {
                 <InputLeftElement>
                   <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
                 </InputLeftElement>
-                <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar por..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
+              <Select w="34" onChange={e => {setFilter(e.target.value)}} ml="2">
+                <option value="title">Título</option>
+                <option value="description">Descrição</option>
+              </Select> 
               { !isLoading && isFetching && <Spinner ml="4"/> }
               { isUserAllowed && (
                 <Button 
@@ -157,6 +164,7 @@ export default function HealthProtocols() {
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
+                        <Th>Título</Th>
                         <Th>Descrição</Th>
                         { isUserAllowed && <Th></Th> }
                       </Tr>
@@ -165,7 +173,10 @@ export default function HealthProtocols() {
                     <Tbody>
                       { data?.healthProtocols.map(healthProtocol => (
                         <Tr key={healthProtocol.id} _hover={{ bgColor: 'gray.50' }}>
-                          <Td w={isUserAllowed ? "80%" : "100%"}>
+                          <Td w={isUserAllowed ? "40%" : "50%"}>
+                            <Text textOverflow="ellipsis">{healthProtocol.title}</Text>
+                          </Td>
+                          <Td w={isUserAllowed ? "40%" : "50%"}>
                             <Text textOverflow="ellipsis">{healthProtocol.description}</Text>
                           </Td>
                           { isUserAllowed && (
