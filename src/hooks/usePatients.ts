@@ -9,6 +9,7 @@ type Patient = {
   name: string;
   CPF: string;
   email: string;
+  gender: string;
   phone: string;
   neighborhood: string;
   birthdate: string;

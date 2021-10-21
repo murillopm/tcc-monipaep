@@ -94,6 +94,16 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
 
   async function handleUserUpdate() {
     setIsUpdating(true)
+    let body: any = {}
+    if(systemUser.authorized !== authorized) {
+      body = { ...body, authorized }
+    } 
+    if(systemUser.localAdm !== localAdm) {
+      body = { ...body, localAdm }
+    } 
+    if(systemUser.generalAdm !== generalAdm) {
+      body = { ...body, generalAdm }
+    } 
     if(department !== systemUser.systemUser.department) {
       if(authorized === systemUser.authorized && localAdm === systemUser.localAdm && generalAdm === systemUser.generalAdm) {
         try {
@@ -119,7 +129,7 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
         try {
           const [userResponse, permissionsResponse] = await Promise.all([
             api.put(`/systemuser/${systemUser.systemUser.id}`, { department }),
-            api.put(`/permissions/${systemUser.systemUser.id}`, { authorized, localAdm, generalAdm })
+            api.put(`/permissions/${systemUser.systemUser.id}`, body)
           ])
           toast({
             title: "Sucesso",
@@ -141,11 +151,7 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
       }
     } else {
       try {
-        const response = await api.put(`/permissions/${systemUser.systemUser.id}`, {
-          authorized,
-          localAdm,
-          generalAdm,
-        })
+        const response = await api.put(`/permissions/${systemUser.systemUser.id}`, body)
         toast({
           title: "Sucesso",
           description: response.data?.success,
@@ -178,7 +184,7 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
     >
       <ModalOverlay>
         <ModalContent height="auto" width="400px">
-          <ModalHeader textAlign="center">Editar usuário</ModalHeader>
+          <ModalHeader textAlign="center">Editar usuário de sistema</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text fontWeight="semibold" mb="3">Setor</Text>

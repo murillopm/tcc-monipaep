@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Head from 'next/head'
+import Router from 'next/router'
 import InputMask from 'react-input-mask'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -47,7 +48,7 @@ const schema = yup.object().shape({
   sector: yup.string().required('Setor obrigatório'),
   password: yup.string().required('Senha obrigatória').matches(
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-    "A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, uma minúscula, um número e um caracter especial"
+    "A senha deve conter no mínimo 8 caracteres, uma letra maiúscula, uma minúscula, um número e um caracter especial"
   ),
   password_confirmation: yup.string().oneOf([
     null, yup.ref('password')
@@ -79,6 +80,7 @@ export default function SignUp() {
         status: "success",
         isClosable: true
       })
+      Router.push('/')
     } catch (error: any) {
       toast({
         title: "Erro no cadastro",

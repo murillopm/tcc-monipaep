@@ -7,7 +7,7 @@ import { NavLink } from "./NavLink";
 export function AccountSection() {
   const { user, signOut } = useContext(AuthContext)
   return (
-    <Box w="100%" maxW="100%" mt="auto">
+    <Box w="100%" maxW="100%" mt="auto" overflow="ellipsis">
       <Flex 
         alignItems="center" 
         w="calc(100% - 2rem)" 
@@ -23,8 +23,22 @@ export function AccountSection() {
           direction="column"
           alignItems="flex-start"
         >
-          <Text color="white">{user?.user.name}</Text>
-          <Text color="gray.400" fontSize="small">{user?.user.email}</Text>
+          { user && (
+            <>
+              <Text color="white">
+                { user.user.name.length <= 20 ? 
+                  user.user.name : 
+                  `${user.user.name.substring(0, 20)}...`
+                }
+              </Text>
+              <Text color="gray.400" fontSize="small">
+                { user.user.email.length <= 21 ? 
+                  user.user.email : 
+                  `${user.user.email.substring(0, 21)}...`
+                }
+              </Text>
+            </>
+          ) }
         </Flex>
       </Flex>
 

@@ -87,6 +87,7 @@ export default function Patients() {
               <Select w="32" onChange={e => {setFilter(e.target.value)}} ml="2">
                 <option value="name">Nome</option>
                 <option value="cpf">CPF</option>
+                <option value="gender">Gênero</option>
                 <option value="neighborhood">Bairro</option>
                 <option value="status">Status</option>
               </Select>            
@@ -107,6 +108,7 @@ export default function Patients() {
                       <Tr>
                         <Th>Nome</Th>
                         <Th>CPF</Th>
+                        <Th>Gênero</Th>
                         <Th>Data de nascimento</Th>
                         <Th>Bairro</Th>
                         <Th>Plano de saúde</Th>
@@ -119,20 +121,21 @@ export default function Patients() {
                         <Tr 
                           key={patient.id} 
                           _hover={{ bgColor: 'gray.50' }} 
-                          
                         >
                           <Td>
-                            <Box textAlign="left">
-                              <NextLink href={`/dashboard/patients/details/${patient.id}`} passHref>
-                                <Link color="blue.500" fontWeight="semibold">
-                                  {patient.name}
-                                </Link>
-                              </NextLink>
-                              <Text fontSize="sm" color="gray.500">{patient.email}</Text>
-                            </Box>
+
+                            <NextLink href={`/dashboard/patients/details/${patient.id}`} passHref>
+                              <Link color="blue.500" fontWeight="semibold">
+                                {patient.name}
+                              </Link>
+                            </NextLink>
+
                           </Td>
                           <Td w="100">
                             <Text>{patient.CPF}</Text>
+                          </Td>
+                          <Td>
+                            <Text>{patient.gender}</Text>
                           </Td>
                           <Td>
                             <Text>{patient.birthdate}</Text>

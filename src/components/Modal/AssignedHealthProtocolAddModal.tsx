@@ -36,10 +36,11 @@ export function AssignedHealthProtocolAddModal({ isOpen, onClose, refetchList }:
   const [disease, setDisease] = useState<string | undefined>(undefined)
   const [isPosting, setIsPosting] = useState(false)
   const toast = useToast()
-  const [
-    healthProtocolOptions, 
-    setHealthProtocolOptions
-  ] = useState<HealthProtocol[]>([{ id: 'unknown', title: 'Carregando...', description:'Carregando...' }])
+  const [healthProtocolOptions, setHealthProtocolOptions] = useState<HealthProtocol[]>([{ 
+    id: 'unknown', 
+    title: 'Carregando...', 
+    description:'Carregando...' 
+  }])
   const [
     diseaseOptions, 
     setDiseaseOptions
