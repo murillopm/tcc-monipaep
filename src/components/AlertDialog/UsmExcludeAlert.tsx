@@ -29,7 +29,7 @@ export function UsmExcludeAlert({ isOpen, onClose, usm, refetchList }: UsmExclud
     try {
       const response = await api.delete(`/usm/${usm}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na remoção da unidade",
         description: response.data?.success,
         status: "success",
         isClosable: true
@@ -38,7 +38,7 @@ export function UsmExcludeAlert({ isOpen, onClose, usm, refetchList }: UsmExclud
       onClose()
     } catch (error: any) {
       toast({
-        title: "Erro na remoção",
+        title: "Erro na remoção da unidade",
         description: error.response?.data.error,
         status: "error",
         isClosable: true

@@ -135,7 +135,7 @@ export default function Usms() {
                 <InputLeftElement>
                   <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
                 </InputLeftElement>
-                <Input placeholder="Filtrar por nome..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar por unidade..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
                 { isAdmin && (
                   <Button  
@@ -163,7 +163,7 @@ export default function Usms() {
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th>Nome</Th>
+                        <Th>Nome da unidade</Th>
                         <Th>Endereço</Th>
                         <Th>Bairro</Th>
                         { isAdmin && <Th></Th> }

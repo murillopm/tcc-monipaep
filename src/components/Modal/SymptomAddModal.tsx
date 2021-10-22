@@ -46,27 +46,26 @@ export function SymptomAddModal({ isOpen, onClose, refetchList }: SymptomAddModa
       try {
         const response = await api.post('/symptom/', { symptom: newSymptom })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na criação do sintoma",
           description: response.data?.success,
           status: "success",
           isClosable: true
         })
-      handleClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro na criação",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsPosting(false)
-    
+        handleClose()
+        refetchList()
+      } catch (error: any) {
+        toast({
+          title: "Erro na criação do sintoma",
+          description: "Sintoma já registrado no sistema",
+          status: "error",
+          isClosable: true
+        })
+      }
+      setIsPosting(false)
     } else {
       toast({
-        title: "Erro",
-        description: 'Preencha o campo com o nome do sintoma',
+        title: "Erro na criação do sintoma",
+        description: "Preencha o campo com o nome do sintoma",
         status: "error",
         isClosable: true
       })

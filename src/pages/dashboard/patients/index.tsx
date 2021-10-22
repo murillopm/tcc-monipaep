@@ -107,10 +107,10 @@ export default function Patients() {
                     <Thead bgColor="gray.200">
                       <Tr>
                         <Th>Nome</Th>
-                        <Th>CPF</Th>
                         <Th>Gênero</Th>
+                        <Th>CPF</Th>
                         <Th>Data de nascimento</Th>
-                        <Th>Bairro</Th>
+                        <Th>Bairro residencial</Th>
                         <Th>Plano de saúde</Th>
                         <Th>Status</Th>
                       </Tr>
@@ -123,19 +123,17 @@ export default function Patients() {
                           _hover={{ bgColor: 'gray.50' }} 
                         >
                           <Td>
-
                             <NextLink href={`/dashboard/patients/details/${patient.id}`} passHref>
                               <Link color="blue.500" fontWeight="semibold">
                                 {patient.name}
                               </Link>
                             </NextLink>
-
-                          </Td>
-                          <Td w="100">
-                            <Text>{patient.CPF}</Text>
                           </Td>
                           <Td>
                             <Text>{patient.gender}</Text>
+                          </Td>
+                          <Td>
+                            <Text>{patient.CPF}</Text>
                           </Td>
                           <Td>
                             <Text>{patient.birthdate}</Text>

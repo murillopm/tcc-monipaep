@@ -64,32 +64,40 @@ export function FaqEditModal({ isOpen, onClose, faq, refetchList }: FaqModalProp
 
   async function handleUpdate() {
     if(question !== '' && answer !== '') {
-      setIsUpdating(true)
-      try {
-        const response = await api.put(`/faq/${faq?.id}`, { question, answer })
+      if(question === faq?.question && answer === faq?.answer) {
         toast({
-          title: "Sucesso",
-          description: response.data?.success,
-          status: "success",
+          title: "Erro na alteração da questão",
+          description: "Campos sem nenhuma alteração",
+          status: "error",
           isClosable: true
         })
-      setTouched(false)
-      onClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsUpdating(false)
-    
+      } else {
+        setIsUpdating(true)
+        try {
+          const response = await api.put(`/faq/${faq?.id}`, { question, answer })
+          toast({
+            title: "Sucesso na alteração da questão",
+            description: response.data?.success,
+            status: "success",
+            isClosable: true
+          })
+          setTouched(false)
+          onClose()
+          refetchList()
+        } catch (error: any) {
+          toast({
+            title: "Erro na alteração da questão",
+            description: "Questão já registrada",
+            status: "error",
+            isClosable: true
+          })
+        }
+        setIsUpdating(false)
+      }
     } else {
       toast({
-        title: "Erro",
-        description: 'Preencha os campos corretamente.',
+        title: "Erro na alteração da questão",
+        description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
       })

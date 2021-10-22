@@ -110,48 +110,64 @@ export function UsmEditModal({ isOpen, onClose, usm, refetchList }: UsmEditModal
         })
       } else {
         toast({
-          title: "Erro na busca",
+          title: "Erro na busca das coordenadas",
           description: "Endereço inválido",
           status: "error",
           isClosable: true
         })
       }
       setIsFetching(false)
+    } else {
+      toast({
+        title: "Erro na busca das coordenadas",
+        description: "Insira um endereço válido",
+        status: "error",
+        isClosable: true
+      })
     }
   }
 
   async function handleUsmUpdate() {
     if(usmName !== '' && usmAddress !== '' && usmNeighborhood !== '' && coords) {
-      setIsUpdating(true)
-      try {
-        const response = await api.put(`/usm/${usm.name}`, {
-          name: usmName,
-          address: usmAddress,
-          neighborhood: usmNeighborhood,
-          latitude: coords.lat,
-          longitude: coords.lng
-        })
+      if(usmName === usm.name && usmAddress === usm.address && usmNeighborhood === usm.neighborhood 
+          && coords.lat === usm.latitude && coords.lng === usm.longitude) {
         toast({
-          title: "Sucesso",
-          description: response.data?.success,
-          status: "success",
+          title: "Erro na alteração da unidade",
+          description: "Campos sem nenhuma alteração",
+          status: "error",
           isClosable: true
         })
-      handleClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro na alteração",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsUpdating(false)
-    
+      } else {
+        setIsUpdating(true)
+        try {
+          const response = await api.put(`/usm/${usm.name}`, {
+            name: usmName,
+            address: usmAddress,
+            neighborhood: usmNeighborhood,
+            latitude: coords.lat,
+            longitude: coords.lng
+          })
+          toast({
+            title: "Sucesso na alteração da unidade",
+            description: response.data?.success,
+            status: "success",
+            isClosable: true
+          })
+          handleClose()
+          refetchList()
+        } catch (error: any) {
+          toast({
+            title: "Erro na alteração da unidade",
+            description: error.response?.data.error,
+            status: "error",
+            isClosable: true
+          })
+        }
+        setIsUpdating(false)
+      }
     } else {
       toast({
-        title: "Erro na criação",
+        title: "Erro na alteração da unidade",
         description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true

@@ -37,7 +37,7 @@ export function AssignedHealthProtocolExcludeAlert({
     try {
       const response = await api.delete(`/assignedhealthprotocol/${association.disease}/${association.healthProtocol}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na remoção da associação",
         description: response.data?.success,
         status: "success",
         isClosable: true
@@ -47,7 +47,7 @@ export function AssignedHealthProtocolExcludeAlert({
       setIsDeletting(false)
     } catch (error: any) {
       toast({
-        title: "Erro na remoção",
+        title: "Erro na remoção da associação",
         description: error.response?.data.error,
         status: "error",
         isClosable: true

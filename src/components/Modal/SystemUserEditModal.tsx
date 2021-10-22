@@ -93,23 +93,30 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
   }
 
   async function handleUserUpdate() {
-    setIsUpdating(true)
     let body: any = {}
+
     if(systemUser.authorized !== authorized) {
       body = { ...body, authorized }
     } 
+
     if(systemUser.localAdm !== localAdm) {
       body = { ...body, localAdm }
     } 
+
     if(systemUser.generalAdm !== generalAdm) {
       body = { ...body, generalAdm }
     } 
-    if(department !== systemUser.systemUser.department) {
-      if(authorized === systemUser.authorized && localAdm === systemUser.localAdm && generalAdm === systemUser.generalAdm) {
+
+    const permissionsHasChanged = Object.keys(body).length > 0 ? true : false
+
+    setIsUpdating(true)
+
+    if(department !== systemUser.systemUser.department && (department === "USM" || department === "SVS")) {
+      if(!permissionsHasChanged) {
         try {
           const response = await api.put(`/systemuser/${systemUser.systemUser.id}`, { department })
           toast({
-            title: "Sucesso",
+            title: "Sucesso na alteração do usuário",
             description: response.data?.success,
             status: "success",
             isClosable: true
@@ -119,7 +126,7 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
           refetchList()
         } catch (error: any) {
           toast({
-            title: "Erro na alteração",
+            title: "Erro na alteração do usuário",
             description: error.response?.data.error,
             status: "error",
             isClosable: true
@@ -132,7 +139,7 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
             api.put(`/permissions/${systemUser.systemUser.id}`, body)
           ])
           toast({
-            title: "Sucesso",
+            title: "Sucesso na alteração do usuário",
             description: userResponse.data?.success,
             status: "success",
             isClosable: true
@@ -142,7 +149,7 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
           refetchList()
         } catch (error: any) {
           toast({
-            title: "Erro na alteração",
+            title: "Erro na alteração do usuário",
             description: error.response?.data.error,
             status: "error",
             isClosable: true
@@ -150,21 +157,31 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
         }
       }
     } else {
-      try {
-        const response = await api.put(`/permissions/${systemUser.systemUser.id}`, body)
+      if(permissionsHasChanged) {
+        try {
+          const response = await api.put(`/permissions/${systemUser.systemUser.id}`, body)
+          toast({
+            title: "Sucesso na alteração do usuário",
+            description: response.data?.success,
+            status: "success",
+            isClosable: true
+          })
+          setTouched(false)
+          onClose()
+          refetchList()
+        } catch (error: any) {
+          toast({
+            title: "Erro na alteração do usuário",
+            description: error.response?.data.error,
+            status: "error",
+            isClosable: true
+          })
+        }
+      }
+      else {
         toast({
-          title: "Sucesso",
-          description: response.data?.success,
-          status: "success",
-          isClosable: true
-        })
-        setTouched(false)
-        onClose()
-        refetchList()
-      } catch (error: any) {
-        toast({
-          title: "Erro na alteração",
-          description: error.response?.data.error,
+          title: "Erro na alteração do usuário",
+          description: "Campos sem nenhuma alteração",
           status: "error",
           isClosable: true
         })
@@ -189,8 +206,8 @@ export function SystemUserEditModal({ isOpen, onClose, systemUser, refetchList }
           <ModalBody>
             <Text fontWeight="semibold" mb="3">Setor</Text>
             <Select value={department} mb="3" onChange={handleEditDepartment}>
-              <option value="USM">Unidade de Saúde</option>
-              <option value="SVS">Vigilância em Saúde</option>
+              <option value="USM">Unidade de saúde</option>
+              <option value="SVS">Vigilância em saúde</option>
             </Select>
             <Divider my="5"/>
             <VStack spacing="3" alignItems="flex-start">

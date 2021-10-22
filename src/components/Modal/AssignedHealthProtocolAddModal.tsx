@@ -39,12 +39,12 @@ export function AssignedHealthProtocolAddModal({ isOpen, onClose, refetchList }:
   const [healthProtocolOptions, setHealthProtocolOptions] = useState<HealthProtocol[]>([{ 
     id: 'unknown', 
     title: 'Carregando...', 
-    description:'Carregando...' 
+    description: 'Carregando...' 
   }])
   const [
     diseaseOptions, 
     setDiseaseOptions
-  ] = useState<Disease[]>([{ name:'Carregando...' }])
+  ] = useState<Disease[]>([{ name: 'Carregando...' }])
 
   useEffect(() => {
     async function getOptions() {
@@ -84,7 +84,7 @@ export function AssignedHealthProtocolAddModal({ isOpen, onClose, refetchList }:
           healthprotocol_id: healthProtocol,
         })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na criação da associação",
           description: response.data?.success,
           status: "success",
           isClosable: true

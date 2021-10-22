@@ -89,13 +89,20 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
         })
       } else {
         toast({
-          title: "Erro na busca",
+          title: "Erro na busca das coordenadas",
           description: "Endereço inválido",
           status: "error",
           isClosable: true
         })
       }
       setIsFetching(false)
+    } else {
+      toast({
+        title: "Erro na busca das coordenadas",
+        description: "Insira um endereço válido",
+        status: "error",
+        isClosable: true
+      })
     }
   }
 
@@ -115,26 +122,25 @@ export function UsmAddModal({ isOpen, onClose, refetchList }: UsmModalProps) {
           longitude: coords.lng
         })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na criação da unidade",
           description: response.data?.success,
           status: "success",
           isClosable: true
         })
-      handleClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro na alteração",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsPosting(false)
-    
+        handleClose()
+        refetchList()
+      } catch (error: any) {
+        toast({
+          title: "Erro na criação da unidade",
+          description: error.response?.data.error,
+          status: "error",
+          isClosable: true
+        })
+      }
+      setIsPosting(false)
     } else {
       toast({
-        title: "Erro na criação",
+        title: "Erro na criação da unidade",
         description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true

@@ -31,6 +31,6 @@ export function useFaqs({ filter = '' }: UseFaqsProps) {
     return getFaqs(filter)
   }, {
     keepPreviousData: true,
-    staleTime: 1000 * 5
+    staleTime: 1000 * 10
   })
 }

@@ -116,17 +116,14 @@ export default function DiseaseOccurrences() {
                       { data?.diseaseOccurrences.map(diseaseOccurrence => (
                         <Tr key={diseaseOccurrence.id} _hover={{ bgColor: 'gray.50' }}>
                           <Td>
-                            <Box textAlign="left">
-                              <NextLink 
-                                href={`/dashboard/patients/diseasehistory/${diseaseOccurrence.patient_id}/${diseaseOccurrence.id}`} 
-                                passHref
-                              >
-                                <Link color="blue.500" fontWeight="semibold">
-                                  {diseaseOccurrence.patient.name}
-                                </Link>
-                              </NextLink>
-                              <Text fontSize="sm" color="gray.500">{diseaseOccurrence.patient.email}</Text>
-                            </Box>
+                            <NextLink 
+                              href={`/dashboard/patients/diseasehistory/${diseaseOccurrence.patient_id}/${diseaseOccurrence.id}`} 
+                              passHref
+                            >
+                              <Link color="blue.500" fontWeight="semibold">
+                                {diseaseOccurrence.patient.name}
+                              </Link>
+                            </NextLink>
                           </Td>
                           <Td>
                             <Text>{diseaseOccurrence.disease_name}</Text>

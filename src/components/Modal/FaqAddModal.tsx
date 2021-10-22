@@ -56,7 +56,7 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
       try {
         const response = await api.post('/faq/', { question, answer })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na criação da questão",
           description: response.data?.success,
           status: "success",
           isClosable: true
@@ -65,7 +65,7 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
         refetchList()
       } catch (error: any) {
         toast({
-          title: "Erro",
+          title: "Erro na criação da questão",
           description: error.response?.data.error,
           status: "error",
           isClosable: true
@@ -74,8 +74,8 @@ export function FaqAddModal({ isOpen, onClose, refetchList }: FaqAddModalProps) 
       setIsPosting(false)
     } else {
       toast({
-        title: "Erro",
-        description: 'Preencha os campos corretamente',
+        title: "Erro na criação da questão",
+        description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
       })

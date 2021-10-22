@@ -46,6 +46,10 @@ export default function PatientDetails({ patientId }: PatientDetailsProps) {
                 <Text>{data?.patients[0].name}</Text>
               </Flex>
               <Flex>
+                <Text fontWeight="bold">Gênero:&nbsp;</Text>
+                <Text>{data?.patients[0].gender}</Text>
+              </Flex>
+              <Flex>
                 <Text fontWeight="bold">CPF:&nbsp;</Text>
                 <Text>{data?.patients[0].CPF}</Text>
               </Flex>

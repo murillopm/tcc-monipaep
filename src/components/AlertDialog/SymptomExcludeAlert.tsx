@@ -29,7 +29,7 @@ export function SymptomExcludeAlert({ isOpen, onClose, symptom, refetchList }: S
     try {
       const response = await api.delete(`/symptom/${symptom}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na exclusão do sintoma",
         description: response.data?.success,
         status: "success",
         isClosable: true

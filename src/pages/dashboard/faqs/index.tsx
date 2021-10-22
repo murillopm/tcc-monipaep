@@ -146,7 +146,7 @@ export default function Faqs() {
                 <Text mt="2">
                   { search === '' ? 
                     'Não existem questões registradas até o momento.' : 
-                    'A busca não encontrou nenhuma pergunta com esse filtro.'
+                    'A busca não encontrou nenhuma questão com esse filtro.'
                   }
                 </Text>
               ) : (

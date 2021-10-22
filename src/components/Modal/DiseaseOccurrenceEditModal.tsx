@@ -100,6 +100,13 @@ export function DiseaseOccurrenceEditModal({ isOpen, onClose, diseaseOccurrence,
     }
   }
 
+  function handleDiseaseChanged(event: ChangeEvent<HTMLSelectElement>) {
+    setDisease(event.target.value)
+    if(!touched) {
+      setTouched(true)
+    }
+  }
+
   function handleDiagnosisInputChanged(event: ChangeEvent<HTMLTextAreaElement>) {
     setDiagnosis(event.target.value)
     if(!touched) {
@@ -145,28 +152,27 @@ export function DiseaseOccurrenceEditModal({ isOpen, onClose, diseaseOccurrence,
         }
         const response = await api.put(`/diseaseoccurrence/${diseaseOccurrence.id}`, body)
         toast({
-          title: "Sucesso",
+          title: "Sucesso na alteração da ocorrência",
           description: response.data?.success,
           status: "success",
           isClosable: true
         })
-      setTouched(false)
-      onClose()
-      refetchData()
-    } catch (error: any) {
-      toast({
-        title: "Erro na alteração",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsUpdating(false)
-    
+        setTouched(false)
+        onClose()
+        refetchData()
+      } catch (error: any) {
+        toast({
+          title: "Erro na alteração da ocorrência",
+          description: error.response?.data.error,
+          status: "error",
+          isClosable: true
+        })
+      }
+      setIsUpdating(false)
     } else {
       toast({
-        title: "Erro",
-        description: 'Preencha os campos corretamente',
+        title: "Erro na alteração da ocorrência",
+        description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
       })
@@ -183,19 +189,19 @@ export function DiseaseOccurrenceEditModal({ isOpen, onClose, diseaseOccurrence,
       closeOnOverlayClick={false}
     >
       <ModalOverlay>
-        <ModalContent height="auto" width="350px">
-          <ModalHeader textAlign="center">Editar doença</ModalHeader>
+        <ModalContent height="auto" width="380px">
+          <ModalHeader textAlign="center">Editar ocorrência de doença</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <VStack spacing="3" alignItems="flex-start">
               <Text fontWeight="semibold">Doença</Text>
-              <Select value={disease} onChange={e => setDisease(e.target.value)}>
+              <Select value={disease} onChange={handleDiseaseChanged}>
                 { diseaseList.map(disease => (
                   <option key={disease} value={disease}>{disease}</option>
                 ))}
               </Select>
               <Text fontWeight="semibold">Data de início</Text>
-              <Box>
+              <Box w="100%">
                 <DatePicker 
                   locale="ptBR"
                   selected={startDate} 
@@ -218,7 +224,6 @@ export function DiseaseOccurrenceEditModal({ isOpen, onClose, diseaseOccurrence,
                   disabled={isOngoingOccurrence}
                   selected={endDate} 
                   onChange={handleEndDateChanged}
-                  minDate={startDate}
                   showTimeSelect
                   timeFormat="p"
                   timeIntervals={15}

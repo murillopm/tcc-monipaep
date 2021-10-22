@@ -10,7 +10,6 @@ import {
   Divider,
   Flex, 
   Icon,
-  Link,
   Table, 
   Tbody, 
   Td, 
@@ -60,7 +59,7 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
 
   useEffect(() => {
     if(data && data.length > 0) {
-      setStartDate(new Date(data[data.length - 1]?.registered_date))
+      setStartDate(new Date(data[data.length - 1].registered_date))
     }
   }, [isLoading, data])
 
@@ -74,7 +73,9 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
           selected: false,
         }
       })
-      setDiseaseList(diseaseList)
+      if(diseaseList.length > 0) {
+        setDiseaseList(diseaseList)
+      }
       setIsLoadingDiseases(false)
     }
     getDiseaseOptions()
@@ -119,7 +120,7 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
           diagnosis,
         })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na criação da ocorrência",
           description: data?.success,
           status: "success",
           isClosable: true
@@ -127,12 +128,19 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
         Router.push(`/dashboard/patients/diseasehistory/${patientId}/${data.createdDiseaseOccurrences[0].id}`)
       } catch (error: any) {
         toast({
-          title: "Erro na criação",
+          title: "Erro na criação da ocorrência",
           description: error.response?.data.error,
           status: "error",
           isClosable: true
         })
       }
+    } else {
+      toast({
+        title: "Erro na criação da ocorrência",
+        description: "Preencha os campos corretamente",
+        status: "error",
+        isClosable: true
+      })
     }
   }
   
@@ -258,6 +266,7 @@ export default function UnassignedSymptoms({ patientId }: UnassignedSymptomsProp
                     mt="6"
                     colorScheme="blue"
                     isLoading={isPosting}
+                    disabled={diseaseList && diseaseList.length === 0}
                     onClick={handleDiseaseOccurrenceCreation}
                   >
                     Registrar ocorrência de doença

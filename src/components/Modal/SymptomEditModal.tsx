@@ -47,32 +47,40 @@ export function SymptomEditModal({ isOpen, onClose, symptom, refetchList }: Symp
 
   async function handleUpdate() {
     if(newSymptom !== '') {
-      setIsUpdating(true)
-      try {
-        const response = await api.put(`/symptom/${symptom}`, { symptom: newSymptom })
+      if(newSymptom !== symptom) {
+        setIsUpdating(true)
+        try {
+          const response = await api.put(`/symptom/${symptom}`, { symptom: newSymptom })
+          toast({
+            title: "Sucesso na alteração do sintoma",
+            description: response.data?.success,
+            status: "success",
+            isClosable: true
+          })
+          setTouched(false)
+          onClose()
+          refetchList()
+        } catch (error: any) {
+          toast({
+            title: "Erro na alteração do sintoma",
+            description: "Sintoma já registrado no sistema",
+            status: "error",
+            isClosable: true
+          })
+        }
+        setIsUpdating(false)
+      } else {
         toast({
-          title: "Sucesso",
-          description: response.data?.success,
-          status: "success",
+          title: "Erro na alteração do sintoma",
+          description: "Sintoma sem alteração",
+          status: "error",
           isClosable: true
         })
-      setTouched(false)
-      onClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro na alteração",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsUpdating(false)
-    
+      }
     } else {
       toast({
-        title: "Erro",
-        description: 'Preencha o campo com o nome do sintoma',
+        title: "Erro na alteração do sintoma",
+        description: "Preencha o campo com o nome do sintoma",
         status: "error",
         isClosable: true
       })

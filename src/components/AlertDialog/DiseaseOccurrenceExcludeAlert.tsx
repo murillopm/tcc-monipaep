@@ -35,7 +35,7 @@ export function DiseaseOccurrenceExcludeAlert({
     try {
       const response = await api.delete(`/diseaseoccurrence/${diseaseOccurrenceId}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na remoção da ocorrência",
         description: response.data?.success,
         status: "success",
         isClosable: true
@@ -44,7 +44,7 @@ export function DiseaseOccurrenceExcludeAlert({
       Router.push(`/dashboard/patients/diseasehistory/${patientId}`)
     } catch (error: any) {
       toast({
-        title: "Erro na remoção",
+        title: "Erro na remoção da ocorrência",
         description: error.response?.data.error,
         status: "error",
         isClosable: true

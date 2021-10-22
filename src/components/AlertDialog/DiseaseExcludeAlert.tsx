@@ -29,7 +29,7 @@ export function DiseaseExcludeAlert({ isOpen, onClose, disease, refetchList }: D
     try {
       const response = await api.delete(`/disease/${disease}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na remoção da doença",
         description: response.data?.success,
         status: "success",
         isClosable: true
@@ -38,7 +38,7 @@ export function DiseaseExcludeAlert({ isOpen, onClose, disease, refetchList }: D
       onClose()
     } catch (error: any) {
       toast({
-        title: "Erro na remoção",
+        title: "Erro na remoção da doença",
         description: error.response?.data.error,
         status: "error",
         isClosable: true

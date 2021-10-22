@@ -133,7 +133,7 @@ export default function Diseases() {
                 <InputLeftElement>
                   <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
                 </InputLeftElement>
-                <Input placeholder="Filtrar por nome..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar por doença..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
               { isAdmin && (
                 <Button  
@@ -161,7 +161,7 @@ export default function Diseases() {
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th rowSpan={2} w="30%">Nome</Th>
+                        <Th rowSpan={2} w="30%">Nome da doença</Th>
                         <Th colSpan={2} isNumeric w="20%">
                           Período de monitoramento (dias)
                         </Th>

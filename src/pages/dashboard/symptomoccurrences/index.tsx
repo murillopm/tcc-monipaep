@@ -5,7 +5,6 @@ import { debounce } from "ts-debounce"
 import DashboardLayout from "../../../components/Layouts/DashboardLayout";
 import { 
   Box, 
-  Button,
   Flex, 
   Heading, 
   Icon,
@@ -21,27 +20,17 @@ import {
   Thead, 
   Tr,  
   Spinner,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { BiPencil, BiTrash } from 'react-icons/bi'
 import { MdSearch } from 'react-icons/md'
-import { RiAddLine } from 'react-icons/ri'
 
 import { withSSRAuth } from "../../../utils/withSSRAuth";
 import { Pagination } from "../../../components/Pagination";
 import { useSymptomOccurrences } from "../../../hooks/useSymptomOccurrences";
 
-
 export default function SymptomOccurrences() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
-  // const [symptomToBeEdited, setSymptomToBeEdited] = useState<Symptom | undefined>(undefined)
-  const { data, isLoading, isFetching, error, refetch } = useSymptomOccurrences({ page, filter: search })
-  // const { 
-  //   isOpen: isOpenEditModal, 
-  //   onOpen: onOpenEditModal, 
-  //   onClose: onCloseEditModal 
-  // } = useDisclosure()
+  const { data, isLoading, isFetching, error } = useSymptomOccurrences({ page, filter: search })
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setPage(1)
@@ -52,12 +41,6 @@ export default function SymptomOccurrences() {
     () => debounce(handleChangeInput, 600)  
   , [handleChangeInput]) 
 
-  // function handleEditSymptom(symptom: Symptom) {
-  //   setSymptomToBeEdited(symptom)
-  //   onOpenEditModal()
-  // }
-
-  
   return (
     <>
       <Head>
@@ -79,22 +62,12 @@ export default function SymptomOccurrences() {
           </Box>
         ) : (
           <>
-
-            {/* { symptomToBeEdited && (
-              <SymptomEditModal 
-                isOpen={isOpenEditModal} 
-                onClose={onCloseEditModal} 
-                symptom={symptomToBeEdited.symptom}
-                refetchList={refetch}
-              />
-            )} */}
-
             <Flex mx="8" mb="8" justifyContent="space-between" alignItems="center">
               <InputGroup w="30">
                 <InputLeftElement>
                   <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
                 </InputLeftElement>
-                <Input placeholder="Filtrar pelo nome..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar por paciente..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
             </Flex>
 
@@ -111,27 +84,22 @@ export default function SymptomOccurrences() {
                   <Table w="100%" border="1px" borderColor="gray.200" boxShadow="md" mb="4">
                     <Thead bgColor="gray.200">
                       <Tr>
-                        <Th>Paciente</Th>
-                        <Th>Inicio dos sintomas</Th>
+                        <Th>Nome do paciente</Th>
+                        <Th>Início dos sintomas</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
                       { data?.symptomOccurrences.map(symptomOccurrence => (
                         <Tr key={symptomOccurrence.id} _hover={{ bgColor: 'gray.50' }}>
                           <Td>
-                            <Box textAlign="left">
-                              <NextLink 
-                                href={`/dashboard/patients/unassignedsymptoms/${symptomOccurrence.patient_id}`} 
-                                passHref
-                              >
-                                <Link color="blue.500" fontWeight="semibold">
-                                  {symptomOccurrence.patient.name}
-                                </Link>
-                              </NextLink>
-                              <Text fontSize="sm" color="gray.500">
-                                {symptomOccurrence.patient.email}
-                              </Text>
-                            </Box>
+                            <NextLink 
+                              href={`/dashboard/patients/unassignedsymptoms/${symptomOccurrence.patient_id}`} 
+                              passHref
+                            >
+                              <Link color="blue.500" fontWeight="semibold">
+                                {symptomOccurrence.patient.name}
+                              </Link>
+                            </NextLink>
                           </Td>
                           <Td>
                             {symptomOccurrence.registered_date}

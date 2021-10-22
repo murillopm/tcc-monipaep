@@ -19,7 +19,12 @@ interface HealthProtocolExcludeAlertProps {
   refetchList: () => void;
 }
 
-export function HealthProtocolExcludeAlert({ isOpen, onClose, healthProtocol, refetchList }: HealthProtocolExcludeAlertProps) {
+export function HealthProtocolExcludeAlert({ 
+  isOpen, 
+  onClose, 
+  healthProtocol, 
+  refetchList 
+}: HealthProtocolExcludeAlertProps) {
   const [isDeletting, setIsDeletting] = useState(false)
   const cancelRef = useRef(null)
   const toast = useToast()
@@ -29,7 +34,7 @@ export function HealthProtocolExcludeAlert({ isOpen, onClose, healthProtocol, re
     try {
       const response = await api.delete(`/healthprotocol/${healthProtocol}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na remoção do protocolo",
         description: response.data?.success,
         status: "success",
         isClosable: true
@@ -39,7 +44,7 @@ export function HealthProtocolExcludeAlert({ isOpen, onClose, healthProtocol, re
       setIsDeletting(false)
     } catch (error: any) {
       toast({
-        title: "Erro na remoção",
+        title: "Erro na remoção do protocolo",
         description: error.response?.data.error,
         status: "error",
         isClosable: true

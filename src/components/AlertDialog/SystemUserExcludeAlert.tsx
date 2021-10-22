@@ -29,7 +29,7 @@ export function SystemUserExcludeAlert({ isOpen, onClose, systemUser, refetchLis
     try {
       const response = await api.delete(`/systemuser/${systemUser}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na remoção do usuário",
         description: response.data?.success,
         status: "success",
         isClosable: true
@@ -38,7 +38,7 @@ export function SystemUserExcludeAlert({ isOpen, onClose, systemUser, refetchLis
       onClose()
     } catch (error: any) {
       toast({
-        title: "Erro na remoção",
+        title: "Erro na remoção do usuário",
         description: error.response?.data.error,
         status: "error",
         isClosable: true

@@ -7,7 +7,7 @@ import { NavLink } from "./NavLink";
 export function AccountSection() {
   const { user, signOut } = useContext(AuthContext)
   return (
-    <Box w="100%" maxW="100%" mt="auto" overflow="ellipsis">
+    <Box w="100%" maxW="100%" mt="auto">
       <Flex 
         alignItems="center" 
         w="calc(100% - 2rem)" 

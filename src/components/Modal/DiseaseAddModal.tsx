@@ -69,7 +69,7 @@ export function DiseaseAddModal({ isOpen, onClose, refetchList }: DiseaseModalPr
           suspect_Monitoring_Days: suspectDays,
         })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na criação da doença",
           description: response.data?.success,
           status: "success",
           isClosable: true
@@ -78,8 +78,8 @@ export function DiseaseAddModal({ isOpen, onClose, refetchList }: DiseaseModalPr
       refetchList()
     } catch (error: any) {
       toast({
-        title: "Erro na alteração",
-        description: error.response?.data.error,
+        title: "Erro na criação da doença",
+        description: "Doença já registrada no sistema",
         status: "error",
         isClosable: true
       })
@@ -88,8 +88,8 @@ export function DiseaseAddModal({ isOpen, onClose, refetchList }: DiseaseModalPr
     
     } else {
       toast({
-        title: "Erro na criação",
-        description: 'Preencha os campos corretamente',
+        title: "Erro na criação da doença",
+        description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
       })
@@ -113,7 +113,7 @@ export function DiseaseAddModal({ isOpen, onClose, refetchList }: DiseaseModalPr
             <Text fontWeight="semibold" mb="3">Nome da doença</Text>
             <Input value={diseaseName} mb="4" onChange={handleNameInputChanged}/>
             <Text fontWeight="semibold" mb="3">Período de monitoramento (em dias)</Text>
-            <Flex direction="column" justifyContent="space-between" alignItems="flex-start" ml="1">
+            <Flex direction="column" justifyContent="space-between" alignItems="flex-start" ml="2">
               <Text fontWeight="semibold" mb="2">Paciente suspeito</Text>
               <Input alignSelf="center" type="number" value={suspectDays} mb="2" onChange={handleSuspectInputChanged}/>
               <Text fontWeight="semibold" mb="2">Paciente infectado</Text>

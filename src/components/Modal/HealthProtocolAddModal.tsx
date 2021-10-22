@@ -56,7 +56,7 @@ export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthP
       try {
         const response = await api.post('/healthprotocol/', { title, description })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na criação do protocolo",
           description: response.data?.success,
           status: "success",
           isClosable: true
@@ -65,7 +65,7 @@ export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthP
         refetchList()
       } catch (error: any) {
         toast({
-          title: "Erro na criação",
+          title: "Erro na criação do protocolo",
           description: error.response?.data.error,
           status: "error",
           isClosable: true
@@ -74,7 +74,7 @@ export function HealthProtocolAddModal({ isOpen, onClose, refetchList }: HealthP
       setIsPosting(false)
     } else {
       toast({
-        title: "Erro",
+        title: "Erro na criação do protocolo",
         description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true

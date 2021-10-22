@@ -130,7 +130,7 @@ export default function HealthProtocols() {
                 <InputLeftElement>
                   <Icon as={MdSearch} fontSize="xl" color="gray.400"/>
                 </InputLeftElement>
-                <Input placeholder="Filtrar por..." onChange={debouncedChangeInputHandler}/>
+                <Input placeholder="Filtrar..." onChange={debouncedChangeInputHandler}/>
               </InputGroup>  
               <Select w="34" onChange={e => {setFilter(e.target.value)}} ml="2">
                 <option value="title">Título</option>

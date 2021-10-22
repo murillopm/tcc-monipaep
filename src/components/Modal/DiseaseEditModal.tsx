@@ -74,36 +74,46 @@ export function DiseaseEditModal({ isOpen, onClose, disease, refetchList }: Dise
 
   async function handleDiseaseUpdate() {
     if(diseaseName !== '' && infectedDays > 0 && suspectDays > 0) {
-      setIsUpdating(true)
-      try {
-        const response = await api.put(`/disease/${disease.name}`, {
-          name: diseaseName,
-          infected_Monitoring_Days: infectedDays,
-          suspect_Monitoring_Days: suspectDays,
-        })
+      if( diseaseName === disease.name && 
+          infectedDays === disease.infected_Monitoring_Days &&
+          suspectDays === disease.suspect_Monitoring_Days) {
         toast({
-          title: "Sucesso",
-          description: response.data?.success,
-          status: "success",
+          title: "Erro na alteração da doença",
+          description: "Campos sem nenhuma alteração",
+          status: "error",
           isClosable: true
         })
-      setTouched(false)
-      onClose()
-      refetchList()
-    } catch (error: any) {
-      toast({
-        title: "Erro na alteração",
-        description: error.response?.data.error,
-        status: "error",
-        isClosable: true
-      })
-    }
-    setIsUpdating(false)
-    
+      } else {
+        setIsUpdating(true)
+        try {
+          const response = await api.put(`/disease/${disease.name}`, {
+            name: diseaseName,
+            infected_Monitoring_Days: infectedDays,
+            suspect_Monitoring_Days: suspectDays,
+          })
+          toast({
+            title: "Sucesso",
+            description: response.data?.success,
+            status: "success",
+            isClosable: true
+          })
+          setTouched(false)
+          onClose()
+          refetchList()
+        } catch (error: any) {
+          toast({
+            title: "Erro na alteração da doença",
+            description: "Doença já registrada no sistema",
+            status: "error",
+            isClosable: true
+          })
+        }
+        setIsUpdating(false)
+      }
     } else {
       toast({
-        title: "Erro",
-        description: 'Preencha os campos corretamente',
+        title: "Erro na alteração da doença",
+        description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
       })
@@ -127,7 +137,7 @@ export function DiseaseEditModal({ isOpen, onClose, disease, refetchList }: Dise
             <Text fontWeight="semibold" mb="3">Nome da doença</Text>
             <Input value={diseaseName} mb="4" onChange={handleNameInputChanged}/>
             <Text fontWeight="semibold" mb="3">Período de monitoramento (em dias)</Text>
-            <Flex direction="column" justifyContent="space-between" alignItems="flex-start" ml="1">
+            <Flex direction="column" justifyContent="space-between" alignItems="flex-start" ml="2">
               <Text fontWeight="semibold" mb="2">Paciente suspeito</Text>
               <Input alignSelf="center" type="number" value={suspectDays} mb="2" onChange={handleSuspectInputChanged}/>
               <Text fontWeight="semibold" mb="2">Paciente infectado</Text>

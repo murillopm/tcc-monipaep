@@ -28,7 +28,7 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
     try {
       const response = await api.delete(`/faq/${faqId}`)
       toast({
-        title: "Sucesso",
+        title: "Sucesso na remoção da questão",
         description: response.data?.success,
         status: "success",
         isClosable: true
@@ -37,7 +37,7 @@ export function FaqExcludeAlert({ isOpen, onClose, faqId, refetchList }: Exclude
       onClose()
     } catch (error: any) {
       toast({
-        title: "Erro na remoção",
+        title: "Erro na remoção da questão",
         description: error.response?.data.error,
         status: "error",
         isClosable: true

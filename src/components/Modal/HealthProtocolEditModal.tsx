@@ -64,7 +64,6 @@ export function HealthProtocolEditModal({ isOpen, onClose, healthProtocol, refet
 
   async function handleHealthProtocolUpdate() {
     if(title !== '' && description !== '') {
-      setIsUpdating(true)
       let body: any = {}
       if(title !== healthProtocol.title) {
         body = { ...body, title }
@@ -74,18 +73,18 @@ export function HealthProtocolEditModal({ isOpen, onClose, healthProtocol, refet
       }
       if(Object.keys(body).length === 0) {
         toast({
-          title: "Erro",
+          title: "Erro na alteração do protocolo",
           description: "Não houve nenhuma alteração nos campos",
           status: "error",
           isClosable: true
         })
-        setIsUpdating(false)
         return
       }
       try {
+        setIsUpdating(true)
         const response = await api.put(`/healthprotocol/${healthProtocol.id}`, body)
         toast({
-          title: "Sucesso",
+          title: "Sucesso na alteração do protocolo",
           description: response.data?.success,
           status: "success",
           isClosable: true
@@ -95,7 +94,7 @@ export function HealthProtocolEditModal({ isOpen, onClose, healthProtocol, refet
         refetchList()
       } catch (error: any) {
         toast({
-          title: "Erro na alteração",
+          title: "Erro na alteração do protocolo",
           description: error.response?.data.error,
           status: "error",
           isClosable: true
@@ -104,7 +103,7 @@ export function HealthProtocolEditModal({ isOpen, onClose, healthProtocol, refet
       setIsUpdating(false)
     } else {
       toast({
-        title: "Erro",
+        title: "Erro na alteração do protocolo",
         description: "Preencha os campos corretamente",
         status: "error",
         isClosable: true
