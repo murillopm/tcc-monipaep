@@ -136,39 +136,51 @@ export function DiseaseOccurrenceEditModal({ isOpen, onClose, diseaseOccurrence,
   }
 
   async function handleDiseaseOccurrenceUpdate() {
+    const startDateIsEqual = startDate.getTime() === (new Date(diseaseOccurrence.date_start)).getTime()
+    const endDateIsEqual = (endDate ? endDate.getTime() : null) === 
+                           (diseaseOccurrence.date_end ? new Date(diseaseOccurrence.date_end).getTime() : null)
+    const diagnosisIsEqual = diagnosis === diseaseOccurrence.diagnosis
+    const diseaseIsEqual = disease === diseaseOccurrence.disease_name
+    const diseaseStatusIsEqual = diseaseStatus === diseaseOccurrence.status
+
     if(startDate && (isOngoingOccurrence || endDate ) && diagnosis && diseaseStatus && disease) {
-      setIsUpdating(true)
-      try {
-        let body: any = {
-          disease_name: disease,
-          date_start: startDate,
-          status: diseaseStatus,
-          diagnosis,
-        }
-        if(isOngoingOccurrence) {
-          body = { ...body, date_end: null }
-        } else {
-          body = { ...body, date_end: endDate}
-        }
-        const response = await api.put(`/diseaseoccurrence/${diseaseOccurrence.id}`, body)
-        toast({
-          title: "Sucesso na alteração da ocorrência",
-          description: response.data?.success,
-          status: "success",
-          isClosable: true
-        })
-        setTouched(false)
-        onClose()
-        refetchData()
-      } catch (error: any) {
+      if(startDateIsEqual && endDateIsEqual && diagnosisIsEqual && diseaseIsEqual && diseaseStatusIsEqual) {
         toast({
           title: "Erro na alteração da ocorrência",
-          description: error.response?.data.error,
+          description: "Campos sem nenhuma alteração",
           status: "error",
           isClosable: true
         })
+      } else {
+        setIsUpdating(true)
+        try {
+          let body: any = {
+            disease_name: disease,
+            date_start: startDate,
+            date_end: isOngoingOccurrence ? null : endDate,
+            status: diseaseStatus,
+            diagnosis,
+          }
+          const response = await api.put(`/diseaseoccurrence/${diseaseOccurrence.id}`, body)
+          toast({
+            title: "Sucesso na alteração da ocorrência",
+            description: response.data?.success,
+            status: "success",
+            isClosable: true
+          })
+          setTouched(false)
+          onClose()
+          refetchData()
+        } catch (error: any) {
+          toast({
+            title: "Erro na alteração da ocorrência",
+            description: error.response?.data.error,
+            status: "error",
+            isClosable: true
+          })
+        }
+        setIsUpdating(false)
       }
-      setIsUpdating(false)
     } else {
       toast({
         title: "Erro na alteração da ocorrência",

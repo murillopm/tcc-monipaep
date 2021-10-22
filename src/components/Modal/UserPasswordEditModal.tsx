@@ -47,7 +47,7 @@ const schema = yup.object().shape({
 
 export function UserPasswordEditModal({ isOpen, userId, onClose }: UserPasswordEditModalProps) {
   const [isUpdating, setIsUpdating] = useState(false)
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, reset } = useForm({
     resolver: yupResolver(schema),
   })
   const { errors } = formState
@@ -55,8 +55,7 @@ export function UserPasswordEditModal({ isOpen, userId, onClose }: UserPasswordE
   const toast = useToast()
 
   const handlePasswordUpdate: SubmitHandler<UpdatePasswordData> = async (values) => {
-    console.log(values)
-
+    if(values.current_password !== values.new_password) {
       setIsUpdating(true)
       try {
         const response = await api.put(`/systemuser/password/${userId}`, {
@@ -64,21 +63,34 @@ export function UserPasswordEditModal({ isOpen, userId, onClose }: UserPasswordE
           new_password: values.new_password,
         })
         toast({
-          title: "Sucesso",
+          title: "Sucesso na alteração da senha",
           description: response.data?.success,
           status: "success",
           isClosable: true
         })
-        onClose()
+        handleClose()
       } catch (error: any) {
         toast({
-          title: "Erro na alteração",
+          title: "Erro na alteração da senha",
           description: error.response?.data.error,
           status: "error",
           isClosable: true
         })
       }
       setIsUpdating(false)
+    } else {
+      toast({
+        title: "Erro na alteração da senha",
+        description: "A nova senha deve ser diferente da senha atual",
+        status: "error",
+        isClosable: true
+      })
+    }
+  }
+
+  function handleClose() {
+    onClose()
+    reset()
   }
   
   return (
@@ -86,13 +98,13 @@ export function UserPasswordEditModal({ isOpen, userId, onClose }: UserPasswordE
       motionPreset="slideInBottom" 
       size="xl" 
       isOpen={isOpen} 
-      onClose={onClose} 
+      onClose={handleClose} 
       isCentered 
       closeOnOverlayClick={false}
     >
       <ModalOverlay>
-        <ModalContent height="auto" width="500px">
-          <ModalHeader textAlign="center">Editar senha</ModalHeader>
+        <ModalContent height="auto" width="350px">
+          <ModalHeader textAlign="center">Alterar senha</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing="4" as="form" onSubmit={handleSubmit(handlePasswordUpdate)}>
@@ -133,7 +145,7 @@ export function UserPasswordEditModal({ isOpen, userId, onClose }: UserPasswordE
               )}
               </FormControl>
               <Flex pb="4" pt="3" justifyContent="flex-end">
-                <Button onClick={onClose} mr="3">Cancelar</Button>
+                <Button onClick={handleClose} mr="3">Cancelar</Button>
                 <Button 
                   type="submit"
                   colorScheme="blue" 

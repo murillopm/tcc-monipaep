@@ -51,11 +51,11 @@ interface UsePatientDiseaseOccurrenceProps {
 export async function getPatientDiseaseOccurrence(occurrenceId: string) {
   const { data } = await api.get<GetDiseaseOccurrencesResponse>(`/diseaseoccurrence/${occurrenceId}`)
 
-  const dateStartFormatted = format(parseISO(data.occurrenceDetails.date_start), 'P', { locale: ptBR })
+  const dateStartFormatted = format(parseISO(data.occurrenceDetails.date_start), 'Pp', { locale: ptBR })
   let dateEndFormatted = data.occurrenceDetails.date_end
 
   if(dateEndFormatted) {
-    dateEndFormatted = format(parseISO(dateEndFormatted), 'P', { locale: ptBR })
+    dateEndFormatted = format(parseISO(dateEndFormatted), 'Pp', { locale: ptBR })
   }
 
   const formattedSymptomList = data.symptomsList.map(occurrence => {

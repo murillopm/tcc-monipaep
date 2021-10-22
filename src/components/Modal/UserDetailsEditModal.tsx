@@ -32,7 +32,7 @@ type SystemUser = {
   createdAt: string;
 }
 
-type SignUpData = {
+type UserData = {
   name: string;
   cpf: string;
   email: string;
@@ -54,21 +54,21 @@ const schema = yup.object().shape({
 })
 
 export function UserDetailsEditModal({ isOpen, onClose, user, refetch }: UserDetailsEditModalProps) {
-  const [isUpdating, setIsUpdating] = useState(false)
-  const { register, handleSubmit, formState } = useForm({
+  const defaultValues = {
+    name: user.name,
+    cpf: user.CPF.replaceAll(/[.-]/g, ''),
+    email: user.email,
+    sector: user.department === "Unidade de saúde" ? "USM" : "SVS"
+  }
+  const { register, handleSubmit, formState, reset } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      name: user.name,
-      cpf: user.CPF.replaceAll(/[.-]/g, ''),
-      email: user.email,
-      sector: user.department === "Unidade de saúde" ? "USM" : "SVS"
-    }
+    defaultValues
   })
   const { errors } = formState
-
+  const [isUpdating, setIsUpdating] = useState(false)
   const toast = useToast()
 
-  const handleUpdate: SubmitHandler<SignUpData> = async (values) => {
+  const handleUpdate: SubmitHandler<UserData> = async (values) => {
     let body: any = {}
 
     if(values.cpf !== user.CPF.replaceAll(/[.-]/g, '')) {
@@ -92,7 +92,7 @@ export function UserDetailsEditModal({ isOpen, onClose, user, refetch }: UserDet
       try {
         const response = await api.put(`/systemuser/${user.id}`, body)
         toast({
-          title: "Sucesso",
+          title: "Sucesso na alteração do usuário",
           description: response.data?.success,
           status: "success",
           isClosable: true
@@ -101,8 +101,8 @@ export function UserDetailsEditModal({ isOpen, onClose, user, refetch }: UserDet
         refetch()
       } catch (error: any) {
         toast({
-          title: "Erro na alteração",
-          description: error.response?.data.error,
+          title: "Erro na alteração do usuário",
+          description: "Email e/ou CPF já cadastrados",
           status: "error",
           isClosable: true
         })
@@ -110,12 +110,17 @@ export function UserDetailsEditModal({ isOpen, onClose, user, refetch }: UserDet
       setIsUpdating(false)
     } else {
       toast({
-        title: "Erro",
-        description: "Altere algum campo para poder atualizar os dados",
+        title: "Erro na alteração do usuário",
+        description: "Campos sem nenhuma alteração",
         status: "error",
         isClosable: true
       })
     }
+  }
+
+  function handleClose() {
+    onClose()
+    reset(defaultValues)
   }
   
   return (
@@ -123,7 +128,7 @@ export function UserDetailsEditModal({ isOpen, onClose, user, refetch }: UserDet
       motionPreset="slideInBottom" 
       size="xl" 
       isOpen={isOpen} 
-      onClose={onClose} 
+      onClose={handleClose} 
       isCentered 
       closeOnOverlayClick={false}
     >
@@ -183,7 +188,7 @@ export function UserDetailsEditModal({ isOpen, onClose, user, refetch }: UserDet
               )}
               </FormControl>
               <Flex pb="4" pt="3" justifyContent="flex-end">
-                <Button onClick={onClose} mr="3">Cancelar</Button>
+                <Button onClick={handleClose} mr="3">Cancelar</Button>
                 <Button 
                   type="submit"
                   colorScheme="blue" 

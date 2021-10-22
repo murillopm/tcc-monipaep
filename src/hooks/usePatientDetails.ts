@@ -58,6 +58,6 @@ export function usePatientDetails({ patientId }: UsePatientDetailsProps) {
     return getPatients(patientId)
   }, {
     keepPreviousData: true,
-    staleTime: 1000 * 60
+    staleTime: 1000 * 30
   })
 }

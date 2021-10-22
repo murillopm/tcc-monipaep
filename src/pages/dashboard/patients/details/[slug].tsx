@@ -70,7 +70,7 @@ export default function PatientDetails({ patientId }: PatientDetailsProps) {
                 <Text>{data?.patients[0].homeAddress}, {data?.patients[0].houseNumber}</Text>
               </Flex>
               <Flex>
-                <Text fontWeight="bold">Bairro:&nbsp;</Text>
+                <Text fontWeight="bold">Bairro residencial:&nbsp;</Text>
                 <Text>{data?.patients[0].neighborhood}</Text>
               </Flex>
               <Flex>
